@@ -1,0 +1,518 @@
+﻿=== TOTAL LOGS: 60 ===
+
+--- LOG 1 ---
+TIME: 2026-02-13T22:29:06.904621-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "vc pode me enviar uma imagem?"
+}
+
+--- LOG 2 ---
+TIME: 2026-02-13T22:29:06.758406-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 3 ---
+TIME: 2026-02-13T22:29:06.672425-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 4 ---
+TIME: 2026-02-13T22:29:06.630257-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 5 ---
+TIME: 2026-02-13T22:29:06.544607-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 6 ---
+TIME: 2026-02-13T22:29:06.507696-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r2e4243bd71f400\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\"
+... [TRUNCATED]
+
+--- LOG 7 ---
+TIME: 2026-02-13T22:29:06.465918-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 8 ---
+TIME: 2026-02-13T22:22:34.492087-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 9 ---
+TIME: 2026-02-13T22:22:34.409113-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 10 ---
+TIME: 2026-02-13T22:22:34.369664-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 11 ---
+TIME: 2026-02-13T22:22:34.303053-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 12 ---
+TIME: 2026-02-13T22:22:34.25847-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r2e4243bd71f400\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\"
+... [TRUNCATED]
+
+--- LOG 13 ---
+TIME: 2026-02-13T22:22:34.217692-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 14 ---
+TIME: 2026-02-13T22:22:13.709219-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "o que vc ve nessa imagem?"
+}
+
+--- LOG 15 ---
+TIME: 2026-02-13T22:22:13.53971-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 16 ---
+TIME: 2026-02-13T22:22:13.46157-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 17 ---
+TIME: 2026-02-13T22:22:13.427165-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 18 ---
+TIME: 2026-02-13T22:22:13.331211-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 19 ---
+TIME: 2026-02-13T22:22:13.293206-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r2e4243bd71f400\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\"
+... [TRUNCATED]
+
+--- LOG 20 ---
+TIME: 2026-02-13T22:22:13.230617-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 21 ---
+TIME: 2026-02-13T22:20:42.196048-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "vc tem foto do espaþo?"
+}
+
+--- LOG 22 ---
+TIME: 2026-02-13T22:20:42.011854-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 23 ---
+TIME: 2026-02-13T22:20:41.941864-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 24 ---
+TIME: 2026-02-13T22:20:41.902262-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 25 ---
+TIME: 2026-02-13T22:20:41.813617-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 26 ---
+TIME: 2026-02-13T22:20:41.765245-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r2e4243bd71f400\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\"
+... [TRUNCATED]
+
+--- LOG 27 ---
+TIME: 2026-02-13T22:20:41.7019-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 28 ---
+TIME: 2026-02-13T22:19:01.420236-03:00
+LEVEL: INFO
+MSG: Ignored: Sent by me
+META: {
+  "remoteJid": "554187263019@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 29 ---
+TIME: 2026-02-13T22:19:01.380589-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "554187263019",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 30 ---
+TIME: 2026-02-13T22:19:01.286035-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": true,
+  "hasMsg": true,
+  "remoteJid": "554187263019@s.whatsapp.net",
+  "cleanPhone": "554187263019",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 31 ---
+TIME: 2026-02-13T22:19:01.243728-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r29d245acd57154\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/590402287_1510801903537115_4245477268644918214_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wG2JVSjLooRR_nPCUbZYYvHP-vlQFKUJgoJVHQJghR-tw&oe=6991A975&_nc_sid=5e03e0&_nc_cat=103\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\
+... [TRUNCATED]
+
+--- LOG 32 ---
+TIME: 2026-02-13T22:19:00.707174-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 33 ---
+TIME: 2026-02-13T22:18:41.716006-03:00
+LEVEL: INFO
+MSG: Ignored: Sent by me
+META: {
+  "remoteJid": "554187263019@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 34 ---
+TIME: 2026-02-13T22:18:41.683506-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "554187263019",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 35 ---
+TIME: 2026-02-13T22:18:41.613054-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": true,
+  "hasMsg": true,
+  "remoteJid": "554187263019@s.whatsapp.net",
+  "cleanPhone": "554187263019",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 36 ---
+TIME: 2026-02-13T22:18:41.569364-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r29d245acd57154\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/590402287_1510801903537115_4245477268644918214_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wG2JVSjLooRR_nPCUbZYYvHP-vlQFKUJgoJVHQJghR-tw&oe=6991A975&_nc_sid=5e03e0&_nc_cat=103\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\
+... [TRUNCATED]
+
+--- LOG 37 ---
+TIME: 2026-02-13T22:18:41.535215-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 38 ---
+TIME: 2026-02-13T22:18:19.410183-03:00
+LEVEL: INFO
+MSG: Ignored: Sent by me
+META: {
+  "remoteJid": "554187263019@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 39 ---
+TIME: 2026-02-13T22:18:19.378272-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "554187263019",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 40 ---
+TIME: 2026-02-13T22:18:19.299006-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": true,
+  "hasMsg": true,
+  "remoteJid": "554187263019@s.whatsapp.net",
+  "cleanPhone": "554187263019",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 41 ---
+TIME: 2026-02-13T22:18:19.262997-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r29d245acd57154\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/590402287_1510801903537115_4245477268644918214_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wG2JVSjLooRR_nPCUbZYYvHP-vlQFKUJgoJVHQJghR-tw&oe=6991A975&_nc_sid=5e03e0&_nc_cat=103\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\
+... [TRUNCATED]
+
+--- LOG 42 ---
+TIME: 2026-02-13T22:18:19.212896-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 43 ---
+TIME: 2026-02-13T22:10:44.803665-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "eu tenho agendamento com vc sim... consegue ver mi"
+}
+
+--- LOG 44 ---
+TIME: 2026-02-13T22:10:44.634381-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 45 ---
+TIME: 2026-02-13T22:10:44.552565-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 46 ---
+TIME: 2026-02-13T22:10:44.516622-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 47 ---
+TIME: 2026-02-13T22:10:44.440145-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 48 ---
+TIME: 2026-02-13T22:10:44.384517-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r2e4243bd71f400\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\"
+... [TRUNCATED]
+
+--- LOG 49 ---
+TIME: 2026-02-13T22:10:44.342657-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 50 ---
+TIME: 2026-02-13T22:09:32.489572-03:00
+LEVEL: INFO
+MSG: Tool Call: check_availability
+META: {
+  "args": {
+    "date": "2026-02-15"
+  }
+}
+
+--- LOG 51 ---
+TIME: 2026-02-13T22:09:30.580438-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "vc pode marcar reuniÒo de sabado?"
+}
+
+--- LOG 52 ---
+TIME: 2026-02-13T22:09:30.412899-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 53 ---
+TIME: 2026-02-13T22:09:30.338983-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 54 ---
+TIME: 2026-02-13T22:09:30.304498-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 55 ---
+TIME: 2026-02-13T22:09:30.231994-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 56 ---
+TIME: 2026-02-13T22:09:30.179144-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "payload": "{\"BaseUrl\":\"https://backstagefy.uazapi.com\",\"EventType\":\"messages\",\"chat\":{\"chatbot_agentResetMemoryAt\":0,\"chatbot_disableUntil\":0,\"chatbot_lastTriggerAt\":0,\"chatbot_lastTrigger_id\":\"\",\"id\":\"r2e4243bd71f400\",\"image\":\"\",\"imagePreview\":\"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101\",\"lead_assignedAttendant_id\":\"\",\"lead_email\":\"\",\"lead_field01\":\"\",\"lead_field02\":\"\",\"lead_field03\":\"\",\"lead_field04\":\"\",\"lead_field05\":\"\",\"lead_field06\":\"\",\"lead_field07\":\"\",\"lead_field08\":\"\",\"lead_field09\":\"\",\"lead_field10\":\"\",\"lead_field11\":\"\"
+... [TRUNCATED]
+
+--- LOG 57 ---
+TIME: 2026-02-13T22:09:30.134-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 58 ---
+TIME: 2026-02-13T22:09:01.557889-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "tenho alguma call agendado com vc?"
+}
+
+--- LOG 59 ---
+TIME: 2026-02-13T22:09:01.392384-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 60 ---
+TIME: 2026-02-13T22:09:01.273391-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+

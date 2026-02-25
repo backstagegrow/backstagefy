@@ -1,8 +1,0 @@
-{
-    "url": "https://bleqjcxwtgzwbkediusr.supabase.co/functions/v1/ai-concierge-v5-final",
-    "events": [
-        "message",
-        "status",
-        "connection"
-    ]
-}

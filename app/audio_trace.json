@@ -1,0 +1,41 @@
+{
+  "id": 1591,
+  "created_at": "2026-02-10T14:25:47.544004+00:00",
+  "level": "info",
+  "message": "Audio check trace",
+  "meta": {
+    "msg": {
+      "id": "5519996597169:3EB00C6EFE290BB5753FA9",
+      "text": "n\u00e3o \u00e9 esse horario meu horari \u00e9 as 11:30",
+      "type": "text",
+      "vote": "",
+      "owner": "5519996597169",
+      "chatid": "5519981316733@s.whatsapp.net",
+      "edited": "",
+      "fromMe": false,
+      "quoted": "",
+      "sender": "5519981316733@s.whatsapp.net",
+      "source": "web",
+      "status": "",
+      "chatlid": "",
+      "content": "n\u00e3o \u00e9 esse horario meu horari \u00e9 as 11:30",
+      "isGroup": false,
+      "reaction": "",
+      "track_id": "",
+      "groupName": "Unknown",
+      "mediaType": "",
+      "messageid": "3EB00C6EFE290BB5753FA9",
+      "sender_pn": "5519981316733@s.whatsapp.net",
+      "senderName": "Robson Nobre",
+      "sender_lid": "159098557493432@lid",
+      "messageType": "Conversation",
+      "track_source": "",
+      "wasSentByApi": false,
+      "buttonOrListid": "",
+      "convertOptions": "",
+      "messageTimestamp": 1770733546000
+    },
+    "debugInfo": "DETECTED: type = text, isAudio = undefined"
+  },
+  "service": "ai-concierge-v5"
+}

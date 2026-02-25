@@ -1,0 +1,261 @@
+[
+  {
+    "id": 1625,
+    "created_at": "2026-02-10T14:33:31.265003+00:00",
+    "level": "info",
+    "message": "Audio check trace",
+    "meta": {
+      "msg": {
+        "id": "5519996597169:3EB062CB021CE628F68AC4",
+        "text": "",
+        "type": "media",
+        "vote": "",
+        "owner": "5519996597169",
+        "chatid": "5519981316733@s.whatsapp.net",
+        "edited": "",
+        "fromMe": false,
+        "quoted": "",
+        "sender": "5519981316733@s.whatsapp.net",
+        "source": "web",
+        "status": "",
+        "chatlid": "",
+        "content": {
+          "PTT": true,
+          "URL": "https://mmg.whatsapp.net/v/t62.7117-24/632567735_901863838923147_7302330647228227210_n.enc?ccb=11-4&oh=01_Q5Aa3wEBmDPKocMwZ6arUA_hWkG6ZLJqeW3pG--Mvm2Z4_559Q&oe=69B2B28F&_nc_sid=5e03e0&mms3=true",
+          "seconds": 2,
+          "mediaKey": "vimdisTTmpkaizX8ikXr+GTa818MbCG/ehsChfAWyXg=",
+          "mimetype": "audio/ogg; codecs=opus",
+          "viewOnce": false,
+          "waveform": "GBobHR0cGxcSDgoGAQEAAAAAAAMHChIZISAfHhsYFhsgJSUlJSMiISIkJSMhHxcPBwkLDRAUGBQQDQ0NDQoGAw==",
+          "directPath": "/v/t62.7117-24/632567735_901863838923147_7302330647228227210_n.enc?ccb=11-4&oh=01_Q5Aa3wEBmDPKocMwZ6arUA_hWkG6ZLJqeW3pG--Mvm2Z4_559Q&oe=69B2B28F&_nc_sid=5e03e0",
+          "fileLength": 5140,
+          "fileSHA256": "9gVPuS2ahu4saHdCyUi833TjTCMbI6sGl6HyJ0s72v0=",
+          "contextInfo": {
+            "disappearingMode": {
+              "initiator": 0
+            }
+          },
+          "fileEncSHA256": "Ods7mQ3Nn5XA4I5wDtpV5KCPS7KFy0/oup6nqjyHwZ4=",
+          "mediaKeyTimestamp": 1770734008
+        },
+        "isGroup": false,
+        "reaction": "",
+        "track_id": "",
+        "groupName": "Unknown",
+        "mediaType": "ptt",
+        "messageid": "3EB062CB021CE628F68AC4",
+        "sender_pn": "5519981316733@s.whatsapp.net",
+        "senderName": "Robson Nobre",
+        "sender_lid": "159098557493432@lid",
+        "messageType": "AudioMessage",
+        "track_source": "",
+        "wasSentByApi": false,
+        "buttonOrListid": "",
+        "convertOptions": "",
+        "messageTimestamp": 1770734010000
+      },
+      "debugInfo": "DETECTED: type = media, isAudio = true"
+    },
+    "service": "ai-concierge-v5"
+  },
+  {
+    "id": 1613,
+    "created_at": "2026-02-10T14:32:18.180316+00:00",
+    "level": "info",
+    "message": "Audio check trace",
+    "meta": {
+      "msg": {
+        "id": "5519996597169:3EB06E53EAF20C2B01ED5A",
+        "text": "",
+        "type": "media",
+        "vote": "",
+        "owner": "5519996597169",
+        "chatid": "5519981316733@s.whatsapp.net",
+        "edited": "",
+        "fromMe": false,
+        "quoted": "",
+        "sender": "5519981316733@s.whatsapp.net",
+        "source": "web",
+        "status": "",
+        "chatlid": "",
+        "content": {
+          "PTT": true,
+          "URL": "https://mmg.whatsapp.net/v/t62.7117-24/633469100_912192234699386_8215600873972816754_n.enc?ccb=11-4&oh=01_Q5Aa3wHx-FLhyB8G7s_1vc2fzF8I60d5zwNNOujDCVO370bzfQ&oe=69B29DAE&_nc_sid=5e03e0&mms3=true",
+          "seconds": 2,
+          "mediaKey": "CaiShmFjpg8F4yfjKe4HnX0n7aGGCJuEiavHYSrZS7U=",
+          "mimetype": "audio/ogg; codecs=opus",
+          "viewOnce": false,
+          "waveform": "HR4eHh4eHh4eGRURDQ0NDQwJBQIDDholKygmIyIiIyQlJygqLC4wMzIuKycpLTE1Nzk7PTs4NDEsJyIdHBwbGw==",
+          "directPath": "/v/t62.7117-24/633469100_912192234699386_8215600873972816754_n.enc?ccb=11-4&oh=01_Q5Aa3wHx-FLhyB8G7s_1vc2fzF8I60d5zwNNOujDCVO370bzfQ&oe=69B29DAE&_nc_sid=5e03e0",
+          "fileLength": 4195,
+          "fileSHA256": "ESMlTTrzwAdvLnELyG4JzRQGaQad0pANwbUGKRMnBWE=",
+          "contextInfo": {
+            "disappearingMode": {
+              "initiator": 0
+            }
+          },
+          "fileEncSHA256": "WLxAu9oWVuoBClsUztcqE0sbfN/FpZKayAfatdbCcYA=",
+          "mediaKeyTimestamp": 1770733933
+        },
+        "isGroup": false,
+        "reaction": "",
+        "track_id": "",
+        "groupName": "Unknown",
+        "mediaType": "ptt",
+        "messageid": "3EB06E53EAF20C2B01ED5A",
+        "sender_pn": "5519981316733@s.whatsapp.net",
+        "senderName": "Robson Nobre",
+        "sender_lid": "159098557493432@lid",
+        "messageType": "AudioMessage",
+        "track_source": "",
+        "wasSentByApi": false,
+        "buttonOrListid": "",
+        "convertOptions": "",
+        "messageTimestamp": 1770733934000
+      },
+      "debugInfo": "DETECTED: type = media, isAudio = true"
+    },
+    "service": "ai-concierge-v5"
+  },
+  {
+    "id": 1602,
+    "created_at": "2026-02-10T14:30:54.026978+00:00",
+    "level": "info",
+    "message": "Audio check trace",
+    "meta": {
+      "msg": {
+        "id": "5519996597169:3EB0A7831F19875BB88D4D",
+        "text": "",
+        "type": "media",
+        "vote": "",
+        "owner": "5519996597169",
+        "chatid": "5519981316733@s.whatsapp.net",
+        "edited": "",
+        "fromMe": false,
+        "quoted": "",
+        "sender": "5519981316733@s.whatsapp.net",
+        "source": "web",
+        "status": "",
+        "chatlid": "",
+        "content": {
+          "PTT": true,
+          "URL": "https://mmg.whatsapp.net/v/t62.7117-24/633928643_1229274425409519_1129665737513597741_n.enc?ccb=11-4&oh=01_Q5Aa3wGcaHmEoIGhY8X08A_Z5NpQKSt8OzjnisirBi-PGDHSUg&oe=69B2B98E&_nc_sid=5e03e0&mms3=true",
+          "seconds": 1,
+          "mediaKey": "iIxpHUYtCnx8AxdOxT+umDENr/JpWvikKfAvumrJ+Ss=",
+          "mimetype": "audio/ogg; codecs=opus",
+          "viewOnce": false,
+          "waveform": "AAAAAAAAAQIDBAQDAgEAAAAAAAAHERwnMjY4Oj0/Pz4+PT0+Pz9AQUJCQ0NDQT8+PDo4NjQyMTExMTExMTExMQ==",
+          "directPath": "/v/t62.7117-24/633928643_1229274425409519_1129665737513597741_n.enc?ccb=11-4&oh=01_Q5Aa3wGcaHmEoIGhY8X08A_Z5NpQKSt8OzjnisirBi-PGDHSUg&oe=69B2B98E&_nc_sid=5e03e0",
+          "fileLength": 3595,
+          "fileSHA256": "1sX8QVcAolXLNmSAh+Wd7Hfaca4CTvrhjy0bEPsl6ZE=",
+          "contextInfo": {
+            "disappearingMode": {
+              "initiator": 0
+            }
+          },
+          "fileEncSHA256": "qf5TVs2PP3HOe7Qm6oAfQM+z5OxfwBcYUpV3sihgj6Y=",
+          "mediaKeyTimestamp": 1770733851
+        },
+        "isGroup": false,
+        "reaction": "",
+        "track_id": "",
+        "groupName": "Unknown",
+        "mediaType": "ptt",
+        "messageid": "3EB0A7831F19875BB88D4D",
+        "sender_pn": "5519981316733@s.whatsapp.net",
+        "senderName": "Robson Nobre",
+        "sender_lid": "159098557493432@lid",
+        "messageType": "AudioMessage",
+        "track_source": "",
+        "wasSentByApi": false,
+        "buttonOrListid": "",
+        "convertOptions": "",
+        "messageTimestamp": 1770733853000
+      },
+      "debugInfo": "DETECTED: type = media, isAudio = true"
+    },
+    "service": "ai-concierge-v5"
+  },
+  {
+    "id": 1591,
+    "created_at": "2026-02-10T14:25:47.544004+00:00",
+    "level": "info",
+    "message": "Audio check trace",
+    "meta": {
+      "msg": {
+        "id": "5519996597169:3EB00C6EFE290BB5753FA9",
+        "text": "n\u00e3o \u00e9 esse horario meu horari \u00e9 as 11:30",
+        "type": "text",
+        "vote": "",
+        "owner": "5519996597169",
+        "chatid": "5519981316733@s.whatsapp.net",
+        "edited": "",
+        "fromMe": false,
+        "quoted": "",
+        "sender": "5519981316733@s.whatsapp.net",
+        "source": "web",
+        "status": "",
+        "chatlid": "",
+        "content": "n\u00e3o \u00e9 esse horario meu horari \u00e9 as 11:30",
+        "isGroup": false,
+        "reaction": "",
+        "track_id": "",
+        "groupName": "Unknown",
+        "mediaType": "",
+        "messageid": "3EB00C6EFE290BB5753FA9",
+        "sender_pn": "5519981316733@s.whatsapp.net",
+        "senderName": "Robson Nobre",
+        "sender_lid": "159098557493432@lid",
+        "messageType": "Conversation",
+        "track_source": "",
+        "wasSentByApi": false,
+        "buttonOrListid": "",
+        "convertOptions": "",
+        "messageTimestamp": 1770733546000
+      },
+      "debugInfo": "DETECTED: type = text, isAudio = undefined"
+    },
+    "service": "ai-concierge-v5"
+  },
+  {
+    "id": 1584,
+    "created_at": "2026-02-10T14:25:17.405275+00:00",
+    "level": "info",
+    "message": "Audio check trace",
+    "meta": {
+      "msg": {
+        "id": "5519996597169:3EB09A43A31DC2959CC872",
+        "text": "mentira vc consegue ver em nosso banco de dados?",
+        "type": "text",
+        "vote": "",
+        "owner": "5519996597169",
+        "chatid": "5519981316733@s.whatsapp.net",
+        "edited": "",
+        "fromMe": false,
+        "quoted": "",
+        "sender": "5519981316733@s.whatsapp.net",
+        "source": "web",
+        "status": "",
+        "chatlid": "",
+        "content": "mentira vc consegue ver em nosso banco de dados?",
+        "isGroup": false,
+        "reaction": "",
+        "track_id": "",
+        "groupName": "Unknown",
+        "mediaType": "",
+        "messageid": "3EB09A43A31DC2959CC872",
+        "sender_pn": "5519981316733@s.whatsapp.net",
+        "senderName": "Robson Nobre",
+        "sender_lid": "159098557493432@lid",
+        "messageType": "Conversation",
+        "track_source": "",
+        "wasSentByApi": false,
+        "buttonOrListid": "",
+        "convertOptions": "",
+        "messageTimestamp": 1770733516000
+      },
+      "debugInfo": "DETECTED: type = text, isAudio = undefined"
+    },
+    "service": "ai-concierge-v5"
+  }
+]

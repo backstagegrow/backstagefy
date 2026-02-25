@@ -1,0 +1,238 @@
+﻿=== LOGS SINCE 22:30 (30 found) ===
+
+[07:49:36] DEBUG: Message Inserted
+  {
+  "content": "oi tudo bem"
+}
+
+[07:49:36] DEBUG: STEP-5: Media Detection
+  {
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "Conversation"
+}
+
+[07:49:36] DEBUG: STEP-4: UAZ Auth
+  {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+[07:49:35] DEBUG: STEP-3: Config Fetch
+
+[07:49:35] DEBUG: STEP-2: Guards
+  {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+[07:49:35] DEBUG: STEP-1: Extraction
+  {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:49:35] DEBUG: MSG-DUMP
+  {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519981316733@s.whatsapp.net\",\"chatlid\":\"\",\"content\":\"oi tudo bem\",\"convertOptions\":\"\",\"edited\":\"\",\"fromMe\":false,\"groupName\":\"Unknown\",\"id\":\"5519996597169:3EB0463485BC7109E2286B\",\"isGroup\":false,\"mediaType\":\"\",\"messageTimestamp\":1771066174000,\"messageType\":\"Conversation\",\"messageid\":\"3EB0463485BC7109E2286B\",\"owner\":\"5519996597169\",\"quoted\":\"\",\"reaction\":\"\",\"sender\":\"5519981316733@s.whatsapp.net\",\"senderName\":\"\",\"sender_lid\":\"159098557493432@lid\",\"sender_pn\":\"5519981316733@s.
+...
+
+[07:49:35] INFO: Webhook Received
+  {
+  "fromMe": false,
+  "msgType": "Conversation",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:49:35] INFO: Function Start V3-TEST-Active
+
+[07:49:20] DEBUG: Message Inserted
+  {
+  "content": "It's a lot of things."
+}
+
+[07:49:20] INFO: Audio Transcribed
+  {
+  "text": "It's a lot of things."
+}
+
+[07:49:19] DEBUG: Decrypting Audio...
+
+[07:49:19] DEBUG: Media URL found directly
+  {
+  "url": "https://mmg.whatsapp.net/v/t62.7117-24/637008445_1389518792446042_5539398236400804447_n.enc?ccb=11-4"
+}
+
+[07:49:19] INFO: Audio Detected - Starting Processing
+  {
+  "msgType": "AudioMessage"
+}
+
+[07:49:19] DEBUG: STEP-5: Media Detection
+  {
+  "isAudio": true,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "AudioMessage"
+}
+
+[07:49:19] DEBUG: STEP-4: UAZ Auth
+  {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+[07:49:19] DEBUG: STEP-3: Config Fetch
+
+[07:49:19] DEBUG: STEP-2: Guards
+  {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+[07:49:19] DEBUG: STEP-1: Extraction
+  {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:49:18] DEBUG: MSG-DUMP
+  {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519981316733@s.whatsapp.net\",\"chatlid\":\"\",\"content\":{\"URL\":\"https://mmg.whatsapp.net/v/t62.7117-24/637008445_1389518792446042_5539398236400804447_n.enc?ccb=11-4&oh=01_Q5Aa3wH76JZmlnPrMoxU1dk7ojqG-zEM_CzHEOZCJxDbHz1NrA&oe=69B7BFE9&_nc_sid=5e03e0&mms3=true\",\"mimetype\":\"audio/ogg; codecs=opus\",\"fileSHA256\":\"Z3Q7oTFPWNsYZ1nu430S2fCNPvwJ3IsbDXl2jJcKzFk=\",\"fileLength\":4252,\"seconds\":1,\"PTT\":true,\"mediaKey\":\"FogVOo0QawckRASt/Oi+mhKRPRXbJxBLYW5YryoW7jQ=\",\"fileEncSHA256\":\"jGXnNWVZH+IiIFxT8YHnenpkGk83GuZRqyfZ3cAs8U0=\",\"
+...
+
+[07:49:18] INFO: Webhook Received
+  {
+  "fromMe": false,
+  "msgType": "AudioMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:49:18] INFO: Function Start V3-TEST-Active
+
+[07:39:19] INFO: Ignored: Sent by me
+  {
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:39:19] DEBUG: STEP-2: Guards
+  {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519991041234",
+  "cleanBotNumber": "5519996597169"
+}
+
+[07:39:19] DEBUG: STEP-1: Extraction
+  {
+  "fromMe": true,
+  "hasMsg": true,
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "cleanPhone": "5519991041234",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:39:19] DEBUG: MSG-DUMP
+  {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519991041234@s.whatsapp.net\",\"chatlid\":\"278193739182220@lid\",\"content\":{\"URL\":\"https://mmg.whatsapp.net/v/t62.7117-24/635047337_848127404936543_4651020768453555363_n.enc?ccb=11-4&oh=01_Q5Aa3wHkqzvhuHBZ7xXrgc1Z70pWC1wYOYp90SGAZI0hf25D_g&oe=69B7ACE2&_nc_sid=5e03e0&mms3=true\",\"mimetype\":\"audio/ogg; codecs=opus\",\"fileSHA256\":\"2mA6NcXjsJ4+dC8TUmRUAQl9O8AgAvnuLfiR6h4O+KU=\",\"fileLength\":9683,\"seconds\":4,\"PTT\":true,\"mediaKey\":\"owWJ9gIx8VC+CCSXH9n9Uugv0R0+zr8AjR3g0/vG5Ps=\",\"fileEncSHA256\":\"W0i4VIwW2cfAPz4o2fjw40nNAN5HwwH
+...
+
+[07:39:19] INFO: Webhook Received
+  {
+  "fromMe": true,
+  "msgType": "AudioMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:39:19] INFO: Function Start V3-TEST-Active
+
+[07:39:19] INFO: Ignored: Sent by me
+  {
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[07:39:19] DEBUG: STEP-2: Guards
+  {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519991041234",
+  "cleanBotNumber": "5519996597169"
+}
+

@@ -1,0 +1,766 @@
+﻿=== TOTAL LOGS: 60 ===
+
+--- LOG 1 ---
+TIME: 2026-02-14T07:39:19.635434-03:00
+LEVEL: INFO
+MSG: Ignored: Sent by me
+META: {
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 2 ---
+TIME: 2026-02-14T07:39:19.597425-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519991041234",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 3 ---
+TIME: 2026-02-14T07:39:19.505959-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": true,
+  "hasMsg": true,
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "cleanPhone": "5519991041234",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 4 ---
+TIME: 2026-02-14T07:39:19.466006-03:00
+LEVEL: DEBUG
+MSG: MSG-DUMP
+META: {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519991041234@s.whatsapp.net\",\"chatlid\":\"278193739182220@lid\",\"content\":{\"URL\":\"https://mmg.whatsapp.net/v/t62.7117-24/635047337_848127404936543_4651020768453555363_n.enc?ccb=11-4&oh=01_Q5Aa3wHkqzvhuHBZ7xXrgc1Z70pWC1wYOYp90SGAZI0hf25D_g&oe=69B7ACE2&_nc_sid=5e03e0&mms3=true\",\"mimetype\":\"audio/ogg; codecs=opus\",\"fileSHA256\":\"2mA6NcXjsJ4+dC8TUmRUAQl9O8AgAvnuLfiR6h4O+KU=\",\"fileLength\":9683,\"seconds\":4,\"PTT\":true,\"mediaKey\":\"owWJ9gIx8VC+CCSXH9n9Uugv0R0+zr8AjR3g0/vG5Ps=\",\"fileEncSHA256\":\"W0i4VIwW2cfAPz4o2fjw40nNAN5HwwHM19vmWxaW9VY=\",\"directPath\":\"/v/t62.7117-24/635047337_848127404936543_4651020768453555363_n.enc?ccb=11-4&oh=01_Q5Aa3wHkqzvhuHBZ7xXrgc1Z70pWC1wYOYp90SGAZI0hf25D_g&oe=69B7ACE2&_nc_sid=5e03e0\",\"med
+... [TRUNCATED]
+
+--- LOG 5 ---
+TIME: 2026-02-14T07:39:19.416578-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "fromMe": true,
+  "msgType": "AudioMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 6 ---
+TIME: 2026-02-14T07:39:19.369714-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 7 ---
+TIME: 2026-02-14T07:39:19.068685-03:00
+LEVEL: INFO
+MSG: Ignored: Sent by me
+META: {
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 8 ---
+TIME: 2026-02-14T07:39:19.038943-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519991041234",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 9 ---
+TIME: 2026-02-14T07:39:18.975175-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": true,
+  "hasMsg": true,
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "cleanPhone": "5519991041234",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 10 ---
+TIME: 2026-02-14T07:39:18.94013-03:00
+LEVEL: DEBUG
+MSG: MSG-DUMP
+META: {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519991041234@s.whatsapp.net\",\"chatlid\":\"278193739182220@lid\",\"content\":\"Maravilhoso diaaaaa\",\"convertOptions\":\"\",\"edited\":\"\",\"fromMe\":true,\"groupName\":\"Unknown\",\"id\":\"5519996597169:AC36FD6F30B6121649F39D13D4F53E9B\",\"isGroup\":false,\"mediaType\":\"\",\"messageTimestamp\":1771065558000,\"messageType\":\"Conversation\",\"messageid\":\"AC36FD6F30B6121649F39D13D4F53E9B\",\"owner\":\"5519996597169\",\"quoted\":\"\",\"reaction\":\"\",\"sender\":\"136056343146534@lid\",\"senderName\":\"Robson Nobre\",\"sender_lid\":\"136056343146534@lid\",\"sender_pn\":\"5519996597169@s.whatsapp.net\",\"source\":\"android\",\"status\":\"\",\"text\":\"Maravilhoso diaaaaa\",\"track_id\":\"\",\"track_source\":\"\",\"type\":\"text\",\"vote
+... [TRUNCATED]
+
+--- LOG 11 ---
+TIME: 2026-02-14T07:39:18.909456-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "fromMe": true,
+  "msgType": "Conversation",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 12 ---
+TIME: 2026-02-14T07:39:18.878573-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 13 ---
+TIME: 2026-02-14T07:39:18.058404-03:00
+LEVEL: INFO
+MSG: Ignored: Sent by me
+META: {
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 14 ---
+TIME: 2026-02-14T07:39:18.023858-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": true,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519991041234",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 15 ---
+TIME: 2026-02-14T07:39:17.954155-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": true,
+  "hasMsg": true,
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "cleanPhone": "5519991041234",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 16 ---
+TIME: 2026-02-14T07:39:17.918281-03:00
+LEVEL: DEBUG
+MSG: MSG-DUMP
+META: {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519991041234@s.whatsapp.net\",\"chatlid\":\"278193739182220@lid\",\"content\":{\"text\":\"Show de bola....\",\"previewType\":0,\"contextInfo\":{\"stanzaID\":\"A59ED58D122858D11B10B7E060683D52\",\"participant\":\"278193739182220@lid\",\"quotedMessage\":{\"audioMessage\":{\"URL\":\"https://mmg.whatsapp.net/v/t62.7117-24/636683557_898342416412451_7294415353609300601_n.enc?ccb=11-4&oh=01_Q5Aa3wG8G5Z5Qyp9svO5nettv-YjCWaZbIEM6C1V35uv2jt53w&oe=69B7C845&_nc_sid=5e03e0&mms3=true\",\"mimetype\":\"audio/ogg; codecs=opus\",\"fileSHA256\":\"MN6Qk4UTelDCM4RpMl9lGKdwvb+Vtlu1GXVKX0pMPWk=\",\"fileLength\":43422,\"seconds\":22,\"PTT\":true,\"mediaKey\":\"5j/+Yd9gofDl9BB+VoGngyGsvmskyG00lf3Uqw6cK9M=\",\"fileEncSHA256\":\"e//ajfIFBW6a603e6QraEQifmTfsmUngO3LqI
+... [TRUNCATED]
+
+--- LOG 17 ---
+TIME: 2026-02-14T07:39:17.877995-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "fromMe": true,
+  "msgType": "ExtendedTextMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 18 ---
+TIME: 2026-02-14T07:39:17.829989-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 19 ---
+TIME: 2026-02-14T07:15:32.121073-03:00
+LEVEL: WARN
+MSG: Blocked: Unauthorized number
+META: {
+  "cleanPhone": "5519991041234",
+  "allowedNumbers": [
+    "5519981316733"
+  ]
+}
+
+--- LOG 20 ---
+TIME: 2026-02-14T07:15:32.081936-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 21 ---
+TIME: 2026-02-14T07:15:32.000888-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 22 ---
+TIME: 2026-02-14T07:15:31.964622-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519991041234",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 23 ---
+TIME: 2026-02-14T07:15:31.871523-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519991041234@s.whatsapp.net",
+  "cleanPhone": "5519991041234",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 24 ---
+TIME: 2026-02-14T07:15:31.829136-03:00
+LEVEL: DEBUG
+MSG: MSG-DUMP
+META: {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519991041234@s.whatsapp.net\",\"chatlid\":\"278193739182220@lid\",\"content\":{\"URL\":\"https://mmg.whatsapp.net/v/t62.7117-24/636683557_898342416412451_7294415353609300601_n.enc?ccb=11-4&oh=01_Q5Aa3wG8G5Z5Qyp9svO5nettv-YjCWaZbIEM6C1V35uv2jt53w&oe=69B7C845&_nc_sid=5e03e0&mms3=true\",\"mimetype\":\"audio/ogg; codecs=opus\",\"fileSHA256\":\"MN6Qk4UTelDCM4RpMl9lGKdwvb+Vtlu1GXVKX0pMPWk=\",\"fileLength\":43422,\"seconds\":22,\"PTT\":true,\"mediaKey\":\"5j/+Yd9gofDl9BB+VoGngyGsvmskyG00lf3Uqw6cK9M=\",\"fileEncSHA256\":\"e//ajfIFBW6a603e6QraEQifmTfsmUngO3LqILaNmtw=\",\"directPath\":\"/v/t62.7117-24/636683557_898342416412451_7294415353609300601_n.enc?ccb=11-4&oh=01_Q5Aa3wG8G5Z5Qyp9svO5nettv-YjCWaZbIEM6C1V35uv2jt53w&oe=69B7C845&_nc_sid=5e03e0\",\"m
+... [TRUNCATED]
+
+--- LOG 25 ---
+TIME: 2026-02-14T07:15:31.776589-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "fromMe": false,
+  "msgType": "AudioMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 26 ---
+TIME: 2026-02-14T07:15:31.696862-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 27 ---
+TIME: 2026-02-13T22:54:58.296114-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": ""
+}
+
+--- LOG 28 ---
+TIME: 2026-02-13T22:54:58.215348-03:00
+LEVEL: WARN
+MSG: Audio detected but no media URL found
+
+--- LOG 29 ---
+TIME: 2026-02-13T22:54:57.869061-03:00
+LEVEL: INFO
+MSG: Audio Detected - Starting Processing
+META: {
+  "msgType": "AudioMessage"
+}
+
+--- LOG 30 ---
+TIME: 2026-02-13T22:54:57.835251-03:00
+LEVEL: DEBUG
+MSG: STEP-5: Media Detection
+META: {
+  "isAudio": true,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "AudioMessage"
+}
+
+--- LOG 31 ---
+TIME: 2026-02-13T22:54:57.722706-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 32 ---
+TIME: 2026-02-13T22:54:57.653244-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 33 ---
+TIME: 2026-02-13T22:54:57.616773-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 34 ---
+TIME: 2026-02-13T22:54:57.511333-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 35 ---
+TIME: 2026-02-13T22:54:57.469304-03:00
+LEVEL: DEBUG
+MSG: MSG-DUMP
+META: {
+  "msg": "{\"buttonOrListid\":\"\",\"chatid\":\"5519981316733@s.whatsapp.net\",\"chatlid\":\"\",\"content\":{\"URL\":\"https://mmg.whatsapp.net/v/t62.7117-24/31995436_936469198957666_6505026598859466343_n.enc?ccb=11-4&oh=01_Q5Aa3wFobs4uqhQsULfxEJzzPa4ooVDFZXM1Oeu8mGykW1uEpA&oe=69B75DEA&_nc_sid=5e03e0&mms3=true\",\"mimetype\":\"audio/ogg; codecs=opus\",\"fileSHA256\":\"ISR3OrrTcPz9+0KeSr2ur+cuS+xtM5I8QSQWgNhow/o=\",\"fileLength\":4620,\"seconds\":2,\"PTT\":true,\"mediaKey\":\"rGY4Ks0nvoxXkYrOf9NanjXdX4cZiZxL5EEZ2tlxz+Y=\",\"fileEncSHA256\":\"NpM7pa8hs2QhdVMkLu0z9wpqePtF0a9GjvZU2y2QlIY=\",\"directPath\":\"/v/t62.7117-24/31995436_936469198957666_6505026598859466343_n.enc?ccb=11-4&oh=01_Q5Aa3wFobs4uqhQsULfxEJzzPa4ooVDFZXM1Oeu8mGykW1uEpA&oe=69B75DEA&_nc_sid=5e03e0\",\"mediaKeyTimestamp\":1771
+... [TRUNCATED]
+
+--- LOG 36 ---
+TIME: 2026-02-13T22:54:57.416609-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "fromMe": false,
+  "msgType": "AudioMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 37 ---
+TIME: 2026-02-13T22:54:57.353396-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 38 ---
+TIME: 2026-02-13T22:51:28.306754-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "o que o espaþo tem?"
+}
+
+--- LOG 39 ---
+TIME: 2026-02-13T22:51:28.221702-03:00
+LEVEL: DEBUG
+MSG: STEP-5: Media Detection
+META: {
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage"
+}
+
+--- LOG 40 ---
+TIME: 2026-02-13T22:51:28.035732-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 41 ---
+TIME: 2026-02-13T22:51:27.943636-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 42 ---
+TIME: 2026-02-13T22:51:27.901874-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 43 ---
+TIME: 2026-02-13T22:51:27.807433-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 44 ---
+TIME: 2026-02-13T22:51:27.763492-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "body": "o que o espaþo tem?",
+  "fromMe": false,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd",
+  "hasMediaUrl": false
+}
+
+--- LOG 45 ---
+TIME: 2026-02-13T22:51:27.719866-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 46 ---
+TIME: 2026-02-13T22:51:07.023562-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "quero saber sobre o interior do espaþo pode me env"
+}
+
+--- LOG 47 ---
+TIME: 2026-02-13T22:51:06.931863-03:00
+LEVEL: DEBUG
+MSG: STEP-5: Media Detection
+META: {
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage"
+}
+
+--- LOG 48 ---
+TIME: 2026-02-13T22:51:06.768917-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 49 ---
+TIME: 2026-02-13T22:51:06.692885-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 50 ---
+TIME: 2026-02-13T22:51:06.655625-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 51 ---
+TIME: 2026-02-13T22:51:06.582466-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 52 ---
+TIME: 2026-02-13T22:51:06.532433-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "body": "quero saber sobre o interior do espaþo pode me enviar imagens dele",
+  "fromMe": false,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd",
+  "hasMediaUrl": false
+}
+
+--- LOG 53 ---
+TIME: 2026-02-13T22:51:06.484748-03:00
+LEVEL: INFO
+MSG: Function Start V3-TEST-Active
+
+--- LOG 54 ---
+TIME: 2026-02-13T22:47:52.07406-03:00
+LEVEL: DEBUG
+MSG: Message Inserted
+META: {
+  "content": "vc pode me enviar imagem?"
+}
+
+--- LOG 55 ---
+TIME: 2026-02-13T22:47:52.000941-03:00
+LEVEL: DEBUG
+MSG: STEP-5: Media Detection
+META: {
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage"
+}
+
+--- LOG 56 ---
+TIME: 2026-02-13T22:47:51.880523-03:00
+LEVEL: DEBUG
+MSG: STEP-4: UAZ Auth
+META: {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+--- LOG 57 ---
+TIME: 2026-02-13T22:47:51.808879-03:00
+LEVEL: DEBUG
+MSG: STEP-3: Config Fetch
+
+--- LOG 58 ---
+TIME: 2026-02-13T22:47:51.776405-03:00
+LEVEL: DEBUG
+MSG: STEP-2: Guards
+META: {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+--- LOG 59 ---
+TIME: 2026-02-13T22:47:51.69406-03:00
+LEVEL: DEBUG
+MSG: STEP-1: Extraction
+META: {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+--- LOG 60 ---
+TIME: 2026-02-13T22:47:51.654047-03:00
+LEVEL: INFO
+MSG: Webhook Received
+META: {
+  "body": "vc pode me enviar imagem?",
+  "fromMe": false,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd10dd",
+  "hasMediaUrl": false
+}
+

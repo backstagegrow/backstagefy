@@ -1,0 +1,9 @@
+﻿
+=== WEBHOOK 1 at 2026-02-13T22:29:06.507696-03:00 ===
+PAYLOAD (raw): {"BaseUrl":"https://backstagefy.uazapi.com","EventType":"messages","chat":{"chatbot_agentResetMemoryAt":0,"chatbot_disableUntil":0,"chatbot_lastTriggerAt":0,"chatbot_lastTrigger_id":"","id":"r2e4243bd71f400","image":"","imagePreview":"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101","lead_assignedAttendant_id":"","lead_email":
+
+=== WEBHOOK 2 at 2026-02-13T22:22:34.25847-03:00 ===
+PAYLOAD (raw): {"BaseUrl":"https://backstagefy.uazapi.com","EventType":"messages","chat":{"chatbot_agentResetMemoryAt":0,"chatbot_disableUntil":0,"chatbot_lastTriggerAt":0,"chatbot_lastTrigger_id":"","id":"r2e4243bd71f400","image":"","imagePreview":"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101","lead_assignedAttendant_id":"","lead_email":
+
+=== WEBHOOK 3 at 2026-02-13T22:22:13.293206-03:00 ===
+PAYLOAD (raw): {"BaseUrl":"https://backstagefy.uazapi.com","EventType":"messages","chat":{"chatbot_agentResetMemoryAt":0,"chatbot_disableUntil":0,"chatbot_lastTriggerAt":0,"chatbot_lastTrigger_id":"","id":"r2e4243bd71f400","image":"","imagePreview":"https://pps.whatsapp.net/v/t61.24694-24/463879105_910231043966098_3557625879621610235_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wHsbEzc77eSA4xGql9ZYJoN4aLlZOuaEnlI4tf2p1SFtA&oe=6991F978&_nc_sid=5e03e0&_nc_cat=101","lead_assignedAttendant_id":"","lead_email":

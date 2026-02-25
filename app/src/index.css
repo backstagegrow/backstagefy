@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@theme {
+  /* Luxury Palette - Deep Obsidian & Luminous Gold */
+  --color-primary: #22c55e;
+  --color-primary-glow: #4ade80;
+  --color-background-dark: #000000;
+  --color-card-dark: #0a0a0a;
+  --color-input-dark: #121212;
+  --color-glass-border: rgba(34, 197, 94, 0.12);
+  --color-glass-bg: rgba(20, 20, 22, 0.65);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-serif: 'Cinzel', serif;
+  --font-heading: 'Montserrat', sans-serif;
+
+  /* Custom Effects */
+  --shadow-primary: 0 0 20px rgba(34, 197, 94, 0.2);
+  --shadow-primary-heavy: 0 0 40px rgba(34, 197, 94, 0.3);
+  --radius-huge: 40px;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background-dark text-white font-sans antialiased selection:bg-primary/30 selection:text-white overflow-hidden;
+    background-image:
+      radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.02) 0%, transparent 50%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-heading {
+    @apply font-heading tracking-tight;
+  }
+}
+
+@layer components {
+
+  /* The "Crystal" Glass Card */
+  .backstagefy-glass-card {
+    @apply relative bg-glass-bg backdrop-blur-2xl border border-glass-border rounded-3xl overflow-hidden transition-all duration-300;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  .backstagefy-glass-card:hover {
+    @apply border-primary/30;
+    box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(34, 197, 94, 0.1);
+  }
+
+  /* Stat Value Styling */
+  .backstagefy-stat-value {
+    @apply text-4xl font-heading font-light tracking-tighter text-white mb-1;
+  }
+
+  .backstagefy-stat-label {
+    @apply text-xs font-bold uppercase tracking-[0.2em] text-primary/40;
+  }
+
+  /* Luxury Button */
+  .backstagefy-btn-primary {
+    @apply flex items-center justify-center gap-2 px-6 py-3 bg-primary text-black font-bold rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-primary;
+  }
+
+  .primary-glow {
+    box-shadow: 0 0 25px 2px rgba(34, 197, 94, 0.4);
+  }
+
+  .obsidian-card {
+    background: linear-gradient(145deg, #121212 0%, #050505 100%);
+    border: 1px solid rgba(34, 197, 94, 0.15);
+  }
+
+  .shimmer-text {
+    background: linear-gradient(90deg,
+        #22c55e 0%,
+        #4ade80 50%,
+        #22c55e 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Custom Scrollbar */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Animations */
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes primary-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.animate-primary-pulse {
+  animation: primary-pulse 2s infinite;
+}

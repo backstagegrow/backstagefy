@@ -1,0 +1,52 @@
+{
+  "msg": {
+    "id": "5519996597169:3EB091A5E090D6461276AC",
+    "text": "",
+    "type": "media",
+    "vote": "",
+    "owner": "5519996597169",
+    "chatid": "5519981316733@s.whatsapp.net",
+    "edited": "",
+    "fromMe": false,
+    "quoted": "",
+    "sender": "5519981316733@s.whatsapp.net",
+    "source": "web",
+    "status": "",
+    "chatlid": "",
+    "content": {
+      "PTT": true,
+      "URL": "https://mmg.whatsapp.net/v/t62.7117-24/633559742_743377785227826_8459950926307936913_n.enc?ccb=11-4&oh=01_Q5Aa3wFYk7I1UV53KGfprubPFFhIjD6W2We0OA0bk_jb0GDmDQ&oe=69B29E42&_nc_sid=5e03e0&mms3=true",
+      "seconds": 2,
+      "mediaKey": "Y36hz44iodEwhLltX5op0xvhPYBVMzf4gdIKBrE+TFo=",
+      "mimetype": "audio/ogg; codecs=opus",
+      "viewOnce": false,
+      "waveform": "FA4IAgECAwUICw8YIiwuLi4uMTM1LighKjdES0xMTEdCPTw7Ojk2MzIzNTYvJx4hKjQ7Ozs7NS8pJyYmJCAcGA==",
+      "directPath": "/v/t62.7117-24/633559742_743377785227826_8459950926307936913_n.enc?ccb=11-4&oh=01_Q5Aa3wFYk7I1UV53KGfprubPFFhIjD6W2We0OA0bk_jb0GDmDQ&oe=69B29E42&_nc_sid=5e03e0",
+      "fileLength": 5214,
+      "fileSHA256": "jqwP7JTu6TD3ptfdoj0MS/lNnVpGYJRdVKcLdQi5X2w=",
+      "contextInfo": {
+        "disappearingMode": {
+          "initiator": 0
+        }
+      },
+      "fileEncSHA256": "bqxCHVtXtrI46mvZHTwJV7YCujhbTsffyiAmC8EhVpw=",
+      "mediaKeyTimestamp": 1770722527
+    },
+    "isGroup": false,
+    "reaction": "",
+    "track_id": "",
+    "groupName": "Unknown",
+    "mediaType": "ptt",
+    "messageid": "3EB091A5E090D6461276AC",
+    "sender_pn": "5519981316733@s.whatsapp.net",
+    "senderName": "Robson Nobre",
+    "sender_lid": "159098557493432@lid",
+    "messageType": "AudioMessage",
+    "track_source": "",
+    "wasSentByApi": false,
+    "buttonOrListid": "",
+    "convertOptions": "",
+    "messageTimestamp": 1770722529000
+  },
+  "debugInfo": "DETECTED: type=media, isAudio=true, mediaUrl=https://mmg.whatsapp.net/v/t62.7117-24/633559742_743377785227826_8459950926307936913_n.enc?ccb=11-4&oh=01_Q5Aa3wFYk7I1UV53KGfprubPFFhIjD6W2We0OA0bk_jb0GDmDQ&oe=69B29E42&_nc_sid=5e03e0&mms3=true"
+}

@@ -1,7 +1,5 @@
 # Dependencies
 node_modules/
-.pnp
-.pnp.js
 
 # Build output
 dist/
@@ -33,3 +31,20 @@ supabase/.temp/
 
 # Misc
 *.tsbuildinfo
+
+# ===========================
+# Debug & test scripts (contain secrets)
+# ===========================
+*.py
+app/*.py
+app/*.json
+!app/package.json
+!app/package-lock.json
+!app/tsconfig.json
+!app/tsconfig.node.json
+app/debug_*.json
+app/*_output.txt
+app/*_test.txt
+webhook.json
+whatsapp_status.json
+whatsapp_instances.json

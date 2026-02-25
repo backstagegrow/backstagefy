@@ -1,0 +1,227 @@
+﻿=== LOGS SINCE 22:30 (18 found) ===
+
+[22:47:52] DEBUG: Message Inserted
+  {
+  "content": "vc pode me enviar imagem?"
+}
+
+[22:47:52] DEBUG: STEP-5: Media Detection
+  {
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage"
+}
+
+[22:47:51] DEBUG: STEP-4: UAZ Auth
+  {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+[22:47:51] DEBUG: STEP-3: Config Fetch
+
+[22:47:51] DEBUG: STEP-2: Guards
+  {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+[22:47:51] DEBUG: STEP-1: Extraction
+  {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[22:47:51] INFO: Webhook Received
+  {
+  "body": "vc pode me enviar imagem?",
+  "fromMe": false,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "ExtendedTextMessage",
+  "eventType": "mess
+...
+
+[22:47:51] INFO: Function Start V3-TEST-Active
+
+[22:47:26] DEBUG: Message Inserted
+  {
+  "content": ""
+}
+
+[22:47:26] WARN: Audio detected but no media URL found
+
+[22:47:26] INFO: Audio Detected - Starting Processing
+  {
+  "msgType": "AudioMessage"
+}
+
+[22:47:26] DEBUG: STEP-5: Media Detection
+  {
+  "isAudio": true,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "AudioMessage"
+}
+
+[22:47:26] DEBUG: STEP-4: UAZ Auth
+  {
+  "uazBase": "https://backstagefy.uazapi.com",
+  "hasApiKey": true
+}
+
+[22:47:26] DEBUG: STEP-3: Config Fetch
+
+[22:47:26] DEBUG: STEP-2: Guards
+  {
+  "isGroup": false,
+  "isFromMe": false,
+  "botNumber": "5519996597169",
+  "cleanPhone": "5519981316733",
+  "cleanBotNumber": "5519996597169"
+}
+
+[22:47:25] DEBUG: STEP-1: Extraction
+  {
+  "fromMe": false,
+  "hasMsg": true,
+  "remoteJid": "5519981316733@s.whatsapp.net",
+  "cleanPhone": "5519981316733",
+  "instanceId": "sp_e9cd10dd"
+}
+
+[22:47:25] INFO: Webhook Received
+  {
+  "body": "",
+  "fromMe": false,
+  "msgKeys": [
+    "buttonOrListid",
+    "chatid",
+    "chatlid",
+    "content",
+    "convertOptions",
+    "edited",
+    "fromMe",
+    "groupName",
+    "id",
+    "isGroup",
+    "mediaType",
+    "messageTimestamp",
+    "messageType",
+    "messageid",
+    "owner",
+    "quoted",
+    "reaction",
+    "sender",
+    "senderName",
+    "sender_lid",
+    "sender_pn",
+    "source",
+    "status",
+    "text",
+    "track_id",
+    "track_source",
+    "type",
+    "vote",
+    "wasSentByApi"
+  ],
+  "msgType": "AudioMessage",
+  "eventType": "messages",
+  "instanceId": "sp_e9cd1
+...
+
+[22:47:25] INFO: Function Start V3-TEST-Active
+

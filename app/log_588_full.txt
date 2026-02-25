@@ -1,0 +1,49 @@
+{
+  "id": "5519996597169:3EB0338416CDB7390DC649",
+  "text": "",
+  "type": "media",
+  "vote": "",
+  "owner": "5519996597169",
+  "chatid": "5519981316733@s.whatsapp.net",
+  "edited": "",
+  "fromMe": false,
+  "quoted": "",
+  "sender": "5519981316733@s.whatsapp.net",
+  "source": "web",
+  "status": "",
+  "chatlid": "",
+  "content": {
+    "PTT": true,
+    "URL": "https://mmg.whatsapp.net/v/t62.7117-24/633284010_4252862134974132_1357677416133326164_n.enc?ccb=11-4&oh=01_Q5Aa3wHjozmYYJ-SqpAoUB0eQJJchHrUSWIKLG26T0TaW-1y6Q&oe=69B1EA51&_nc_sid=5e03e0&mms3=true",
+    "seconds": 6,
+    "mediaKey": "muBrM1eU/aGE6RNCZn8LCe2BnCMfj9OI9XUJYZj+fzc=",
+    "mimetype": "audio/ogg; codecs=opus",
+    "viewOnce": false,
+    "waveform": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCyxDREE+MCwkLS8vLy0rHycnKS0oIg==",
+    "directPath": "/v/t62.7117-24/633284010_4252862134974132_1357677416133326164_n.enc?ccb=11-4&oh=01_Q5Aa3wHjozmYYJ-SqpAoUB0eQJJchHrUSWIKLG26T0TaW-1y6Q&oe=69B1EA51&_nc_sid=5e03e0",
+    "fileLength": 10007,
+    "fileSHA256": "LJKc1UUM/mjwbsfxGfobKNKmCCY+QZUHkiHFgV+/OVw=",
+    "contextInfo": {
+      "disappearingMode": {
+        "initiator": 0
+      }
+    },
+    "fileEncSHA256": "Iv7/C6PY8uvAeRL6T6FBtcW/lgm5ApV8l5YME5dVBeE=",
+    "mediaKeyTimestamp": 1770688111
+  },
+  "isGroup": false,
+  "reaction": "",
+  "track_id": "",
+  "groupName": "Unknown",
+  "mediaType": "ptt",
+  "messageid": "3EB0338416CDB7390DC649",
+  "sender_pn": "5519981316733@s.whatsapp.net",
+  "senderName": "Robson Nobre",
+  "sender_lid": "159098557493432@lid",
+  "messageType": "AudioMessage",
+  "track_source": "",
+  "wasSentByApi": false,
+  "buttonOrListid": "",
+  "convertOptions": "",
+  "messageTimestamp": 1770688113000
+}

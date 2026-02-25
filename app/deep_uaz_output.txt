@@ -1,0 +1,21 @@
+﻿=== Checking Uazapi API routes ===
+GET /chat/download-media-message/test123 => 404: {"code":404,"message":"Not Found.","data":{}}
+
+GET /chat/downloadMediaMessage/test123 => 404: {"code":404,"message":"Not Found.","data":{}}
+
+GET /message/download/test123 => 404: {"code":404,"message":"Not Found.","data":{}}
+
+GET /v2/chat/download-media-message/test123 => 404: {"code":404,"message":"Not Found.","data":{}}
+
+GET /chat/getMedia/test123 => 404: {"code":404,"message":"Not Found.","data":{}}
+
+
+=== Looking for API spec ===
+
+=== Checking instance settings ===
+Status: 404
+{
+  "code": 404,
+  "message": "Not Found.",
+  "data": {}
+}
