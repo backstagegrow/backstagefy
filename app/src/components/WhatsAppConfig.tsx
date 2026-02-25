@@ -600,16 +600,6 @@ export default function WhatsAppConfig() {
                                         </div>
                                     )}
 
-                                    {/* QR Countdown */}
-                                    {qrCode && !qrExpired && qrCountdown > 0 && status !== 'connected' && (
-                                        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1.5">
-                                            <span className="material-symbols-outlined text-primary text-xs">timer</span>
-                                            <span className={`text-[10px] font-mono font-bold ${qrCountdown <= 10 ? 'text-red-400' : 'text-primary'}`}>
-                                                {qrCountdown}s
-                                            </span>
-                                        </div>
-                                    )}
-
                                     {(status === 'disconnected' && !qrCode) && (
                                         <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-8 text-center">
                                             <p className="text-gray-500 text-[10px] font-bold uppercase tracking-[0.3em] leading-relaxed">
@@ -623,13 +613,23 @@ export default function WhatsAppConfig() {
                             {/* Details Zone */}
                             <div className="flex-1 space-y-8 text-center lg:text-left">
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-center lg:justify-start gap-4">
+                                    <div className="flex items-center justify-center lg:justify-start gap-3">
                                         <div className={`flex items-center gap-2 ${status === 'connected' ? 'bg-green-500/10 border-green-500/20' : 'bg-red-500/10 border-red-500/20'} border px-3 py-1 rounded-full`}>
                                             <div className={`size-1.5 rounded-full ${status === 'connected' ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}></div>
                                             <span className={`${status === 'connected' ? 'text-green-500' : 'text-red-500'} text-[9px] font-bold uppercase tracking-widest`}>
                                                 {status === 'connected' ? 'Conectado' : 'Desconectado'}
                                             </span>
                                         </div>
+
+                                        {/* QR Countdown Timer */}
+                                        {qrCode && !qrExpired && qrCountdown > 0 && status !== 'connected' && (
+                                            <div className={`flex items-center gap-1.5 border px-3 py-1 rounded-full ${qrCountdown <= 10 ? 'bg-red-500/10 border-red-500/20' : 'bg-primary/10 border-primary/20'}`}>
+                                                <span className={`material-symbols-outlined text-xs ${qrCountdown <= 10 ? 'text-red-400' : 'text-primary'}`}>timer</span>
+                                                <span className={`text-[9px] font-mono font-bold uppercase tracking-widest ${qrCountdown <= 10 ? 'text-red-400' : 'text-primary'}`}>
+                                                    {qrCountdown}s
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {status === 'connected' && profile ? (
