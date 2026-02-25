@@ -1,0 +1,114 @@
+/* spHAUS Premium Neon Glass Theme */
+/* Using Native CSS Variables for reliability and performance */
+
+:root {
+    /* Luminous Gold Palette - Much brighter/metallic */
+    --neon-gold: #FFD700;
+    --neon-gold-dim: rgba(255, 215, 0, 0.4);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    /* Much more transparent */
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.2);
+    --surface-dark: #000000;
+    /* True Black for contrast */
+}
+
+/* 1. Deep Space Background with VIBRANT glows */
+.sphaus-app-bg {
+    background-color: var(--surface-dark);
+    background-image:
+        radial-gradient(circle at 0% 0%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(67, 56, 202, 0.15) 0%, transparent 50%);
+    min-height: 100vh;
+    color: white;
+}
+
+/* 2. "Crystal" Glass Cards (Not Muddy) */
+.sphaus-glass-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(40px);
+    /* Heavy blur for premium look */
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+        0 8px 32px 0 rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Inner bezel */
+
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect: The "Neon" activation */
+.sphaus-glass-card:hover {
+    border-color: var(--neon-gold-dim);
+    box-shadow:
+        0 10px 40px -10px rgba(255, 215, 0, 0.15),
+        inset 0 0 20px rgba(255, 255, 255, 0.02);
+    transform: translateY(-2px);
+}
+
+/* 3. Typography - Crisp & Bright */
+.sphaus-stat-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    /* Extra Bold */
+    font-size: 3rem;
+    /* Bigger */
+    letter-spacing: -0.04em;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    /* Subtle glow */
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.sphaus-stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+}
+
+/* 4. Kanban / Pipeline Specifics */
+.sphaus-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+}
+
+.sphaus-column-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: #d1d5db;
+}
+
+/* Scrollbar Polish */
+.sphaus-scroll::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.sphaus-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.sphaus-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.sphaus-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
