@@ -65,7 +65,7 @@ export default function LeadPipeline() {
                     if (col.id === 'scheduled') {
                         // Only auto-move to scheduled if it's NOT already in a later stage
                         const isLaterStage = stage === 'booked' || stage === 'attending';
-                        const hasConfirmedAppt = l.appointments?.some(a => a.status === 'confirmed');
+                        const hasConfirmedAppt = l.appointments?.some((a: { status: string }) => a.status === 'confirmed');
                         if (!isLaterStage && hasConfirmedAppt) {
                             return true;
                         }
