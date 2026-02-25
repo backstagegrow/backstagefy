@@ -93,17 +93,36 @@ const FunnelBuilder: React.FC = () => {
         }
     };
 
-    const handleSaveStep = async () => {
-        if (!supabase || !editingStep) return;
+    const handleSaveStep = async (stepToSave?: FunnelStep) => {
+        const target = stepToSave || editingStep;
+        if (!supabase || !target) return;
         setSaving(true);
         await supabase.from('funnel_steps').update({
-            name: editingStep.name,
-            type: editingStep.type,
-            prompt_instructions: editingStep.prompt_instructions,
-            is_active: editingStep.is_active,
-        }).eq('id', editingStep.id);
-        setSteps(steps.map(s => s.id === editingStep.id ? editingStep : s));
+            name: target.name,
+            type: target.type,
+            prompt_instructions: target.prompt_instructions,
+            is_active: target.is_active,
+        }).eq('id', target.id);
+        setSteps(prev => prev.map(s => s.id === target.id ? { ...target } : s));
         setSaving(false);
+    };
+
+    const selectStep = async (step: FunnelStep) => {
+        // Auto-save current step if it was modified
+        if (editingStep && editingStep.id !== step.id) {
+            const original = steps.find(s => s.id === editingStep.id);
+            const hasChanges = original && (
+                original.name !== editingStep.name ||
+                original.type !== editingStep.type ||
+                original.prompt_instructions !== editingStep.prompt_instructions ||
+                original.is_active !== editingStep.is_active
+            );
+            if (hasChanges) {
+                await handleSaveStep(editingStep);
+            }
+        }
+        // Deep copy to avoid reference issues
+        setEditingStep({ ...step });
     };
 
     const handleDeleteStep = async (stepId: string) => {
@@ -255,7 +274,7 @@ const FunnelBuilder: React.FC = () => {
                                                 onDragEnd={handleDragEnd}
                                             >
                                                 <div
-                                                    onClick={() => setEditingStep(step)}
+                                                    onClick={() => selectStep(step)}
                                                     className={`relative flex items-center gap-4 p-4 pr-5 rounded-2xl cursor-pointer transition-all duration-300 group ${isActiveContext
                                                         ? 'bg-primary/10 border border-primary/40 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]'
                                                         : 'bg-[#151515] border border-white/5 hover:border-white/15 shadow-xl'
@@ -344,7 +363,7 @@ const FunnelBuilder: React.FC = () => {
                                     <span className="material-symbols-outlined text-sm">close</span>
                                 </button>
                                 <button
-                                    onClick={handleSaveStep}
+                                    onClick={() => handleSaveStep()}
                                     disabled={saving || !editingStep.name.trim() || !editingStep.prompt_instructions.trim()}
                                     className="backstagefy-btn-primary px-6 py-2.5 rounded-xl disabled:opacity-30 flex items-center gap-2 relative overflow-hidden group"
                                 >
