@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
+import { useTenant } from '../context/TenantContext'
 
 interface NewLeadModalProps {
     isOpen: boolean
@@ -9,6 +10,7 @@ interface NewLeadModalProps {
 }
 
 export default function NewLeadModal({ isOpen, onClose, onSuccess }: NewLeadModalProps) {
+    const { tenantId } = useTenant()
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         name: '',
@@ -26,7 +28,7 @@ export default function NewLeadModal({ isOpen, onClose, onSuccess }: NewLeadModa
         try {
             const { error } = await supabase
                 .from('leads')
-                .insert([formData])
+                .insert([{ ...formData, tenant_id: tenantId }])
 
             if (error) throw error
             onSuccess()

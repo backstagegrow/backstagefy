@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
+import { useTenant } from '../context/TenantContext'
 import LeadDetailModal from './LeadDetailModal'
 
 interface Lead {
@@ -31,6 +32,7 @@ interface Column {
 }
 
 export default function LeadPipeline() {
+    const { tenantId } = useTenant()
     const [columns, setColumns] = useState<Column[]>([
         { id: 'new', title: 'Leads Novos', leads: [], color: 'bg-primary' },
         { id: 'attending', title: 'Em Atendimento', leads: [], color: 'bg-blue-500' },
@@ -42,12 +44,13 @@ export default function LeadPipeline() {
     const [draggingId, setDraggingId] = useState<string | null>(null);
 
     const fetchLeads = async () => {
-        if (!supabase) return
+        if (!supabase || !tenantId) return
 
         try {
             const { data, error } = await supabase
                 .from('leads')
                 .select('*, appointments(appointment_date, notes, status)')
+                .eq('tenant_id', tenantId)
                 .order('created_at', { ascending: false })
 
             if (error) throw error
@@ -124,7 +127,7 @@ export default function LeadPipeline() {
     }
 
     useEffect(() => {
-        fetchLeads()
+        if (tenantId) fetchLeads()
 
         const channel = supabase?.channel('pipeline-updates')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
@@ -136,7 +139,7 @@ export default function LeadPipeline() {
             .subscribe()
 
         return () => { if (channel) supabase?.removeChannel(channel) }
-    }, [draggingId])
+    }, [draggingId, tenantId])
 
     return (
         <>

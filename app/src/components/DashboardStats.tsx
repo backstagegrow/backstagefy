@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { useTenant } from '../context/TenantContext'
 import DashboardCharts from './DashboardCharts'
 
 interface Stats {
@@ -14,6 +15,7 @@ interface Stats {
 }
 
 export default function DashboardStats() {
+    const { tenantId } = useTenant()
     const [stats, setStats] = useState<Stats>({
         totalLeads: 0,
         leadsThisMonth: 0,
@@ -27,19 +29,21 @@ export default function DashboardStats() {
     const [loading, setLoading] = useState(true)
 
     const fetchStats = async () => {
-        if (!supabase) return
+        if (!supabase || !tenantId) return
 
         try {
-            // Fetch leads
+            // Fetch leads filtered by tenant
             const { data: leads } = await supabase
                 .from('leads')
                 .select('id, status, pipeline_stage, budget_range, created_at')
+                .eq('tenant_id', tenantId)
 
-            // Fetch scheduled visits
+            // Fetch scheduled appointments for this tenant
             const { data: visits } = await supabase
-                .from('venue_tours')
+                .from('appointments')
                 .select('id, status')
-                .eq('status', 'reservado')
+                .eq('tenant_id', tenantId)
+                .eq('status', 'confirmed')
 
             if (leads) {
                 const now = new Date()
@@ -100,16 +104,16 @@ export default function DashboardStats() {
     }
 
     useEffect(() => {
-        fetchStats()
+        if (tenantId) fetchStats()
 
         // Real-time subscription
         const channel = supabase?.channel('stats-updates')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, fetchStats)
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'venue_tours' }, fetchStats)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, fetchStats)
             .subscribe()
 
         return () => { if (channel) supabase?.removeChannel(channel) }
-    }, [])
+    }, [tenantId])
 
     const statCards = [
         {

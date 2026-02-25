@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
+import { useTenant } from '../context/TenantContext'
 
 interface Appointment {
     id: string
@@ -37,6 +38,7 @@ const getBudgetLabel = (range: string | null) => {
 }
 
 export default function ScheduleView() {
+    const { tenantId } = useTenant()
     const [view, setView] = useState<'calendar' | 'config'>('calendar')
     const [availability, setAvailability] = useState<Availability[]>([])
     const [appointments, setAppointments] = useState<Appointment[]>([])
@@ -51,16 +53,17 @@ export default function ScheduleView() {
     }
 
     const fetchAppointments = async () => {
-        if (!supabase) return
+        if (!supabase || !tenantId) return
         const { data } = await supabase
             .from('appointments')
             .select('*, leads(name, phone, company_name, corporate_email)')
+            .eq('tenant_id', tenantId)
             .in('status', ['confirmed', 'cancelled', 'scheduled', 'completed'])
         setAppointments(data || [])
     }
 
     useEffect(() => {
-        if (!supabase) return
+        if (!supabase || !tenantId) return
         setLoading(true)
         Promise.all([fetchAvailability(), fetchAppointments()]).then(() => setLoading(false))
 
@@ -71,7 +74,7 @@ export default function ScheduleView() {
             .subscribe()
 
         return () => { if (supabase) supabase.removeChannel(channel) }
-    }, [])
+    }, [tenantId])
 
     const updateTimes = async (id: string, start: string, end: string) => {
         if (!supabase) return
