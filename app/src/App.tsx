@@ -11,6 +11,7 @@ import Onboarding from './components/Onboarding'
 import AgentConfigurator from './components/AgentConfigurator'
 import FunnelBuilder from './components/FunnelBuilder'
 import KnowledgeBase from './components/KnowledgeBase'
+
 import { TenantProvider, useTenant } from './context/TenantContext'
 import { supabase } from './lib/supabase'
 import type { Session } from '@supabase/supabase-js'
@@ -188,7 +189,7 @@ function App() {
     }
 
     if (!session) {
-        return <Login onLoginSuccess={() => { }} />;
+        return <Login onLoginSuccess={() => window.location.reload()} />;
     }
 
     return (
