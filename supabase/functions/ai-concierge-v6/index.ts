@@ -414,6 +414,10 @@ ${ragContext}
         const UAZ_BASE = (config['UAZAPI_BASE_URL'] || 'https://backstagefy.uazapi.com').replace(/\/$/, '');
 
         if (toolCalls) {
+            // Phase 1: Execute all tools and collect results for follow-up
+            const toolResults: Array<{ role: 'tool'; tool_call_id: string; content: string }> = [];
+            let needsFollowUp = false;
+
             for (const call of toolCalls) {
                 const args = JSON.parse(call.function.arguments);
                 const fn = call.function.name;
@@ -426,10 +430,12 @@ ${ragContext}
                         if (nextStep) {
                             await supabase.from('leads').update({ current_funnel_step: nextStep.id }).eq('id', lead.id);
                             executed.push(`ADVANCED:${currentStep.name}->${nextStep.name}`);
-                            console.log(`[V6] Funnel advanced: ${currentStep.name} → ${nextStep.name} | Reason: ${args.reason}`);
+                            toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Lead avançado: ${currentStep.name} → ${nextStep.name}` });
+                            needsFollowUp = true;
                         } else {
                             executed.push('FUNNEL_END');
-                            console.log('[V6] Already at last funnel step');
+                            toolResults.push({ role: 'tool', tool_call_id: call.id, content: 'Lead já está na última etapa do funil.' });
+                            needsFollowUp = true;
                         }
                     }
                 }
@@ -446,6 +452,8 @@ ${ragContext}
                         await supabase.from('leads').update(updates).eq('id', lead.id);
                         executed.push(`UPDATED_LEAD:${Object.keys(updates).join(',')}`);
                     }
+                    toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Lead atualizado: ${JSON.stringify(args)}` });
+                    needsFollowUp = true;
                 }
 
                 // --- schedule_appointment ---
@@ -459,6 +467,8 @@ ${ragContext}
                         notes: args.summary
                     });
                     executed.push('SCHEDULED');
+                    toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Agendamento confirmado para ${args.datetime}. Resumo: ${args.summary || 'N/A'}` });
+                    needsFollowUp = true;
                     await notifyAdmin(config, `🚀 **Novo Agendamento**\nLead: ${lead.name || cleanPhone}\nData: ${args.datetime}\nResumo: ${args.summary || 'N/A'}`, UAZ_BASE, UAZ_KEY);
                 }
 
@@ -466,6 +476,8 @@ ${ragContext}
                 if (fn === 'cancel_appointment') {
                     await supabase.from('appointments').update({ status: 'cancelled' }).eq('id', args.id);
                     executed.push(`CANCELLED:${args.id}`);
+                    toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Agendamento ${args.id} cancelado com sucesso.` });
+                    needsFollowUp = true;
                     await notifyAdmin(config, `🗑️ **Agendamento Cancelado**\nLead: ${lead.name || cleanPhone}\nID: ${args.id}`, UAZ_BASE, UAZ_KEY);
                 }
 
@@ -488,26 +500,19 @@ ${ragContext}
                             });
                             if (searchResults && searchResults.length > 0) {
                                 const context = searchResults.map((r: any) => r.content).join('\n---\n');
-                                finalReply = '';
                                 executed.push(`SEARCH_KB:${args.query}`);
-                                // Re-call LLM with search results
-                                const followUpMessages = [
-                                    ...messages,
-                                    responseMessage,
-                                    { role: 'tool', tool_call_id: call.id, content: `Resultados da base de conhecimento:\n${context}` }
-                                ];
-                                const followUpRes = await fetch('https://api.openai.com/v1/chat/completions', {
-                                    method: 'POST',
-                                    headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ model: agentModel, messages: followUpMessages, temperature: agentTemp })
-                                });
-                                const followUpData = await followUpRes.json();
-                                finalReply = followUpData?.choices?.[0]?.message?.content || 'Encontrei as informações, mas tive dificuldade em formular a resposta.';
+                                toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Resultados da base de conhecimento:\n${context}` });
+                            } else {
+                                toolResults.push({ role: 'tool', tool_call_id: call.id, content: 'Nenhum resultado encontrado na base de conhecimento.' });
                             }
+                        } else {
+                            toolResults.push({ role: 'tool', tool_call_id: call.id, content: 'Base de conhecimento não disponível.' });
                         }
                     } catch (searchErr: any) {
                         console.error('[V6] search_knowledge error:', searchErr.message);
+                        toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Erro na busca: ${searchErr.message}` });
                     }
+                    needsFollowUp = true;
                 }
 
                 // --- handover_to_human ---
@@ -518,6 +523,8 @@ ${ragContext}
                     }
                     executed.push(`HANDOVER:${args.reason}`);
                     await supabase.from('leads').update({ pipeline_stage: 'handover' }).eq('id', lead.id);
+                    toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Transferência solicitada: ${args.reason}` });
+                    needsFollowUp = true;
                 }
 
                 // --- create_follow_up ---
@@ -530,6 +537,23 @@ ${ragContext}
                         attempt_count: 0
                     });
                     executed.push(`FOLLOW_UP:${args.reason}`);
+                    toolResults.push({ role: 'tool', tool_call_id: call.id, content: `Follow-up criado: ${args.reason}` });
+                    needsFollowUp = true;
+                }
+            }
+
+            // Phase 2: Re-call LLM with ALL tool results so it can generate a proper response
+            if (needsFollowUp && toolResults.length > 0) {
+                console.log(`[V6] Follow-up LLM call with ${toolResults.length} tool results`);
+                const followUpMessages = [...messages, responseMessage, ...toolResults];
+                const followUpRes = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: agentModel, messages: followUpMessages, temperature: agentTemp })
+                });
+                const followUpData = await followUpRes.json();
+                if (followUpData?.choices?.[0]?.message?.content) {
+                    finalReply = followUpData.choices[0].message.content;
                 }
             }
 
