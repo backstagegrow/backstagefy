@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 
@@ -7,6 +7,10 @@ export default function WhatsAppConfig() {
     const [status, setStatus] = useState('disconnected')
     const [qrCode, setQrCode] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    const [qrExpired, setQrExpired] = useState(false)
+    const [qrCountdown, setQrCountdown] = useState(0)
+    const qrTimestampRef = useRef<number | null>(null)
+    const QR_EXPIRY_SECONDS = 30
 
     // Settings State
     const [handoverNumber, setHandoverNumber] = useState('')
@@ -82,12 +86,106 @@ export default function WhatsAppConfig() {
         }
     }
 
+    // QR Code expiry countdown
+    useEffect(() => {
+        if (!qrCode || status === 'connected') {
+            setQrExpired(false)
+            setQrCountdown(0)
+            qrTimestampRef.current = null
+            return
+        }
+
+        if (!qrTimestampRef.current) {
+            qrTimestampRef.current = Date.now()
+        }
+
+        const timer = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - (qrTimestampRef.current || Date.now())) / 1000)
+            const remaining = Math.max(0, QR_EXPIRY_SECONDS - elapsed)
+            setQrCountdown(remaining)
+            if (remaining <= 0) {
+                setQrExpired(true)
+                clearInterval(timer)
+            }
+        }, 1000)
+
+        return () => clearInterval(timer)
+    }, [qrCode, status])
+
     useEffect(() => {
         checkStatus()
         fetchSettings()
         const interval = setInterval(checkStatus, 15000)
         return () => clearInterval(interval)
     }, [])
+
+    const handleReconnect = useCallback(async () => {
+        if (!supabase) return
+        setLoading(true)
+        setQrCode(null)
+        setProfile(null)
+        setQrExpired(false)
+        qrTimestampRef.current = null
+        setLastError(null)
+        console.log('🔄 [UAZAPI] Reconnect: limpando instância anterior e gerando nova...')
+
+        try {
+            const { data, error } = await supabase.functions.invoke('whatsapp-manager?action=reconnect')
+
+            if (error) {
+                let errorMsg = error.message
+                if (error.context instanceof Response) {
+                    try {
+                        const text = await error.context.text()
+                        const parsed = JSON.parse(text)
+                        if (parsed?.error) errorMsg = parsed.error
+                    } catch (_e) { /* ignore */ }
+                }
+                throw new Error(errorMsg)
+            }
+
+            if (data?.error) throw new Error(data.error)
+            if (data?.status) setStatus(data.status)
+            if (data?.qrcode) {
+                setQrCode(data.qrcode)
+                qrTimestampRef.current = Date.now()
+                setQrExpired(false)
+            }
+            if (data?.profile) setProfile(data.profile)
+
+            // Poll for QR if not immediately available
+            if (!data?.qrcode && data?.status !== 'connected') {
+                let attempts = 0
+                const maxAttempts = 8
+                const poll = async () => {
+                    if (!supabase) return
+                    attempts++
+                    try {
+                        const { data: statusData } = await supabase.functions.invoke('whatsapp-manager?action=status')
+                        if (statusData?.qrcode) {
+                            setQrCode(statusData.qrcode)
+                            setStatus(statusData.status)
+                            qrTimestampRef.current = Date.now()
+                            setQrExpired(false)
+                            return
+                        }
+                        if (statusData?.status === 'connected') {
+                            setStatus('connected')
+                            setProfile(statusData.profile)
+                            return
+                        }
+                    } catch (_e) { /* ignore poll errors */ }
+                    if (attempts < maxAttempts) setTimeout(poll, 3000)
+                }
+                setTimeout(poll, 2000)
+            }
+        } catch (err: any) {
+            console.error('❌ [UAZAPI] Reconnect error:', err)
+            setLastError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }, [status])
 
     const handleSaveSettings = async () => {
         if (!supabase) return
@@ -477,9 +575,39 @@ export default function WhatsAppConfig() {
                                     {status === 'connected' && profile?.avatar ? (
                                         <img src={profile.avatar} alt="Avatar" className="size-full object-cover animate-in fade-in zoom-in-95 duration-700" />
                                     ) : qrCode ? (
-                                        <img src={qrCode} alt="WhatsApp QR Code" className="size-full object-contain p-4 animate-in fade-in zoom-in-95 duration-500" />
+                                        <img src={qrCode} alt="WhatsApp QR Code" className={`size-full object-contain p-4 animate-in fade-in zoom-in-95 duration-500 ${qrExpired ? 'opacity-20 blur-sm' : ''}`} />
                                     ) : (
                                         <span className="material-symbols-outlined text-white/5 text-8xl">qr_code_2</span>
+                                    )}
+
+                                    {/* QR Expired Overlay */}
+                                    {qrCode && qrExpired && (
+                                        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center gap-3">
+                                            <span className="material-symbols-outlined text-red-500 text-3xl">timer_off</span>
+                                            <p className="text-red-400 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                                QR Code Expirado
+                                            </p>
+                                            <button
+                                                onClick={handleReconnect}
+                                                disabled={loading}
+                                                className="mt-1 px-4 py-2 rounded-xl bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold uppercase tracking-widest hover:bg-primary/30 transition-all flex items-center gap-2 disabled:opacity-50"
+                                            >
+                                                <span className={`material-symbols-outlined text-sm ${loading ? 'animate-spin' : ''}`}>
+                                                    {loading ? 'progress_activity' : 'refresh'}
+                                                </span>
+                                                {loading ? 'Reconectando...' : 'Gerar Novo QR'}
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {/* QR Countdown */}
+                                    {qrCode && !qrExpired && qrCountdown > 0 && status !== 'connected' && (
+                                        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1.5">
+                                            <span className="material-symbols-outlined text-primary text-xs">timer</span>
+                                            <span className={`text-[10px] font-mono font-bold ${qrCountdown <= 10 ? 'text-red-400' : 'text-primary'}`}>
+                                                {qrCountdown}s
+                                            </span>
+                                        </div>
                                     )}
 
                                     {(status === 'disconnected' && !qrCode) && (
@@ -537,14 +665,14 @@ export default function WhatsAppConfig() {
                                             </button>
                                         ) : (
                                             <button
-                                                onClick={handleGenerateQR}
+                                                onClick={qrCode || qrExpired ? handleReconnect : handleGenerateQR}
                                                 disabled={loading}
                                                 className="backstagefy-btn-primary px-10 py-5 rounded-2xl group disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 <span className={`material-symbols-outlined font-bold ${loading ? 'animate-spin' : 'group-hover:rotate-12'} transition-transform`}>
-                                                    {loading ? 'progress_activity' : 'qr_code_scanner'}
+                                                    {loading ? 'progress_activity' : (qrCode || qrExpired ? 'refresh' : 'qr_code_scanner')}
                                                 </span>
-                                                {loading ? 'Processando...' : 'Gerar Novo QR Code'}
+                                                {loading ? 'Processando...' : (qrCode || qrExpired ? '🔄 Gerar Novo QR Code' : 'Gerar Novo QR Code')}
                                             </button>
                                         )}
                                         <button
