@@ -4,10 +4,11 @@ import { supabase } from '../lib/supabase'
 
 interface Appointment {
     id: string
-    scheduled_at: string
+    appointment_date: string
     appointment_type: 'online' | 'presencial'
     location_address: string | null
     status: string
+    notes: string | null
     leads: {
         name: string | null
         phone: string
@@ -16,20 +17,6 @@ interface Appointment {
     } | null
 }
 
-// Venue Tours interface (used by AI Concierge)
-interface VenueTour {
-    id: string
-    visit_date: string
-    visit_time: string
-    status: string
-    lead_id: string | null
-    leads?: {
-        name: string | null
-        phone: string
-        company_name: string | null
-        budget_range: string | null
-    } | null
-}
 
 interface Availability {
     id: string
@@ -53,7 +40,6 @@ export default function ScheduleView() {
     const [view, setView] = useState<'calendar' | 'config'>('calendar')
     const [availability, setAvailability] = useState<Availability[]>([])
     const [appointments, setAppointments] = useState<Appointment[]>([])
-    const [venueTours, setVenueTours] = useState<VenueTour[]>([])
     const [currentMonth, setCurrentMonth] = useState(new Date())
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
     const [loading, setLoading] = useState(true)
@@ -73,27 +59,14 @@ export default function ScheduleView() {
         setAppointments(data || [])
     }
 
-    // Fetch venue tours (AI-booked appointments)
-    const fetchVenueTours = async () => {
-        if (!supabase) return
-        const { data } = await supabase
-            .from('venue_tours')
-            .select('*, leads(name, phone, company_name, budget_range)')
-            .eq('status', 'reservado')
-        setVenueTours(data || [])
-    }
-
     useEffect(() => {
         if (!supabase) return
         setLoading(true)
-        Promise.all([fetchAvailability(), fetchAppointments(), fetchVenueTours()]).then(() => setLoading(false))
+        Promise.all([fetchAvailability(), fetchAppointments()]).then(() => setLoading(false))
 
         const channel = supabase.channel('calendar-realtime')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, () => {
                 fetchAppointments()
-            })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'venue_tours' }, () => {
-                fetchVenueTours()
             })
             .subscribe()
 
@@ -178,15 +151,10 @@ export default function ScheduleView() {
                             const isCurrentMonth = day > 0 && day <= daysInMonth
                             const dateStr = isCurrentMonth ? `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : ''
                             const dayApps = appointments.filter(a => {
-                                if (!a.scheduled_at) return false;
-                                const appDate = new Date(a.scheduled_at);
+                                if (!a.appointment_date) return false;
+                                const appDate = new Date(a.appointment_date);
                                 const appDateStr = `${appDate.getFullYear()}-${String(appDate.getMonth() + 1).padStart(2, '0')}-${String(appDate.getDate()).padStart(2, '0')}`;
                                 return isCurrentMonth && appDateStr === dateStr;
-                            })
-
-                            // Filter venue tours for this day (AI-booked)
-                            const dayTours = venueTours.filter(t => {
-                                return isCurrentMonth && t.visit_date === dateStr;
                             })
 
                             return (
@@ -211,29 +179,8 @@ export default function ScheduleView() {
                                                         {app.appointment_type === 'online' ? 'laptop_mac' : 'apartment'}
                                                     </span>
                                                 </div>
-                                                <p className={`text-[9px] font-mono ${app.status === 'cancelled' ? 'text-red-400/60' : 'text-primary/60'}`}>{new Date(app.scheduled_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+                                                <p className={`text-[9px] font-mono ${app.status === 'cancelled' ? 'text-red-400/60' : 'text-primary/60'}`}>{new Date(app.appointment_date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
                                             </button>
-                                        ))}
-
-                                        {/* AI-booked venue tours */}
-                                        {dayTours.map(tour => (
-                                            <div
-                                                key={tour.id}
-                                                className="w-full text-left p-3 rounded-xl border transition-all bg-emerald-500/10 border-emerald-500/20"
-                                            >
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <p className="text-[11px] font-bold truncate uppercase text-emerald-400">
-                                                        {tour.leads?.name || tour.leads?.company_name || 'Lead'}
-                                                    </p>
-                                                    <span className="text-[8px] text-emerald-500 font-bold uppercase">AI</span>
-                                                </div>
-                                                <div className="flex items-center justify-between">
-                                                    <p className="text-[10px] font-mono text-emerald-400/60">{tour.visit_time?.slice(0, 5)}</p>
-                                                    {tour.leads?.budget_range && (
-                                                        <p className="text-[9px] text-emerald-300 px-1.5 py-0.5 rounded bg-emerald-500/10 font-bold">{getBudgetLabel(tour.leads.budget_range)}</p>
-                                                    )}
-                                                </div>
-                                            </div>
                                         ))}
                                     </div>
                                 </div>
@@ -331,13 +278,13 @@ export default function ScheduleView() {
                                         <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-2">
                                             <span className="material-symbols-outlined text-sm">calendar_today</span> Data
                                         </p>
-                                        <p className="text-white font-medium">{new Date(selectedAppointment.scheduled_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</p>
+                                        <p className="text-white font-medium">{new Date(selectedAppointment.appointment_date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</p>
                                     </div>
                                     <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
                                         <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-2">
                                             <span className="material-symbols-outlined text-sm">schedule</span> Horário
                                         </p>
-                                        <p className="text-white font-medium font-mono">{new Date(selectedAppointment.scheduled_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+                                        <p className="text-white font-medium font-mono">{new Date(selectedAppointment.appointment_date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
                                     </div>
                                 </div>
 

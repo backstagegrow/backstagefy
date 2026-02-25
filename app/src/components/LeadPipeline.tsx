@@ -17,12 +17,8 @@ interface Lead {
     created_at: string
     last_interaction?: string
     appointments?: {
-        scheduled_at: string
-        ai_summary: string
-    }[]
-    venue_tours?: {
-        visit_date: string
-        visit_time: string
+        appointment_date: string
+        notes: string
         status: string
     }[]
 }
@@ -51,7 +47,7 @@ export default function LeadPipeline() {
         try {
             const { data, error } = await supabase
                 .from('leads')
-                .select('*, appointments(scheduled_at, ai_summary), venue_tours(visit_date, visit_time, status)')
+                .select('*, appointments(appointment_date, notes, status)')
                 .order('created_at', { ascending: false })
 
             if (error) throw error
@@ -69,7 +65,8 @@ export default function LeadPipeline() {
                     if (col.id === 'scheduled') {
                         // Only auto-move to scheduled if it's NOT already in a later stage
                         const isLaterStage = stage === 'booked' || stage === 'attending';
-                        if (!isLaterStage && (l.venue_tours?.length > 0 || l.appointments?.length > 0)) {
+                        const hasConfirmedAppt = l.appointments?.some(a => a.status === 'confirmed');
+                        if (!isLaterStage && hasConfirmedAppt) {
                             return true;
                         }
                     }
@@ -131,10 +128,9 @@ export default function LeadPipeline() {
 
         const channel = supabase?.channel('pipeline-updates')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
-                // If we are currently dragging, avoid re-fetching to prevent layout shifts
                 if (!draggingId) fetchLeads();
             })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'venue_tours' }, () => {
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, () => {
                 if (!draggingId) fetchLeads();
             })
             .subscribe()
@@ -166,12 +162,9 @@ export default function LeadPipeline() {
                         <div className="flex-1 space-y-4 pr-1 scrollbar-hide">
                             <AnimatePresence mode="popLayout">
                                 {column.leads.map((lead) => {
-                                    const tour = lead.venue_tours?.[0];
-                                    const app = lead.appointments?.[0];
-                                    const hasAppointment = tour || app;
-                                    const appointmentDate = tour
-                                        ? new Date(`${tour.visit_date}T${tour.visit_time}`)
-                                        : app ? new Date(app.scheduled_at) : null;
+                                    const app = lead.appointments?.find(a => a.status === 'confirmed');
+                                    const hasAppointment = !!app;
+                                    const appointmentDate = app ? new Date(app.appointment_date) : null;
 
                                     return (
                                         <motion.div
