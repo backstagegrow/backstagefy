@@ -122,11 +122,9 @@ export default function WhatsAppConfig() {
     const handleReconnect = useCallback(async () => {
         if (!supabase) return
         setLoading(true)
-        setQrCode(null)
         setProfile(null)
-        setQrExpired(false)
-        qrTimestampRef.current = null
         setLastError(null)
+        // Don't clear qrCode — keep the expired QR visible with loading overlay
         console.log('🔄 [UAZAPI] Reconnect: limpando instância anterior e gerando nova...')
 
         try {
@@ -583,20 +581,28 @@ export default function WhatsAppConfig() {
                                     {/* QR Expired Overlay */}
                                     {qrCode && qrExpired && (
                                         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center gap-3">
-                                            <span className="material-symbols-outlined text-red-500 text-3xl">timer_off</span>
-                                            <p className="text-red-400 text-[10px] font-bold uppercase tracking-[0.2em]">
-                                                QR Code Expirado
-                                            </p>
-                                            <button
-                                                onClick={handleReconnect}
-                                                disabled={loading}
-                                                className="mt-1 px-4 py-2 rounded-xl bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold uppercase tracking-widest hover:bg-primary/30 transition-all flex items-center gap-2 disabled:opacity-50"
-                                            >
-                                                <span className={`material-symbols-outlined text-sm ${loading ? 'animate-spin' : ''}`}>
-                                                    {loading ? 'progress_activity' : 'refresh'}
-                                                </span>
-                                                {loading ? 'Reconectando...' : 'Gerar Novo QR'}
-                                            </button>
+                                            {loading ? (
+                                                <>
+                                                    <span className="material-symbols-outlined text-primary text-3xl animate-spin">progress_activity</span>
+                                                    <p className="text-primary text-[10px] font-bold uppercase tracking-[0.2em]">
+                                                        Reconectando...
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="material-symbols-outlined text-red-500 text-3xl">timer_off</span>
+                                                    <p className="text-red-400 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                                        QR Code Expirado
+                                                    </p>
+                                                    <button
+                                                        onClick={handleReconnect}
+                                                        className="mt-1 px-4 py-2 rounded-xl bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold uppercase tracking-widest hover:bg-primary/30 transition-all flex items-center gap-2"
+                                                    >
+                                                        <span className="material-symbols-outlined text-sm">refresh</span>
+                                                        Gerar Novo QR
+                                                    </button>
+                                                </>
+                                            )}
                                         </div>
                                     )}
 
