@@ -335,29 +335,29 @@ const FunnelBuilder: React.FC = () => {
             </div>
 
             {/* Right: Step Editor Area */}
-            <div className="flex-1 min-w-0 flex flex-col h-full bg-white/[0.01] border border-white/5 rounded-3xl overflow-hidden relative">
+            <div className="flex-1 min-w-0 flex flex-col h-full bg-white/[0.01] border border-white/5 rounded-2xl md:rounded-3xl overflow-hidden relative">
                 {editingStep ? (
                     <>
                         {/* Sticky Header */}
-                        <div className="absolute top-0 left-0 right-0 h-20 px-8 border-b border-white/5 bg-black/40 backdrop-blur-xl z-20 flex items-center justify-between">
-                            <div>
-                                <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-1 flex items-center gap-2">
+                        <div className="absolute top-0 left-0 right-0 h-auto min-h-14 md:h-20 px-4 py-3 md:px-8 border-b border-white/5 bg-black/40 backdrop-blur-xl z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="min-w-0">
+                                <p className="text-primary text-[10px] font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase mb-1 flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                    Editando Etapa {editingStep.step_order}
+                                    Etapa {editingStep.step_order}
                                 </p>
-                                <h2 className="text-white text-xl font-heading font-light tracking-tight truncate flex items-center gap-3">
+                                <h2 className="text-white text-base md:text-xl font-heading font-light tracking-tight truncate flex items-center gap-2 md:gap-3">
                                     {editingStep.name}
                                     {!editingStep.is_active && (
-                                        <span className="text-[10px] font-bold uppercase tracking-widest bg-red-500/20 text-red-400 border border-red-500/30 px-2 py-0.5 rounded-md self-center">
-                                            Inativa na Jornada
+                                        <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded-md self-center">
+                                            Inativa
                                         </span>
                                     )}
                                 </h2>
                             </div>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 md:gap-4 shrink-0">
                                 <button
                                     onClick={() => setEditingStep(null)}
-                                    className="size-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center transition-colors"
+                                    className="size-9 md:size-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center transition-colors"
                                     title="Fechar Editor"
                                 >
                                     <span className="material-symbols-outlined text-sm">close</span>
@@ -365,24 +365,24 @@ const FunnelBuilder: React.FC = () => {
                                 <button
                                     onClick={() => handleSaveStep()}
                                     disabled={saving || !editingStep.name.trim() || !editingStep.prompt_instructions.trim()}
-                                    className="backstagefy-btn-primary px-6 py-2.5 rounded-xl disabled:opacity-30 flex items-center gap-2 relative overflow-hidden group"
+                                    className="backstagefy-btn-primary px-4 md:px-6 py-2 md:py-2.5 rounded-xl disabled:opacity-30 flex items-center gap-2 relative overflow-hidden group"
                                 >
                                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                                     <span className="material-symbols-outlined text-sm relative z-10">{saving ? 'sync' : 'save'}</span>
-                                    <span className="text-xs font-bold uppercase tracking-wider relative z-10">
-                                        {saving ? 'Gravando...' : 'Salvar Alterações'}
+                                    <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider relative z-10 hidden sm:inline">
+                                        {saving ? 'Gravando...' : 'Salvar'}
                                     </span>
                                 </button>
                             </div>
                         </div>
 
                         {/* Scrollable Form Content */}
-                        <div className="flex-1 overflow-y-auto px-8 pt-28 pb-12 space-y-6">
+                        <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-28 md:pt-28 pb-8 md:pb-12 space-y-5 md:space-y-6">
 
                             {/* BLOCK: Settings & Type */}
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                                 {/* Details Card */}
-                                <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col justify-between">
+                                <div className="p-4 md:p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col justify-between">
                                     <div>
                                         <h3 className="text-white/80 text-sm font-medium flex items-center gap-2 mb-6">
                                             <span className="material-symbols-outlined text-primary text-lg">segment</span>
@@ -414,26 +414,26 @@ const FunnelBuilder: React.FC = () => {
                                 </div>
 
                                 {/* Type Selection Card */}
-                                <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
-                                    <h3 className="text-white/80 text-sm font-medium flex items-center gap-2 mb-6">
+                                <div className="p-4 md:p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                                    <h3 className="text-white/80 text-xs md:text-sm font-medium flex items-center gap-2 mb-4 md:mb-6">
                                         <span className="material-symbols-outlined text-primary text-lg">category</span>
                                         Classificação da Etapa
                                     </h3>
-                                    <div className="grid grid-cols-2 gap-3 h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                                    <div className="grid grid-cols-3 sm:grid-cols-2 gap-2 md:gap-3 max-h-[200px] overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
                                         {STEP_TYPES.map(t => (
                                             <button
                                                 key={t.value}
                                                 onClick={() => setEditingStep({ ...editingStep, type: t.value })}
-                                                className={`flex items-center gap-3 p-3.5 rounded-xl text-left transition-all border group ${editingStep.type === t.value
+                                                className={`flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl text-center sm:text-left transition-all border group ${editingStep.type === t.value
                                                     ? 'bg-primary/10 border-primary/40 text-white shadow-[0_0_15px_rgba(var(--color-primary),0.05)]'
                                                     : 'bg-black/20 border-white/5 text-white/50 hover:bg-white/5 hover:border-white/20 hover:text-white/90'
                                                     }`}
                                             >
-                                                <div className={`size-8 rounded-lg flex items-center justify-center shrink-0 bg-black/50 border border-white/5 transition-colors ${editingStep.type === t.value ? t.color : 'text-white/40 group-hover:text-white/70'
+                                                <div className={`size-7 sm:size-8 rounded-lg flex items-center justify-center shrink-0 bg-black/50 border border-white/5 transition-colors ${editingStep.type === t.value ? t.color : 'text-white/40 group-hover:text-white/70'
                                                     }`}>
-                                                    <span className="material-symbols-outlined text-lg">{t.icon}</span>
+                                                    <span className="material-symbols-outlined text-base sm:text-lg">{t.icon}</span>
                                                 </div>
-                                                <span className="text-xs font-semibold leading-tight">{t.label}</span>
+                                                <span className="text-[10px] sm:text-xs font-semibold leading-tight">{t.label}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -441,16 +441,16 @@ const FunnelBuilder: React.FC = () => {
                             </div>
 
                             {/* BLOCK: Prompt Instructions + AI Optimizer */}
-                            <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col h-[500px]">
-                                <div className="flex items-center justify-between mb-2">
-                                    <h3 className="text-white/80 text-sm font-medium flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-primary text-lg">terminal</span>
-                                        Instruções Diretas (Prompt da Etapa)
+                            <div className="p-4 md:p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col h-[350px] md:h-[500px]">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                                    <h3 className="text-white/80 text-xs md:text-sm font-medium flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-primary text-base md:text-lg">terminal</span>
+                                        <span className="leading-tight">Instruções Diretas<span className="hidden sm:inline"> (Prompt da Etapa)</span></span>
                                     </h3>
                                     <button
                                         onClick={handleOptimize}
                                         disabled={optimizing || !editingStep.prompt_instructions.trim() || editingStep.prompt_instructions.trim().length < 10}
-                                        className="group relative flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-gradient-to-r from-amber-500/20 to-primary/20 border border-amber-500/30 text-amber-400 hover:from-amber-500/30 hover:to-primary/30 hover:border-amber-400/50 hover:text-amber-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)]"
+                                        className="group relative flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-gradient-to-r from-amber-500/20 to-primary/20 border border-amber-500/30 text-amber-400 hover:from-amber-500/30 hover:to-primary/30 hover:border-amber-400/50 hover:text-amber-300 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] self-start sm:self-auto shrink-0"
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-primary/10 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                                         <span className="material-symbols-outlined text-sm relative z-10">{optimizing ? 'progress_activity' : 'auto_awesome'}</span>
