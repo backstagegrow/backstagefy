@@ -11,24 +11,81 @@ Deno.serve(async (req) => {
     }
 
     try {
+        const authHeader = req.headers.get("Authorization");
+        if (!authHeader) throw new Error("Unauthorized: Missing Authorization header");
+
         const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? "";
         const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? "";
+
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-        // Fetch config
-        const { data: configRows, error: configError } = await supabase.from('app_config').select('key, value');
+        // 1. Extract user ID from JWT (signature already verified by Supabase Edge Runtime)
+        const token = authHeader.replace('Bearer ', '');
+        let userId: string;
+        try {
+            // JWT uses base64url, convert to standard base64 for atob()
+            let base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+            while (base64.length % 4) base64 += '=';
+            const payload = JSON.parse(atob(base64));
+            userId = payload.sub;
+            if (!userId) throw new Error("Missing sub claim");
+            console.log(`[whatsapp-manager] Authenticated user: ${userId}`);
+        } catch (e) {
+            console.error("[whatsapp-manager] JWT decode error:", e);
+            throw new Error("Unauthorized: Invalid JWT");
+        }
+
+        const { data: tenantMember, error: tmError } = await supabase
+            .from('tenant_members')
+            .select('tenant_id')
+            .eq('user_id', userId)
+            .limit(1)
+            .single();
+
+        if (tmError || !tenantMember) throw new Error("Tenant required: User does not belong to any tenant.");
+        const tenantId = tenantMember.tenant_id;
+        const tenantInstanceName = `bsf_${tenantId.replace(/-/g, '').substring(0, 8)}`;
+
+        // 2. Fetch global Uazapi config
+        const { data: configRows, error: configError } = await supabase.from('app_config').select('key, value').in('key', ['UAZAPI_KEY', 'UAZAPI_BASE_URL']);
         if (configError) console.error("[whatsapp-manager] Config Error:", configError);
         const config = Object.fromEntries(configRows?.map(r => [r.key, r.value]) || []);
-        console.log("[whatsapp-manager] Config keys found:", Object.keys(config));
 
         const UAZAPI_KEY = config['UAZAPI_KEY'];
-        // Use a dedicated token if available, otherwise fallback to the master key
-        const INSTANCE_TOKEN = config['UAZAPI_INSTANCE_TOKEN'] || UAZAPI_KEY;
-        const ADMIN_TOKEN = config['UAZAPI_ADMIN_TOKEN'] || UAZAPI_KEY;
-
         const UAZAPI_BASE_URL = config['UAZAPI_BASE_URL'] || 'https://backstagefy.uazapi.com';
-        const INSTANCE_NAME = config['UAZAPI_INSTANCE_NAME'] || 'sphaus';
-        const SUPABASE_PROJECT_REF = 'fpqpnztwhkcrytprhyhe';
+        const SUPABASE_PROJECT_REF = SUPABASE_URL.replace('https://', '').replace('.supabase.co', '');
+        const INSTANCE_NAME = tenantInstanceName;
+
+        // Fetch specific instance token from whatsapp_instances table
+        const { data: instanceRow } = await supabase.from('whatsapp_instances').select('apikey').eq('instance_name', INSTANCE_NAME).single();
+        let INSTANCE_TOKEN = instanceRow?.apikey;
+        const ADMIN_TOKEN = UAZAPI_KEY;
+
+        // Auto-discover token from Uazapi if not in DB
+        if (!INSTANCE_TOKEN) {
+            console.log(`[whatsapp-manager] Token not found in DB for ${INSTANCE_NAME}, discovering via /instance/all...`);
+            try {
+                const allRes = await fetch(`${UAZAPI_BASE_URL}/instance/all`, { method: "GET", headers: { "admintoken": ADMIN_TOKEN } });
+                const allData = await allRes.json();
+                const instances = Array.isArray(allData) ? allData : [allData];
+                const found = instances.find((i: any) => i.name === INSTANCE_NAME);
+                if (found?.token) {
+                    INSTANCE_TOKEN = found.token;
+                    console.log(`[whatsapp-manager] Discovered token for ${INSTANCE_NAME}: ${INSTANCE_TOKEN.substring(0, 8)}...`);
+                    // Save to DB for future use
+                    await supabase.from('whatsapp_instances').upsert({
+                        tenant_id: tenantId,
+                        instance_name: INSTANCE_NAME,
+                        apikey: INSTANCE_TOKEN,
+                        status: found.status || 'disconnected',
+                        phone_number: found.owner || ''
+                    }, { onConflict: 'instance_name' });
+                }
+            } catch (e) {
+                console.error("[whatsapp-manager] Auto-discover failed:", e);
+            }
+        }
+        if (!INSTANCE_TOKEN) INSTANCE_TOKEN = ADMIN_TOKEN;
 
         const url = new URL(req.url);
         const action = url.searchParams.get("action");
@@ -36,7 +93,7 @@ Deno.serve(async (req) => {
 
         console.log(`[whatsapp-manager] Action: ${action}, BaseURL: ${UAZAPI_BASE_URL}`);
 
-        const authHeader = { "Authorization": `Bearer ${UAZAPI_KEY || ""}` };
+        const uazapiAuthHeader = { "Authorization": `Bearer ${UAZAPI_KEY || ""}` };
         // Hybrid support for older/different Uazapi versions
         const fallbackHeader = { "apikey": UAZAPI_KEY || "" };
 
@@ -151,7 +208,14 @@ Deno.serve(async (req) => {
 
             const createData = await createRes.json();
             if (createRes.ok && createData.token) {
-                await supabase.from('app_config').upsert({ key: 'UAZAPI_INSTANCE_TOKEN', value: createData.token });
+                // Upsert to whatsapp_instances
+                await supabase.from('whatsapp_instances').upsert({
+                    tenant_id: tenantId,
+                    instance_name: INSTANCE_NAME,
+                    apikey: createData.token,
+                    status: 'disconnected',
+                    user_id: userId
+                }, { onConflict: 'instance_name' });
                 return createData.token;
             }
             return INSTANCE_TOKEN; // Fallback to current token if init "fails" but instance might still work
@@ -190,36 +254,100 @@ Deno.serve(async (req) => {
 
         if (action === "connect") {
             const newToken = await ensureInstanceExists();
-            const { data } = await uazapiFetch("/instance/connect", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", ...(newToken ? { "apikey": newToken } : {}) },
-                body: JSON.stringify(phone ? { phone } : {})
-            });
+            const activeToken = newToken || INSTANCE_TOKEN || ADMIN_TOKEN;
+            console.log(`[whatsapp-manager] Connecting with token: ${activeToken?.substring(0, 8)}...`);
 
-            // --- AUTO WEBHOOK SETUP ---
+            // Try connecting with different auth header names for Uazapi compat
+            let connectData: any = null;
+            for (const headerName of ["apikey", "token", "admintoken"]) {
+                try {
+                    const connectRes = await fetch(`${UAZAPI_BASE_URL}/instance/connect`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", [headerName]: activeToken },
+                        body: JSON.stringify(phone ? { phone } : {})
+                    });
+                    const text = await connectRes.text();
+                    try { connectData = JSON.parse(text); } catch { connectData = { text }; }
+                    console.log(`[whatsapp-manager] /instance/connect with ${headerName}: ${connectRes.status}`, JSON.stringify(connectData).substring(0, 200));
+                    if (connectRes.ok || connectData?.base64 || connectData?.qrcode || connectData?.instance?.qrcode) break;
+                } catch (e) {
+                    console.error(`[whatsapp-manager] connect with ${headerName} failed:`, e);
+                }
+            }
+
+            // --- AUTO WEBHOOK SETUP (multi-endpoint retry for UazapiGO) ---
             const webhookUrl = `https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1/ai-concierge-v5-final`;
             console.log(`[whatsapp-manager] Auto-setting webhook: ${webhookUrl}`);
-            await fetch(`${UAZAPI_BASE_URL}/webhook`, {
-                method: "POST",
-                headers: { "token": newToken || INSTANCE_TOKEN, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    url: webhookUrl,
-                    enabled: true,
-                    events: ["message", "messages.upsert", "status", "connection", "chat.upsert"],
-                    autoDownload: true,
-                    decryptMedia: true
-                })
-            }).catch(e => console.error("[whatsapp-manager] Auto-webhook error:", e));
+            const webhookBody = JSON.stringify({
+                url: webhookUrl, enabled: true, webhook_url: webhookUrl, webhook_enabled: true,
+                events: ["message", "messages.upsert", "status", "connection", "chat.upsert"],
+                autoDownload: true, decryptMedia: true
+            });
+            const webhookEndpoints = [
+                { path: "/instance/webhook", method: "PUT" },
+                { path: "/instance/webhook", method: "POST" },
+                { path: "/webhook", method: "PUT" },
+                { path: "/webhook", method: "POST" },
+            ];
+            const webhookHeaders = [
+                { "apikey": activeToken },
+                { "token": activeToken },
+                { "admintoken": ADMIN_TOKEN },
+            ];
+            let webhookSet = false;
+            for (const ep of webhookEndpoints) {
+                if (webhookSet) break;
+                for (const hdr of webhookHeaders) {
+                    try {
+                        const wRes = await fetch(`${UAZAPI_BASE_URL}${ep.path}`, {
+                            method: ep.method,
+                            headers: { "Content-Type": "application/json", ...hdr },
+                            body: webhookBody
+                        });
+                        const wText = await wRes.text();
+                        console.log(`[whatsapp-manager] Webhook ${ep.method} ${ep.path} [${Object.keys(hdr)[0]}]: ${wRes.status} ${wText.substring(0, 100)}`);
+                        if (wRes.ok) { webhookSet = true; break; }
+                    } catch (e: any) {
+                        console.error(`[whatsapp-manager] Webhook ${ep.method} ${ep.path} error:`, e.message);
+                    }
+                }
+            }
+            if (!webhookSet) console.error("[whatsapp-manager] ⚠️ Could not set webhook on any endpoint!");
 
-            return new Response(JSON.stringify(normalizeResponse(data)), {
+            return new Response(JSON.stringify(normalizeResponse(connectData)), {
                 headers: { ...corsHeaders, "Content-Type": "application/json" }
             });
         }
 
         if (action === "status") {
-            const { data } = await uazapiFetch("/instance/status", { method: "GET" });
+            const activeToken = INSTANCE_TOKEN || ADMIN_TOKEN;
+            let statusData: any = null;
+            for (const headerName of ["apikey", "token", "admintoken"]) {
+                try {
+                    const statusRes = await fetch(`${UAZAPI_BASE_URL}/instance/status`, {
+                        method: "GET",
+                        headers: { [headerName]: activeToken }
+                    });
+                    const text = await statusRes.text();
+                    try { statusData = JSON.parse(text); } catch { statusData = { text }; }
+                    console.log(`[whatsapp-manager] /instance/status with ${headerName}: ${statusRes.status}`, JSON.stringify(statusData).substring(0, 200));
+                    if (statusRes.ok && statusRes.status !== 401) break;
+                } catch (e) {
+                    console.error(`[whatsapp-manager] status with ${headerName} failed:`, e);
+                }
+            }
 
-            return new Response(JSON.stringify(normalizeResponse(data)), {
+            const normalized = normalizeResponse(statusData);
+
+            // Sync status to DB
+            if (normalized.status === 'connected' && normalized.profile) {
+                await supabase.from('whatsapp_instances').update({
+                    status: 'connected',
+                    phone_number: normalized.profile.number || ''
+                }).eq('instance_name', INSTANCE_NAME);
+            }
+
+            return new Response(JSON.stringify(normalized), {
                 headers: { ...corsHeaders, "Content-Type": "application/json" }
             });
         }
@@ -247,48 +375,44 @@ Deno.serve(async (req) => {
         }
 
         if (action === "get-settings") {
-            const keys = [
-                'WHITELIST_ENABLED',
-                'WHITELIST_NUMBERS',
-                'HUMAN_HANDOVER_NUMBER',
-                'REJECT_CALLS',
-                'IGNORE_GROUPS',
-                'VIEW_STATUS',
-                'AUTO_READ',
-                'ALWAYS_ONLINE',
-                'HISTORY_SYNC'
-            ];
-            const { data: settingsRows } = await supabase.from('app_config').select('key, value').in('key', keys);
-            const settings = Object.fromEntries(settingsRows?.map(r => [r.key, r.value]) || []);
+            const { data: tenant } = await supabase.from('tenants').select('settings').eq('id', tenantId).single();
+            const settings = tenant?.settings || {};
 
             return new Response(JSON.stringify({
-                whitelistEnabled: settings['WHITELIST_ENABLED'] === 'true',
-                whitelistNumbers: JSON.parse(settings['WHITELIST_NUMBERS'] || '[]'),
-                handoverNumber: settings['HUMAN_HANDOVER_NUMBER'] || '',
-                rejectCalls: settings['REJECT_CALLS'] === 'true',
-                ignoreGroups: settings['IGNORE_GROUPS'] === 'true',
-                viewStatus: settings['VIEW_STATUS'] === 'true',
-                autoRead: settings['AUTO_READ'] === 'true',
-                alwaysOnline: settings['ALWAYS_ONLINE'] === 'true',
-                historySync: settings['HISTORY_SYNC'] === 'true'
+                whitelistEnabled: settings.whitelistEnabled === true,
+                whitelistNumbers: settings.whitelistNumbers || [],
+                handoverNumber: settings.handoverNumber || '',
+                rejectCalls: settings.rejectCalls === true,
+                ignoreGroups: settings.ignoreGroups === true,
+                viewStatus: settings.viewStatus === true,
+                autoRead: settings.autoRead === true,
+                alwaysOnline: settings.alwaysOnline === true,
+                historySync: settings.historySync === true
             }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
 
         if (action === "save-settings") {
             const body = await req.json();
-            const updates = [
-                { key: 'WHITELIST_ENABLED', value: String(body.whitelistEnabled) },
-                { key: 'WHITELIST_NUMBERS', value: JSON.stringify(body.whitelistNumbers || []) },
-                { key: 'HUMAN_HANDOVER_NUMBER', value: body.handoverNumber || '' },
-                { key: 'REJECT_CALLS', value: String(body.rejectCalls ?? false) },
-                { key: 'IGNORE_GROUPS', value: String(body.ignoreGroups ?? false) },
-                { key: 'VIEW_STATUS', value: String(body.viewStatus ?? false) },
-                { key: 'AUTO_READ', value: String(body.autoRead ?? false) },
-                { key: 'ALWAYS_ONLINE', value: String(body.alwaysOnline ?? false) },
-                { key: 'HISTORY_SYNC', value: String(body.historySync ?? false) }
-            ];
 
-            const { error } = await supabase.from('app_config').upsert(updates, { onConflict: 'key' });
+            // Get current settings first
+            const { data: currentTenant } = await supabase.from('tenants').select('settings').eq('id', tenantId).single();
+            const currentSettings = currentTenant?.settings || {};
+
+            // Merge settings
+            const updatedSettings = {
+                ...currentSettings,
+                whitelistEnabled: Boolean(body.whitelistEnabled),
+                whitelistNumbers: Array.isArray(body.whitelistNumbers) ? body.whitelistNumbers : [],
+                handoverNumber: String(body.handoverNumber || ''),
+                rejectCalls: Boolean(body.rejectCalls),
+                ignoreGroups: Boolean(body.ignoreGroups),
+                viewStatus: Boolean(body.viewStatus),
+                autoRead: Boolean(body.autoRead),
+                alwaysOnline: Boolean(body.alwaysOnline),
+                historySync: Boolean(body.historySync)
+            };
+
+            const { error } = await supabase.from('tenants').update({ settings: updatedSettings }).eq('id', tenantId);
 
             if (error) throw error;
 
@@ -333,11 +457,7 @@ Deno.serve(async (req) => {
             }
 
             // Clear local state regardless of API result to ensure UI reset
-            await supabase.from('app_config').upsert([
-                { key: 'UAZAPI_INSTANCE_STATUS', value: 'disconnected' },
-                { key: 'UAZAPI_QR_CODE', value: '' },
-                { key: 'UAZAPI_INSTANCE_TOKEN', value: '' }
-            ]);
+            await supabase.from('whatsapp_instances').delete().eq('instance_name', INSTANCE_NAME);
 
             return new Response(JSON.stringify({ success: true, message: "Instance cleared locally and cleanup attempted on API" }), {
                 headers: { ...corsHeaders, "Content-Type": "application/json" }

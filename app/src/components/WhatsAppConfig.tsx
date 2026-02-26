@@ -447,7 +447,7 @@ export default function WhatsAppConfig() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* Whitelist (Célula de Teste) */}
-                <div className="backstagefy-glass-card p-10 bg-black/40 border-white/[0.03]">
+                <div className="backstagefy-glass-card p-6 md:p-10 bg-black/40 border-white/[0.03]">
                     <div className="flex items-center gap-4 mb-6">
                         <div className={`p-3 rounded-xl ${whitelistEnabled ? 'bg-amber-500/10 text-amber-500' : 'bg-white/5 text-gray-500'}`}>
                             <span className="material-symbols-outlined">shield_lock</span>
@@ -490,7 +490,7 @@ export default function WhatsAppConfig() {
                 </div>
 
                 {/* Human Handover */}
-                <div className="backstagefy-glass-card p-10 bg-black/40 border-white/[0.03]">
+                <div className="backstagefy-glass-card p-6 md:p-10 bg-black/40 border-white/[0.03]">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500">
                             <span className="material-symbols-outlined">support_agent</span>
@@ -530,7 +530,7 @@ export default function WhatsAppConfig() {
             </div>
 
             {/* Blacklist */}
-            <div className="backstagefy-glass-card p-10 bg-black/40 border-white/[0.03]">
+            <div className="backstagefy-glass-card p-6 md:p-10 bg-black/40 border-white/[0.03]">
                 <div className="flex items-center gap-4 mb-6">
                     <div className="p-3 rounded-xl bg-red-500/10 text-red-500">
                         <span className="material-symbols-outlined">block</span>
@@ -558,7 +558,7 @@ export default function WhatsAppConfig() {
             {/* Connection & QR Section */}
             <div className="flex flex-col xl:flex-row gap-10">
                 <div className="flex-[5]">
-                    <div className="backstagefy-glass-card p-12 bg-black/40 border-white/[0.03]">
+                    <div className="backstagefy-glass-card p-6 md:p-12 bg-black/40 border-white/[0.03]">
                         {lastError && (
                             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-xs font-mono">
                                 <span className="material-symbols-outlined text-sm">error</span>

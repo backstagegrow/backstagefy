@@ -134,19 +134,19 @@ export default function LeadDetailModal({ lead, isOpen, onClose, onDeleted }: Le
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.95, opacity: 0 }}
                     transition={{ type: 'spring', duration: 0.5 }}
-                    className="relative w-full max-w-4xl max-h-[85vh] bg-bg-dark border border-white/10 rounded-3xl overflow-hidden shadow-2xl"
+                    className="relative w-full max-w-4xl max-h-[95vh] md:max-h-[85vh] bg-bg-dark border border-white/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Header */}
-                    <div className="px-8 py-6 border-b border-white/5 bg-gradient-to-r from-primary/5 to-transparent">
+                    <div className="px-4 py-4 md:px-8 md:py-6 border-b border-white/5 bg-gradient-to-r from-primary/5 to-transparent">
                         <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="size-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-primary text-2xl">person</span>
+                            <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                                <div className="size-10 md:size-14 rounded-xl md:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                                    <span className="material-symbols-outlined text-primary text-xl md:text-2xl">person</span>
                                 </div>
                                 <div>
-                                    <div className="flex items-center gap-3">
-                                        <h2 className="text-white text-2xl font-heading font-light">
+                                    <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+                                        <h2 className="text-white text-lg md:text-2xl font-heading font-light truncate max-w-[180px] md:max-w-none">
                                             {lead.name || lead.company_name || lead.phone}
                                         </h2>
                                         {lead.budget_range === 'C' && (
@@ -164,7 +164,7 @@ export default function LeadDetailModal({ lead, isOpen, onClose, onDeleted }: Le
                                     <p className="text-gray-500 text-sm mt-1">{lead.phone}</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 md:gap-3 shrink-0 flex-wrap">
                                 <span className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider ${lead.status === 'quente' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
                                     lead.status === 'morno' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
                                         'bg-gray-500/10 text-gray-400 border border-white/10'
@@ -207,9 +207,9 @@ export default function LeadDetailModal({ lead, isOpen, onClose, onDeleted }: Le
                         </div>
                     </div>
 
-                    <div className="flex h-[calc(85vh-100px)]">
+                    <div className="flex flex-col md:flex-row h-[calc(95vh-120px)] md:h-[calc(85vh-100px)]">
                         {/* Left: Lead Info */}
-                        <div className="w-80 border-r border-white/5 p-6 space-y-4 overflow-y-auto">
+                        <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-white/5 p-4 md:p-6 space-y-3 md:space-y-4 overflow-y-auto max-h-[40vh] md:max-h-none">
                             <h3 className="text-xs font-bold text-primary/60 uppercase tracking-widest mb-4">Informações</h3>
 
                             <div className="space-y-3">
@@ -266,7 +266,7 @@ export default function LeadDetailModal({ lead, isOpen, onClose, onDeleted }: Le
                                 <span className="text-xs text-gray-500">{chatHistory.length} mensagens</span>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
                                 {loading ? (
                                     <div className="flex items-center justify-center h-full">
                                         <div className="size-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />

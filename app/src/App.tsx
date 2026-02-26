@@ -26,7 +26,7 @@ const ComingSoon = ({ title }: { title: string }) => (
     </div>
 )
 
-const Header = ({ activeTab, onAddClick }: { activeTab: string, onAddClick: () => void }) => {
+const Header = ({ activeTab, onAddClick, onMenuClick }: { activeTab: string, onAddClick: () => void, onMenuClick: () => void }) => {
     const titles: Record<string, { title: string, subtitle: string }> = {
         'dashboard': { title: 'Painel Geral', subtitle: 'Visão geral de performance e métricas' },
         'leads': { title: 'Pipeline de Leads', subtitle: 'Gerencie e qualifique seus leads' },
@@ -41,16 +41,25 @@ const Header = ({ activeTab, onAddClick }: { activeTab: string, onAddClick: () =
     const { title, subtitle } = titles[activeTab] || titles['dashboard']
 
     return (
-        <header className="flex items-center justify-between px-10 py-10 border-b border-white/[0.03] backdrop-blur-xl bg-black/10 z-20">
-            <div className="flex flex-col">
-                <h2 className="text-white text-4xl font-heading font-light tracking-tight">{title}</h2>
-                <p className="text-primary/50 text-xs font-bold uppercase tracking-[0.2em] mt-2 flex items-center gap-2">
-                    <span className="size-1.5 bg-primary rounded-full animate-pulse"></span>
-                    {subtitle}
-                </p>
+        <header className="flex items-center justify-between px-4 py-4 md:px-8 md:py-6 lg:px-10 lg:py-10 border-b border-white/[0.03] backdrop-blur-xl bg-black/10 z-20">
+            <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                {/* Hamburger - mobile only */}
+                <button
+                    onClick={onMenuClick}
+                    className="lg:hidden size-10 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center text-gray-400 hover:text-primary transition-colors shrink-0"
+                >
+                    <span className="material-symbols-outlined">menu</span>
+                </button>
+                <div className="flex flex-col min-w-0">
+                    <h2 className="text-white text-xl md:text-2xl lg:text-4xl font-heading font-light tracking-tight truncate">{title}</h2>
+                    <p className="text-primary/50 text-[9px] md:text-xs font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mt-1 flex items-center gap-2">
+                        <span className="size-1.5 bg-primary rounded-full animate-pulse"></span>
+                        <span className="truncate">{subtitle}</span>
+                    </p>
+                </div>
             </div>
-            <div className="flex items-center gap-6">
-                <div className="hidden lg:flex items-center bg-white/[0.02] border border-white/5 rounded-2xl px-6 py-3 w-80 group focus-within:border-primary/40 transition-all duration-500">
+            <div className="flex items-center gap-3 md:gap-6 shrink-0">
+                <div className="hidden xl:flex items-center bg-white/[0.02] border border-white/5 rounded-2xl px-6 py-3 w-80 group focus-within:border-primary/40 transition-all duration-500">
                     <span className="material-symbols-outlined text-gray-500 text-[20px] group-focus-within:text-primary">search</span>
                     <input
                         className="bg-transparent border-none text-white placeholder-gray-700 text-sm focus:ring-0 w-full ml-3 focus:outline-none"
@@ -58,13 +67,13 @@ const Header = ({ activeTab, onAddClick }: { activeTab: string, onAddClick: () =
                         type="text"
                     />
                 </div>
-                <div className="flex gap-4">
-                    <button className="relative size-12 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 transition-all active:scale-95 group">
-                        <span className="material-symbols-outlined">notifications</span>
-                        <span className="absolute top-3 right-3 size-2 bg-primary rounded-full"></span>
+                <div className="flex gap-2 md:gap-4">
+                    <button className="relative size-10 md:size-12 rounded-xl md:rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 transition-all active:scale-95 group">
+                        <span className="material-symbols-outlined text-[20px] md:text-[24px]">notifications</span>
+                        <span className="absolute top-2 right-2 md:top-3 md:right-3 size-2 bg-primary rounded-full"></span>
                     </button>
-                    <button onClick={onAddClick} className="backstagefy-btn-primary size-12 shadow-none rounded-2xl">
-                        <span className="material-symbols-outlined font-bold">add</span>
+                    <button onClick={onAddClick} className="backstagefy-btn-primary size-10 md:size-12 shadow-none rounded-xl md:rounded-2xl !px-0">
+                        <span className="material-symbols-outlined font-bold text-[20px] md:text-[24px]">add</span>
                     </button>
                 </div>
             </div>
@@ -77,6 +86,7 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
     const [activeTab, setActiveTab] = useState('dashboard')
     const [isNewLeadModalOpen, setIsNewLeadModalOpen] = useState(false)
     const [refreshTrigger, setRefreshTrigger] = useState(0)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
     if (tenantLoading) {
         return (
@@ -102,18 +112,24 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
                 onTabChange={setActiveTab}
                 session={session}
                 onLogout={onLogout}
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
             />
 
-            <main className="flex-1 flex flex-col relative overflow-hidden">
-                <Header activeTab={activeTab} onAddClick={() => setIsNewLeadModalOpen(true)} />
+            <main className="flex-1 flex flex-col relative overflow-hidden w-full">
+                <Header
+                    activeTab={activeTab}
+                    onAddClick={() => setIsNewLeadModalOpen(true)}
+                    onMenuClick={() => setIsSidebarOpen(true)}
+                />
 
-                <div className="flex-1 overflow-y-auto px-10 py-12 scrollbar-hide">
+                <div className="flex-1 overflow-y-auto px-3 py-6 md:px-6 md:py-8 lg:px-10 lg:py-12 scrollbar-hide">
                     <div className="max-w-[1800px] mx-auto">
                         {activeTab === 'dashboard' && <DashboardStats />}
 
                         {activeTab === 'leads' && (
                             <div className="space-y-6 animate-in fade-in duration-700">
-                                <div className="h-[calc(100vh-320px)]">
+                                <div className="h-[calc(100vh-220px)] md:h-[calc(100vh-320px)]">
                                     <LeadPipeline key={refreshTrigger} />
                                 </div>
                             </div>

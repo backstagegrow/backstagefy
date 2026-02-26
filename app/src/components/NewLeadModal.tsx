@@ -58,9 +58,9 @@ export default function NewLeadModal({ isOpen, onClose, onSuccess }: NewLeadModa
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-lg bg-bg-dark border border-white/10 rounded-3xl overflow-hidden shadow-2xl z-10"
+                        className="relative w-full max-w-lg bg-bg-dark border border-white/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10"
                     >
-                        <div className="p-8">
+                        <div className="p-5 md:p-8">
                             <div className="flex justify-between items-center mb-8">
                                 <div>
                                     <h3 className="text-white text-2xl font-heading font-light">Novo Lead</h3>

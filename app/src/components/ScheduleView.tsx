@@ -255,7 +255,7 @@ export default function ScheduleView() {
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedAppointment(null)} className="absolute inset-0 bg-black/80 backdrop-blur-md" />
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-                            className="relative w-full max-w-lg bg-bg-dark border border-white/10 rounded-[32px] overflow-hidden shadow-2xl z-10 p-10">
+                            className="relative w-full max-w-lg bg-bg-dark border border-white/10 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl z-10 p-6 md:p-10">
 
                             <div className="flex justify-between items-start mb-8">
                                 <div>

@@ -13,6 +13,7 @@ interface KnowledgeDoc {
     content: string | null
     category: Category
     source_type: string
+    storage_path: string | null
     status: string
     chunk_count: number
     extra: Record<string, any>
@@ -246,7 +247,7 @@ export default function KnowledgeBase() {
                 storage_path: storagePath,
                 mime_type: mimeType,
                 file_size: fileSize,
-                status: 'pending',
+                status: activeCategory === 'media' ? 'ready' : 'pending',
             }
 
             if (editingDoc) {
@@ -286,6 +287,12 @@ export default function KnowledgeBase() {
         if (bytes < 1024) return bytes + ' B'
         if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB'
         return (bytes / 1048576).toFixed(1) + ' MB'
+    }
+
+    const getPublicUrl = (storagePath: string | null | undefined) => {
+        if (!storagePath || !supabase) return null
+        const { data } = supabase.storage.from('knowledge-files').getPublicUrl(storagePath)
+        return data?.publicUrl || null
     }
 
     if (loading) {
@@ -348,8 +355,8 @@ export default function KnowledgeBase() {
                         <button
                             onClick={() => setCompanyEditing(!companyEditing)}
                             className={`size-8 rounded-lg border flex items-center justify-center transition-all ${companyEditing
-                                    ? 'bg-primary/10 border-primary/30 text-primary'
-                                    : 'bg-white/5 border-white/5 text-white/40 hover:text-white hover:bg-white/10'
+                                ? 'bg-primary/10 border-primary/30 text-primary'
+                                : 'bg-white/5 border-white/5 text-white/40 hover:text-white hover:bg-white/10'
                                 }`}
                             title="Editar dados da empresa"
                         >
@@ -426,8 +433,8 @@ export default function KnowledgeBase() {
                                 key={cat.value}
                                 onClick={() => setActiveCategory(cat.value)}
                                 className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-widest whitespace-nowrap transition-all border ${activeCategory === cat.value
-                                        ? 'bg-primary/10 border-primary/30 text-primary shadow-[0_0_20px_rgba(var(--color-primary),0.08)]'
-                                        : 'bg-white/[0.02] border-white/5 text-white/40 hover:bg-white/5 hover:text-white/70 hover:border-white/15'
+                                    ? 'bg-primary/10 border-primary/30 text-primary shadow-[0_0_20px_rgba(var(--color-primary),0.08)]'
+                                    : 'bg-white/[0.02] border-white/5 text-white/40 hover:bg-white/5 hover:text-white/70 hover:border-white/15'
                                     }`}
                             >
                                 <span className={`material-symbols-outlined text-base ${activeCategory === cat.value ? 'text-primary' : cat.color}`}>{cat.icon}</span>
@@ -510,16 +517,29 @@ export default function KnowledgeBase() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                    <button onClick={() => openEdit(doc)} className="size-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all" title="Editar">
-                                                        <span className="material-symbols-outlined text-sm">edit</span>
-                                                    </button>
-                                                    <button onClick={() => handleReindex(doc)} className="size-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-amber-400 hover:bg-amber-500/10 transition-all" title="Reindexar">
-                                                        <span className="material-symbols-outlined text-sm">refresh</span>
-                                                    </button>
-                                                    <button onClick={() => handleDelete(doc.id)} className="size-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-rose-400 hover:bg-rose-500/10 transition-all" title="Excluir">
-                                                        <span className="material-symbols-outlined text-sm">delete</span>
-                                                    </button>
+                                                <div className="flex items-center gap-2 shrink-0">
+                                                    {/* Image thumbnail for media */}
+                                                    {doc.category === 'media' && doc.mime_type?.startsWith('image/') && doc.storage_path && (
+                                                        <div className="size-16 rounded-xl overflow-hidden border border-white/10 bg-black/30">
+                                                            <img
+                                                                src={getPublicUrl(doc.storage_path) || ''}
+                                                                alt={doc.title}
+                                                                className="w-full h-full object-cover"
+                                                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button onClick={() => openEdit(doc)} className="size-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all" title="Editar">
+                                                            <span className="material-symbols-outlined text-sm">edit</span>
+                                                        </button>
+                                                        <button onClick={() => handleReindex(doc)} className="size-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-amber-400 hover:bg-amber-500/10 transition-all" title="Reindexar">
+                                                            <span className="material-symbols-outlined text-sm">refresh</span>
+                                                        </button>
+                                                        <button onClick={() => handleDelete(doc.id)} className="size-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-rose-400 hover:bg-rose-500/10 transition-all" title="Excluir">
+                                                            <span className="material-symbols-outlined text-sm">delete</span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </motion.div>

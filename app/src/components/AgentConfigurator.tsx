@@ -165,45 +165,45 @@ const AgentConfigurator: React.FC = () => {
                 {(selected || showNew) ? (
                     <>
                         {/* Sticky Header */}
-                        <div className="absolute top-0 left-0 right-0 h-20 px-8 border-b border-white/5 bg-black/40 backdrop-blur-xl z-10 flex items-center justify-between">
-                            <div>
+                        <div className="absolute top-0 left-0 right-0 h-auto min-h-16 md:h-20 px-4 py-3 md:px-8 border-b border-white/5 bg-black/40 backdrop-blur-xl z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div className="min-w-0">
                                 <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-1">
                                     {showNew ? 'Configuração do Novo Agente' : 'Configurações do Agente'}
                                 </p>
-                                <h2 className="text-white text-xl font-heading font-light tracking-tight truncate">
+                                <h2 className="text-white text-lg md:text-xl font-heading font-light tracking-tight truncate">
                                     {name || 'Novo Agente sem nome'}
                                 </h2>
                             </div>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 md:gap-4 shrink-0">
                                 <button
                                     onClick={() => setIsActive(!isActive)}
-                                    className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-colors border ${isActive
+                                    className={`flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 rounded-xl transition-colors border ${isActive
                                         ? 'bg-primary/10 border-primary/20 hover:bg-primary/20'
                                         : 'bg-red-500/10 border-red-500/20 hover:bg-red-500/20'
                                         }`}
                                 >
                                     <div className="flex items-center gap-2">
                                         <div className={`size-2 rounded-full ${isActive ? 'bg-primary' : 'bg-red-400'}`} />
-                                        <span className={`text-xs font-semibold uppercase tracking-wider ${isActive ? 'text-primary' : 'text-red-400'}`}>
-                                            {isActive ? 'Agente Ativo' : 'Pausado'}
+                                        <span className={`text-[10px] md:text-xs font-semibold uppercase tracking-wider ${isActive ? 'text-primary' : 'text-red-400'}`}>
+                                            {isActive ? 'Ativo' : 'Pausado'}
                                         </span>
                                     </div>
                                 </button>
                                 <button
                                     onClick={handleSave}
                                     disabled={saving || !name.trim() || !prompt.trim()}
-                                    className="backstagefy-btn-primary px-6 py-2.5 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="backstagefy-btn-primary px-4 md:px-6 py-2.5 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
                                     <span className="material-symbols-outlined text-sm">{saving ? 'sync' : 'save'}</span>
-                                    <span className="text-xs font-bold uppercase tracking-wider">
-                                        {saving ? 'Gravando...' : 'Salvar Alterações'}
+                                    <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider hidden sm:inline">
+                                        {saving ? 'Gravando...' : 'Salvar'}
                                     </span>
                                 </button>
                             </div>
                         </div>
 
                         {/* Scrollable Form Content */}
-                        <div className="flex-1 overflow-y-auto px-8 pt-28 pb-12 space-y-6">
+                        <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-32 md:pt-28 pb-8 md:pb-12 space-y-6">
 
                             {/* BLOCK: General */}
                             <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
