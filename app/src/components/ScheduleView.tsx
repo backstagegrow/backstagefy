@@ -430,7 +430,7 @@ export default function ScheduleView() {
                                     <p className="text-gray-500 text-xs mt-0.5">Tempo mínimo entre visitas</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    {[30, 45, 60, 90].map(min => (
+                                    {[15, 30, 45, 60, 90].map(min => (
                                         <button
                                             key={min}
                                             onClick={() => updateInterval(min)}

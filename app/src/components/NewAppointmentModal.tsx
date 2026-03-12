@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useTenant } from '../context/TenantContext'
@@ -9,25 +9,25 @@ interface NewAppointmentModalProps {
     onSuccess: () => void
 }
 
-interface LeadOption {
-    id: string
-    name: string | null
-    phone: string
-}
+interface LeadOption { id: string; name: string | null; phone: string }
+interface AvailabilitySlot { day_of_week: number; start_time: string; end_time: string; is_active: boolean; appointment_interval: number }
+
+const DAYS_PT = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
 
 export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewAppointmentModalProps) {
     const { tenantId } = useTenant()
     const [loading, setLoading] = useState(false)
     const [leads, setLeads] = useState<LeadOption[]>([])
+    const [availability, setAvailability] = useState<AvailabilitySlot[]>([])
     const [formData, setFormData] = useState({
         lead_id: '',
         appointment_date: '',
         appointment_time: '',
         appointment_type: 'presencial' as 'online' | 'presencial',
-        location_address: '',
         notes: '',
     })
 
+    // Fetch leads + availability on open
     useEffect(() => {
         if (!isOpen || !supabase || !tenantId) return
         supabase
@@ -36,7 +36,59 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
             .eq('tenant_id', tenantId)
             .order('name', { ascending: true })
             .then(({ data }) => setLeads(data || []))
+
+        supabase
+            .from('availability')
+            .select('day_of_week, start_time, end_time, is_active, appointment_interval')
+            .eq('tenant_id', tenantId)
+            .then(({ data }) => setAvailability(data || []))
     }, [isOpen, tenantId])
+
+    // Get availability for selected date
+    const selectedDaySlot = useMemo(() => {
+        if (!formData.appointment_date) return null
+        const date = new Date(formData.appointment_date + 'T12:00:00')
+        const dayOfWeek = date.getDay()
+        return availability.find(a => a.day_of_week === dayOfWeek) || null
+    }, [formData.appointment_date, availability])
+
+    // Generate time slots based on availability config
+    const timeSlots = useMemo(() => {
+        if (!selectedDaySlot || !selectedDaySlot.is_active) return []
+
+        const startParts = selectedDaySlot.start_time.split(':')
+        const endParts = selectedDaySlot.end_time.split(':')
+        const startMinutes = parseInt(startParts[0]) * 60 + parseInt(startParts[1])
+        const endMinutes = parseInt(endParts[0]) * 60 + parseInt(endParts[1])
+        const interval = selectedDaySlot.appointment_interval || 60
+
+        const slots: string[] = []
+        for (let m = startMinutes; m + interval <= endMinutes; m += interval) {
+            const h = Math.floor(m / 60).toString().padStart(2, '0')
+            const min = (m % 60).toString().padStart(2, '0')
+            slots.push(`${h}:${min}`)
+        }
+
+        // Filter out past times if date is today
+        const today = new Date().toISOString().slice(0, 10)
+        if (formData.appointment_date === today) {
+            const now = new Date()
+            const nowMinutes = now.getHours() * 60 + now.getMinutes()
+            return slots.filter(s => {
+                const [hh, mm] = s.split(':').map(Number)
+                return hh * 60 + mm > nowMinutes
+            })
+        }
+
+        return slots
+    }, [selectedDaySlot, formData.appointment_date])
+
+    // Day label for the selected date
+    const selectedDayLabel = useMemo(() => {
+        if (!formData.appointment_date) return ''
+        const date = new Date(formData.appointment_date + 'T12:00:00')
+        return DAYS_PT[date.getDay()]
+    }, [formData.appointment_date])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -55,14 +107,13 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
                 lead_id: formData.lead_id,
                 appointment_date: dateTime,
                 appointment_type: formData.appointment_type,
-                location_address: formData.location_address || null,
                 notes: formData.notes || null,
                 status: 'scheduled',
             }])
             if (error) throw error
             onSuccess()
             onClose()
-            setFormData({ lead_id: '', appointment_date: '', appointment_time: '', appointment_type: 'presencial', location_address: '', notes: '' })
+            setFormData({ lead_id: '', appointment_date: '', appointment_time: '', appointment_type: 'presencial', notes: '' })
         } catch (err: unknown) {
             console.error('Error creating appointment:', err)
             const msg = (err as { message?: string })?.message ?? ''
@@ -87,7 +138,7 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full max-w-lg backstagefy-glass-card p-8 relative"
+                        className="w-full max-w-lg backstagefy-glass-card p-8 relative max-h-[90vh] overflow-y-auto scrollbar-hide"
                     >
                         <button onClick={onClose} className="absolute top-6 right-6 text-gray-500 hover:text-white">
                             <span className="material-symbols-outlined">close</span>
@@ -115,29 +166,62 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
                                 </select>
                             </div>
 
-                            {/* Date & Time */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[10px] text-gray-500 uppercase tracking-widest mb-2 font-bold">Data</label>
-                                    <input
-                                        type="date"
-                                        value={formData.appointment_date}
-                                        onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value })}
-                                        className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white text-sm focus:border-primary/40 focus:ring-0 focus:outline-none transition-all"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-[10px] text-gray-500 uppercase tracking-widest mb-2 font-bold">Horário</label>
-                                    <input
-                                        type="time"
-                                        value={formData.appointment_time}
-                                        onChange={(e) => setFormData({ ...formData, appointment_time: e.target.value })}
-                                        className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white text-sm focus:border-primary/40 focus:ring-0 focus:outline-none transition-all"
-                                        required
-                                    />
-                                </div>
+                            {/* Date */}
+                            <div>
+                                <label className="block text-[10px] text-gray-500 uppercase tracking-widest mb-2 font-bold">Data</label>
+                                <input
+                                    type="date"
+                                    value={formData.appointment_date}
+                                    onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value, appointment_time: '' })}
+                                    min={new Date().toISOString().slice(0, 10)}
+                                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white text-sm focus:border-primary/40 focus:ring-0 focus:outline-none transition-all"
+                                    required
+                                />
+                                {formData.appointment_date && (
+                                    <p className="text-gray-500 text-xs mt-1.5 flex items-center gap-1.5">
+                                        <span className={`size-2 rounded-full ${selectedDaySlot?.is_active ? 'bg-primary' : 'bg-red-500'}`} />
+                                        {selectedDayLabel}
+                                        {selectedDaySlot?.is_active
+                                            ? ` — ${selectedDaySlot.start_time.slice(0,5)} até ${selectedDaySlot.end_time.slice(0,5)} (intervalo ${selectedDaySlot.appointment_interval}min)`
+                                            : ' — Dia pausado (sem atendimento)'}
+                                    </p>
+                                )}
                             </div>
+
+                            {/* Time Slots */}
+                            {formData.appointment_date && (
+                                <div>
+                                    <label className="block text-[10px] text-gray-500 uppercase tracking-widest mb-2 font-bold">Horário disponível</label>
+                                    {!selectedDaySlot?.is_active ? (
+                                        <p className="text-red-400/80 text-xs bg-red-500/5 border border-red-500/10 rounded-xl px-4 py-3">
+                                            <span className="material-symbols-outlined text-sm align-middle mr-1">block</span>
+                                            Este dia está pausado nas configurações. Ative-o primeiro em Agenda → Configurações.
+                                        </p>
+                                    ) : timeSlots.length === 0 ? (
+                                        <p className="text-amber-400/80 text-xs bg-amber-500/5 border border-amber-500/10 rounded-xl px-4 py-3">
+                                            <span className="material-symbols-outlined text-sm align-middle mr-1">schedule</span>
+                                            Nenhum horário disponível para este dia. Todos os slots já passaram.
+                                        </p>
+                                    ) : (
+                                        <div className="grid grid-cols-4 gap-2">
+                                            {timeSlots.map(slot => (
+                                                <button
+                                                    key={slot}
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, appointment_time: slot })}
+                                                    className={`py-3 rounded-xl text-sm font-mono font-bold transition-all border ${
+                                                        formData.appointment_time === slot
+                                                            ? 'bg-primary text-black border-primary shadow-lg shadow-primary/20'
+                                                            : 'bg-white/[0.03] text-gray-400 border-white/10 hover:border-primary/30 hover:text-white'
+                                                    }`}
+                                                >
+                                                    {slot}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Type */}
                             <div>
@@ -177,7 +261,7 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
 
                             <button
                                 type="submit"
-                                disabled={loading}
+                                disabled={loading || !formData.appointment_time}
                                 className="w-full backstagefy-btn-primary py-4 text-sm font-bold rounded-2xl disabled:opacity-50"
                             >
                                 {loading ? (
