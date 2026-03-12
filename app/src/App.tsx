@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar'
 import LeadPipeline from './components/LeadPipeline'
 import WhatsAppConfig from './components/WhatsAppConfig'
 import NewLeadModal from './components/NewLeadModal'
+import NewAppointmentModal from './components/NewAppointmentModal'
 import ScheduleView from './components/ScheduleView'
 import DashboardStats from './components/DashboardStats'
 import MediaGallery from './components/MediaGallery'
@@ -85,6 +86,7 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
     const { tenant, loading: tenantLoading } = useTenant()
     const [activeTab, setActiveTab] = useState('dashboard')
     const [isNewLeadModalOpen, setIsNewLeadModalOpen] = useState(false)
+    const [isNewAppointmentModalOpen, setIsNewAppointmentModalOpen] = useState(false)
     const [refreshTrigger, setRefreshTrigger] = useState(0)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -119,7 +121,13 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
             <main className="flex-1 flex flex-col relative overflow-hidden w-full">
                 <Header
                     activeTab={activeTab}
-                    onAddClick={() => setIsNewLeadModalOpen(true)}
+                    onAddClick={() => {
+                        if (activeTab === 'viewings') {
+                            setIsNewAppointmentModalOpen(true)
+                        } else {
+                            setIsNewLeadModalOpen(true)
+                        }
+                    }}
                     onMenuClick={() => setIsSidebarOpen(true)}
                 />
 
@@ -163,6 +171,11 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
             <NewLeadModal
                 isOpen={isNewLeadModalOpen}
                 onClose={() => setIsNewLeadModalOpen(false)}
+                onSuccess={() => setRefreshTrigger(prev => prev + 1)}
+            />
+            <NewAppointmentModal
+                isOpen={isNewAppointmentModalOpen}
+                onClose={() => setIsNewAppointmentModalOpen(false)}
                 onSuccess={() => setRefreshTrigger(prev => prev + 1)}
             />
         </div>

@@ -37,8 +37,12 @@ export default function NewLeadModal({ isOpen, onClose, onSuccess }: NewLeadModa
             setFormData({ name: '', phone: '', status: 'morno', pipeline_stage: 'new', event_type: '' })
         } catch (err: unknown) {
             console.error('Error creating lead:', err)
-            const msg = (err as { message?: string })?.message ?? JSON.stringify(err)
-            alert(`Erro: ${msg}`)
+            const msg = (err as { message?: string })?.message ?? ''
+            if (msg.includes('leads_tenant_id_phone_key')) {
+                alert('Já existe um lead com esse número de telefone.')
+            } else {
+                alert(`Erro: ${msg || JSON.stringify(err)}`)
+            }
         } finally {
             setLoading(false)
         }

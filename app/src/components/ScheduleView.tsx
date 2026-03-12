@@ -398,19 +398,19 @@ export default function ScheduleView() {
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-12">
-                                                <div className="flex items-center bg-black/40 rounded-xl px-4 py-2 border border-white/5 gap-2 group-hover:border-primary/40 transition-all">
+                                                <div className="flex items-center bg-black/40 rounded-xl px-5 py-3 border border-white/5 gap-4 group-hover:border-primary/40 transition-all">
                                                     <input
                                                         type="time"
                                                         value={slot?.start_time?.slice(0, 5) || '09:00'}
                                                         onChange={(e) => updateTimes(index, e.target.value, slot?.end_time?.slice(0,5) || '18:00')}
-                                                        className="bg-transparent border-none text-white font-mono text-sm focus:ring-0 focus:outline-none w-16 p-0"
+                                                        className="bg-transparent border-none text-white font-mono text-sm focus:ring-0 focus:outline-none w-20 p-0"
                                                     />
-                                                    <span className="text-gray-700 text-xs">até</span>
+                                                    <span className="text-gray-500 text-xs font-medium">até</span>
                                                     <input
                                                         type="time"
                                                         value={slot?.end_time?.slice(0, 5) || '18:00'}
                                                         onChange={(e) => updateTimes(index, slot?.start_time?.slice(0,5) || '09:00', e.target.value)}
-                                                        className="bg-transparent border-none text-white font-mono text-sm focus:ring-0 focus:outline-none w-16 p-0"
+                                                        className="bg-transparent border-none text-white font-mono text-sm focus:ring-0 focus:outline-none w-20 p-0"
                                                     />
                                                 </div>
                                                 <button onClick={() => toggleActive(index, slot?.is_active ?? false)}
