@@ -11,7 +11,7 @@ const APP_URL = Deno.env.get("APP_URL") ?? "https://backstagefy.com.br";
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Authorization, apikey, Content-Type, x-user-token",
+  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
 };
 
 const SCOPES = [
@@ -20,9 +20,10 @@ const SCOPES = [
   "https://www.googleapis.com/auth/userinfo.email",
 ].join(" ");
 
-// Extracts user JWT from x-user-token header (frontend passes anon key as Authorization for Kong)
+// verify_jwt=false: Kong passes the request through. We validate manually.
 function getUserToken(req: Request): string | null {
-  return req.headers.get("x-user-token") ?? req.headers.get("Authorization")?.replace("Bearer ", "") ?? null;
+  const auth = req.headers.get("authorization") ?? req.headers.get("Authorization");
+  return auth?.replace(/^Bearer\s+/i, "") ?? null;
 }
 
 Deno.serve(async (req: Request) => {
@@ -86,19 +87,8 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }, { onConflict: "tenant_id" });
 
-    // Envia postMessage para a janela pai e fecha o popup
-    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
-<script>
-  try {
-    window.opener?.postMessage({ gcal: 'success' }, '*');
-  } catch(e) {}
-  window.close();
-</script>
-<p style="font-family:sans-serif;text-align:center;padding:40px;color:#333">
-  Conectado! Fechando...
-</p>
-</body></html>`;
-    return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+    // Redireciona para página estática no app que envia postMessage e fecha o popup
+    return Response.redirect(`${APP_URL}/gcal-success.html`, 302);
   }
 
   if (action === "disconnect") {
