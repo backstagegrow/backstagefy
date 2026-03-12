@@ -97,12 +97,14 @@ export default function ScheduleView() {
                 setGcalStatus(data)
                 localStorage.setItem('gcal_connected', data.connected ? '1' : '0')
                 window.dispatchEvent(new StorageEvent('storage', { key: 'gcal_connected', newValue: data.connected ? '1' : '0' }))
+                if (data.connected) handleListCalendars(false)
             }
         } catch { /* ignore */ }
     }, [supabase])
 
-    const handleListCalendars = async () => {
-        if (!supabase || calendars.length > 0) { setCalendarDropdownOpen(v => !v); return; }
+    const handleListCalendars = async (toggle = true) => {
+        if (!supabase) return
+        if (calendars.length > 0) { if (toggle) setCalendarDropdownOpen(v => !v); return; }
         const { data: { session } } = await supabase.auth.getSession()
         if (!session?.access_token) return
         try {
@@ -113,7 +115,7 @@ export default function ScheduleView() {
             if (res.ok) {
                 const { calendars: cals } = await res.json()
                 setCalendars(cals ?? [])
-                setCalendarDropdownOpen(true)
+                if (toggle) setCalendarDropdownOpen(true)
             }
         } catch { /* ignore */ }
     }
@@ -222,7 +224,9 @@ export default function ScheduleView() {
     useEffect(() => {
         if (!supabase || !tenantId) return
         setLoading(true)
-        Promise.all([fetchAvailability(), fetchAppointments(), fetchGcalStatus()]).then(() => setLoading(false))
+        Promise.all([fetchAvailability(), fetchAppointments(), fetchGcalStatus()]).then(() => {
+            setLoading(false)
+        })
 
         // Detecta callback do Google OAuth na URL
         const urlParams = new URLSearchParams(window.location.search)
@@ -487,7 +491,7 @@ export default function ScheduleView() {
                                     {/* Calendar Selector */}
                                     <div className="relative">
                                         <button
-                                            onClick={handleListCalendars}
+                                            onClick={() => handleListCalendars()}
                                             className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/10 text-left hover:border-white/20 transition-all"
                                         >
                                             <div className="flex items-center gap-3">
@@ -495,8 +499,7 @@ export default function ScheduleView() {
                                                 <div>
                                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest">Agenda selecionada</p>
                                                     <p className="text-white text-xs mt-0.5 font-medium">
-                                                        {calendars.find(c => c.id === gcalStatus.calendar_id)?.summary ||
-                                                        (gcalStatus.calendar_id === 'primary' ? 'Agenda Principal' : gcalStatus.calendar_id)}
+                                                        {calendars.find(c => c.id === gcalStatus.calendar_id)?.summary || 'Agenda Principal'}
                                                     </p>
                                                 </div>
                                             </div>
