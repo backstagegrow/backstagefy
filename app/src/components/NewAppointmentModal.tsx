@@ -100,17 +100,55 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
         setLoading(true)
 
         const dateTime = `${formData.appointment_date}T${formData.appointment_time}:00`
+        const interval = selectedDaySlot?.appointment_interval || 60
+        const startDate = new Date(`${dateTime}-03:00`)
+        const endDate = new Date(startDate.getTime() + interval * 60 * 1000)
 
         try {
-            const { error } = await supabase.from('appointments').insert([{
+            // 1. Insert in DB
+            const { data: appointment, error } = await supabase.from('appointments').insert([{
                 tenant_id: tenantId,
                 lead_id: formData.lead_id,
                 appointment_date: dateTime,
                 appointment_type: formData.appointment_type,
                 notes: formData.notes || null,
                 status: 'scheduled',
-            }])
+            }]).select('id').single()
             if (error) throw error
+
+            // 2. Try to sync with Google Calendar (non-blocking)
+            const selectedLead = leads.find(l => l.id === formData.lead_id)
+            const leadName = selectedLead?.name || selectedLead?.phone || 'Lead'
+
+            try {
+                const { data: { session } } = await supabase.auth.getSession()
+                if (session?.access_token) {
+                    const EDGE_URL = import.meta.env.VITE_SUPABASE_URL + '/functions/v1/google-calendar-auth'
+                    const gcalRes = await fetch(`${EDGE_URL}?action=create-event`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${session.access_token}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            summary: `${formData.appointment_type === 'online' ? '💻' : '🏢'} Visita: ${leadName}`,
+                            description: `Agendamento BackStageFy\nLead: ${leadName}\nTelefone: ${selectedLead?.phone || ''}\nTipo: ${formData.appointment_type}\n${formData.notes ? `Obs: ${formData.notes}` : ''}`,
+                            start_time: startDate.toISOString(),
+                            end_time: endDate.toISOString(),
+                            appointment_type: formData.appointment_type,
+                        }),
+                    })
+                    if (gcalRes.ok) {
+                        const gcalData = await gcalRes.json()
+                        if (gcalData.event_id && appointment?.id) {
+                            await supabase.from('appointments').update({ google_event_id: gcalData.event_id }).eq('id', appointment.id)
+                        }
+                    }
+                }
+            } catch (gcalErr) {
+                console.warn('Google Calendar sync failed (appointment still saved):', gcalErr)
+            }
+
             onSuccess()
             onClose()
             setFormData({ lead_id: '', appointment_date: '', appointment_time: '', appointment_type: 'presencial', notes: '' })

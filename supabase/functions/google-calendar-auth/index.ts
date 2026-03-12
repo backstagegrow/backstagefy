@@ -159,5 +159,68 @@ Deno.serve(async (req: Request) => {
     return Response.json({ success: true, calendar_id: calendarId }, { headers: CORS });
   }
 
+  if (action === "create-event") {
+    const userToken = getUserToken(req);
+    if (!userToken) return Response.json({ error: "Missing token" }, { status: 401, headers: CORS });
+    const { data: { user }, error } = await supabase.auth.getUser(userToken);
+    if (error || !user) return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
+    const { data: tenant } = await supabase.from("tenants").select("id, name").eq("owner_id", user.id).single();
+    if (!tenant) return Response.json({ error: "No tenant" }, { status: 404, headers: CORS });
+
+    const body = await req.json().catch(() => ({}));
+    const { summary, description, start_time, end_time, appointment_type, attendee_email } = body;
+    if (!summary || !start_time || !end_time) return Response.json({ error: "Missing fields" }, { status: 400, headers: CORS });
+
+    const accessToken = await getValidToken(supabase, tenant.id);
+    const { data: tokenRec } = await supabase.from("google_calendar_tokens").select("calendar_id").eq("tenant_id", tenant.id).single();
+    const calendarId = tokenRec?.calendar_id || "primary";
+
+    // Build event body
+    const eventBody: Record<string, unknown> = {
+      summary,
+      description: description || "",
+      start: { dateTime: start_time, timeZone: "America/Sao_Paulo" },
+      end: { dateTime: end_time, timeZone: "America/Sao_Paulo" },
+    };
+
+    // Add attendee if email provided
+    if (attendee_email) {
+      eventBody.attendees = [{ email: attendee_email }];
+    }
+
+    // For online appointments, request Google Meet link
+    if (appointment_type === "online") {
+      eventBody.conferenceData = {
+        createRequest: {
+          requestId: crypto.randomUUID(),
+          conferenceSolutionKey: { type: "hangoutsMeet" },
+        },
+      };
+    }
+
+    const calUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events${appointment_type === "online" ? "?conferenceDataVersion=1" : ""}`;
+    const calRes = await fetch(calUrl, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify(eventBody),
+    });
+
+    if (!calRes.ok) {
+      const errText = await calRes.text();
+      console.error("GCal create-event error:", errText);
+      return Response.json({ error: "Failed to create event", details: errText }, { status: 502, headers: CORS });
+    }
+
+    const event = await calRes.json();
+    const meetLink = event.conferenceData?.entryPoints?.find((e: Record<string, string>) => e.entryPointType === "video")?.uri || null;
+
+    return Response.json({
+      success: true,
+      event_id: event.id,
+      html_link: event.htmlLink,
+      meet_link: meetLink,
+    }, { headers: CORS });
+  }
+
   return Response.json({ error: "Invalid action" }, { status: 400, headers: CORS });
 });
