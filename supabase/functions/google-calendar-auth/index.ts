@@ -20,6 +20,22 @@ const SCOPES = [
   "https://www.googleapis.com/auth/userinfo.email",
 ].join(" ");
 
+async function getValidToken(supabase: ReturnType<typeof createClient>, tenantId: string): Promise<string> {
+  const { data: rec } = await supabase.from("google_calendar_tokens").select("*").eq("tenant_id", tenantId).single();
+  if (!rec) throw new Error("No token");
+  const isExpired = rec.expiry_date && Date.now() > rec.expiry_date - 5 * 60 * 1000;
+  if (!isExpired) return rec.access_token;
+  const r = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ refresh_token: rec.refresh_token, client_id: GOOGLE_CLIENT_ID, client_secret: GOOGLE_CLIENT_SECRET, grant_type: "refresh_token" }),
+  });
+  if (!r.ok) throw new Error("Refresh failed");
+  const d = await r.json();
+  await supabase.from("google_calendar_tokens").update({ access_token: d.access_token, expiry_date: Date.now() + d.expires_in * 1000, updated_at: new Date().toISOString() }).eq("tenant_id", tenantId);
+  return d.access_token;
+}
+
 // verify_jwt=false: Kong passes the request through. We validate manually.
 function getUserToken(req: Request): string | null {
   const auth = req.headers.get("authorization") ?? req.headers.get("Authorization");
@@ -108,8 +124,39 @@ Deno.serve(async (req: Request) => {
     if (error || !user) return Response.json({ connected: false }, { headers: CORS });
     const { data: tenant } = await supabase.from("tenants").select("id").eq("owner_id", user.id).single();
     if (!tenant) return Response.json({ connected: false }, { headers: CORS });
-    const { data: tokenRecord } = await supabase.from("google_calendar_tokens").select("google_email, updated_at").eq("tenant_id", tenant.id).maybeSingle();
-    return Response.json({ connected: !!tokenRecord, google_email: tokenRecord?.google_email ?? null, connected_at: tokenRecord?.updated_at ?? null }, { headers: CORS });
+    const { data: tokenRecord } = await supabase.from("google_calendar_tokens").select("google_email, updated_at, calendar_id").eq("tenant_id", tenant.id).maybeSingle();
+    return Response.json({ connected: !!tokenRecord, google_email: tokenRecord?.google_email ?? null, connected_at: tokenRecord?.updated_at ?? null, calendar_id: tokenRecord?.calendar_id ?? "primary" }, { headers: CORS });
+  }
+
+  if (action === "list-calendars") {
+    const userToken = getUserToken(req);
+    if (!userToken) return Response.json({ error: "Missing token" }, { status: 401, headers: CORS });
+    const { data: { user }, error } = await supabase.auth.getUser(userToken);
+    if (error || !user) return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
+    const { data: tenant } = await supabase.from("tenants").select("id").eq("owner_id", user.id).single();
+    if (!tenant) return Response.json({ error: "No tenant" }, { status: 404, headers: CORS });
+    const accessToken = await getValidToken(supabase, tenant.id);
+    const calRes = await fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=writer", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!calRes.ok) return Response.json({ error: "Failed to list calendars" }, { status: 502, headers: CORS });
+    const calData = await calRes.json();
+    const calendars = (calData.items ?? []).map((c: Record<string, string>) => ({ id: c.id, summary: c.summary, primary: !!c.primary, backgroundColor: c.backgroundColor }));
+    return Response.json({ calendars }, { headers: CORS });
+  }
+
+  if (action === "select-calendar") {
+    const userToken = getUserToken(req);
+    if (!userToken) return Response.json({ error: "Missing token" }, { status: 401, headers: CORS });
+    const { data: { user }, error } = await supabase.auth.getUser(userToken);
+    if (error || !user) return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
+    const { data: tenant } = await supabase.from("tenants").select("id").eq("owner_id", user.id).single();
+    if (!tenant) return Response.json({ error: "No tenant" }, { status: 404, headers: CORS });
+    const body = await req.json().catch(() => ({}));
+    const calendarId = body.calendar_id;
+    if (!calendarId) return Response.json({ error: "Missing calendar_id" }, { status: 400, headers: CORS });
+    await supabase.from("google_calendar_tokens").update({ calendar_id: calendarId, updated_at: new Date().toISOString() }).eq("tenant_id", tenant.id);
+    return Response.json({ success: true, calendar_id: calendarId }, { headers: CORS });
   }
 
   return Response.json({ error: "Invalid action" }, { status: 400, headers: CORS });
