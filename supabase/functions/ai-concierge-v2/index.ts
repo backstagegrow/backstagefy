@@ -360,19 +360,33 @@ ${nowBR} (Fuso: America/Sao_Paulo)
 
                 if (call.function.name === 'schedule_appointment') {
                     const apptType = args.appointment_type || 'presencial';
-                    const interval = availability?.find((a: any) => {
-                        const d = new Date(args.datetime);
-                        return a.day_of_week === d.getDay();
-                    })?.appointment_interval || 60;
-
-                    const startDate = new Date(args.datetime);
+                    
+                    // Ensure datetime has Brazil timezone offset (-03:00)
+                    let dtStr: string = args.datetime;
+                    if (dtStr && !dtStr.includes('+') && !dtStr.includes('Z') && !dtStr.match(/-\d{2}:\d{2}$/)) {
+                        dtStr = `${dtStr}-03:00`;
+                    }
+                    
+                    const startDate = new Date(dtStr);
+                    
+                    // Get day-of-week in Brazil timezone
+                    const brDayOfWeek = Number(
+                        new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'short' })
+                            .formatToParts(startDate).find(p => p.type === 'weekday')?.value || '0'
+                    );
+                    // Map weekday name to number
+                    const brWeekdayStr = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', weekday: 'short' }).format(startDate);
+                    const dayMap: Record<string, number> = { 'Sun': 0, 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6 };
+                    const dayNum = dayMap[brWeekdayStr] ?? startDate.getDay();
+                    
+                    const interval = availability?.find((a: any) => a.day_of_week === dayNum)?.appointment_interval || 60;
                     const endDate = new Date(startDate.getTime() + interval * 60 * 1000);
 
-                    // Insert appointment in DB
+                    // Insert appointment in DB — appointment_date in UTC (Supabase standard)
                     const { data: newAppt } = await supabase.from('appointments').insert({
                         tenant_id,
                         lead_id: lead.id,
-                        appointment_date: args.datetime,
+                        appointment_date: startDate.toISOString(),
                         appointment_type: apptType,
                         notes: args.summary || '',
                         status: 'confirmed',

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useTenant } from '../context/TenantContext'
+import { brazilToUTC } from '../lib/timezone'
 
 interface NewAppointmentModalProps {
     isOpen: boolean
@@ -99,17 +100,17 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
         }
         setLoading(true)
 
-        const dateTime = `${formData.appointment_date}T${formData.appointment_time}:00`
+        const dateTimeUTC = brazilToUTC(formData.appointment_date, formData.appointment_time)
         const interval = selectedDaySlot?.appointment_interval || 60
-        const startDate = new Date(`${dateTime}-03:00`)
+        const startDate = new Date(dateTimeUTC)
         const endDate = new Date(startDate.getTime() + interval * 60 * 1000)
 
         try {
-            // 1. Insert in DB
+            // 1. Insert in DB — appointment_date in UTC
             const { data: appointment, error } = await supabase.from('appointments').insert([{
                 tenant_id: tenantId,
                 lead_id: formData.lead_id,
-                appointment_date: dateTime,
+                appointment_date: dateTimeUTC,
                 appointment_type: formData.appointment_type,
                 notes: formData.notes || null,
                 status: 'scheduled',

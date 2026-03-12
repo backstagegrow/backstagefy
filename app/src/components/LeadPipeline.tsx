@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useTenant } from '../context/TenantContext'
 import LeadDetailModal from './LeadDetailModal'
+import { toBrazilDate } from '../lib/timezone'
 
 interface Appointment {
     appointment_date: string
@@ -167,16 +168,12 @@ export default function LeadPipeline() {
                         <div className="flex-1 space-y-4 pr-1 scrollbar-hide">
                             <AnimatePresence mode="popLayout">
                                 {column.leads.map((lead) => {
-                                    const activeAppt = lead.appointments?.find(
+                                    const activeAppts = (lead.appointments || []).filter(
                                         a => a.status === 'confirmed' || a.status === 'scheduled'
                                     );
-                                    const hasAppointment = !!activeAppt;
-                                    const apptDate = activeAppt?.appointment_date
-                                        ? new Date(activeAppt.appointment_date)
-                                        : null;
-                                    const apptType = activeAppt?.appointment_type || 'presencial';
-                                    const scheduledBy = activeAppt?.scheduled_by || 'human';
-                                    const isOnline = apptType === 'online';
+                                    const hasAppointment = activeAppts.length > 0;
+                                    const firstAppt = activeAppts[0];
+                                    const firstIsOnline = firstAppt?.appointment_type === 'online';
 
                                     return (
                                         <motion.div
@@ -219,14 +216,10 @@ export default function LeadPipeline() {
                                                     <p className="text-gray-500 text-sm font-mono tracking-tighter mt-1">{lead.phone}</p>
                                                 </div>
 
-                                                {/* Status + Type Icons */}
                                                 <div className="flex items-center gap-1.5">
                                                     {hasAppointment && (
-                                                        <span
-                                                            className={`material-symbols-outlined text-[18px] ${isOnline ? 'text-blue-400' : 'text-amber-400'}`}
-                                                            title={isOnline ? 'Online (Meet)' : 'Presencial'}
-                                                        >
-                                                            {isOnline ? 'laptop_mac' : 'business'}
+                                                        <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
+                                                            {activeAppts.length}
                                                         </span>
                                                     )}
                                                     <div className={`px-2 py-1 rounded text-[11px] font-bold uppercase tracking-widest ${lead.status === 'quente' ? 'bg-red-500/10 text-red-500' :
@@ -249,40 +242,40 @@ export default function LeadPipeline() {
                                                     </span>
                                                 </div>
 
-                                                {/* Appointment Card */}
-                                                {hasAppointment && apptDate && (
-                                                    <div className={`mt-2 p-3 rounded-xl border ${isOnline
-                                                        ? 'bg-blue-500/5 border-blue-500/10'
-                                                        : 'bg-amber-500/5 border-amber-500/10'
-                                                        }`}>
-                                                        <div className="flex items-center justify-between mb-1.5">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <span className={`material-symbols-outlined text-[14px] ${isOnline ? 'text-blue-400' : 'text-amber-500'}`}>
-                                                                    {isOnline ? 'videocam' : 'calendar_today'}
-                                                                </span>
-                                                                <span className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isOnline ? 'text-blue-400' : 'text-amber-500'}`}>
-                                                                    {isOnline ? 'Reunião Online' : 'Visita Presencial'}
-                                                                </span>
+                                                {/* ALL Appointment Cards */}
+                                                {activeAppts.map((appt, idx) => {
+                                                    const isOnline = appt.appointment_type === 'online';
+                                                    const scheduledBy = appt.scheduled_by || 'human';
+                                                    const brDate = appt.appointment_date ? toBrazilDate(appt.appointment_date) : null;
+
+                                                    return (
+                                                        <div key={idx} className={`mt-1 p-3 rounded-xl border ${isOnline
+                                                            ? 'bg-blue-500/5 border-blue-500/10'
+                                                            : 'bg-amber-500/5 border-amber-500/10'
+                                                            }`}>
+                                                            <div className="flex items-center justify-between mb-1.5">
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <span className={`material-symbols-outlined text-[14px] ${isOnline ? 'text-blue-400' : 'text-amber-500'}`}>
+                                                                        {isOnline ? 'videocam' : 'calendar_today'}
+                                                                    </span>
+                                                                    <span className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isOnline ? 'text-blue-400' : 'text-amber-500'}`}>
+                                                                        {isOnline ? 'Online' : 'Presencial'}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex items-center gap-1" title={scheduledBy === 'ai' ? 'Agendado pela IA' : 'Agendado manualmente'}>
+                                                                    <span className={`material-symbols-outlined text-[13px] ${scheduledBy === 'ai' ? 'text-purple-400' : 'text-white/30'}`}>
+                                                                        {scheduledBy === 'ai' ? 'smart_toy' : 'person'}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <div className="flex items-center gap-1" title={scheduledBy === 'ai' ? 'Agendado pela IA' : 'Agendado manualmente'}>
-                                                                <span className={`material-symbols-outlined text-[13px] ${scheduledBy === 'ai' ? 'text-purple-400' : 'text-white/30'}`}>
-                                                                    {scheduledBy === 'ai' ? 'smart_toy' : 'person'}
-                                                                </span>
-                                                            </div>
+                                                            {brDate && (
+                                                                <p className="text-white text-sm font-semibold">
+                                                                    {`${String(brDate.getDate()).padStart(2, '0')}/${String(brDate.getMonth() + 1).padStart(2, '0')}, ${String(brDate.getHours()).padStart(2, '0')}:${String(brDate.getMinutes()).padStart(2, '0')}`}
+                                                                </p>
+                                                            )}
                                                         </div>
-                                                        <p className="text-white text-sm font-semibold">
-                                                            {apptDate.toLocaleString('pt-BR', {
-                                                                day: '2-digit',
-                                                                month: '2-digit',
-                                                                hour: '2-digit',
-                                                                minute: '2-digit'
-                                                            })}
-                                                        </p>
-                                                        {activeAppt?.notes && (
-                                                            <p className="text-white/30 text-[10px] mt-1 truncate">{activeAppt.notes}</p>
-                                                        )}
-                                                    </div>
-                                                )}
+                                                    );
+                                                })}
                                             </div>
 
                                             {/* Glass Overlay Glow */}

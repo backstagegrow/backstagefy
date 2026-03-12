@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useTenant } from '../context/TenantContext'
+import { toBrazilDateStr, toBrazilTimeStr } from '../lib/timezone'
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -344,8 +345,7 @@ export default function ScheduleView() {
                             const dateStr = isCurrentMonth ? `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : ''
                             const dayApps = appointments.filter(a => {
                                 if (!a.appointment_date) return false;
-                                const appDate = new Date(a.appointment_date);
-                                const appDateStr = `${appDate.getFullYear()}-${String(appDate.getMonth() + 1).padStart(2, '0')}-${String(appDate.getDate()).padStart(2, '0')}`;
+                                const appDateStr = toBrazilDateStr(a.appointment_date);
                                 return isCurrentMonth && appDateStr === dateStr;
                             })
 
@@ -371,7 +371,7 @@ export default function ScheduleView() {
                                                         {app.appointment_type === 'online' ? 'laptop_mac' : 'apartment'}
                                                     </span>
                                                 </div>
-                                                <p className={`text-[9px] font-mono ${app.status === 'cancelled' ? 'text-red-400/60' : 'text-primary/60'}`}>{new Date(app.appointment_date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+                                                <p className={`text-[9px] font-mono ${app.status === 'cancelled' ? 'text-red-400/60' : 'text-primary/60'}`}>{toBrazilTimeStr(app.appointment_date)}</p>
                                             </button>
                                         ))}
                                     </div>
