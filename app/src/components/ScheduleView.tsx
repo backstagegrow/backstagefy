@@ -79,18 +79,31 @@ export default function ScheduleView() {
     const handleGcalConnect = async () => {
         if (!supabase) return
         setGcalLoading(true)
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session?.access_token) { setGcalLoading(false); return }
+
+        // Abre janela imediatamente (antes de qualquer await) para evitar popup blocker
+        // Sem 'noopener' para manter referência e poder redirecionar depois
+        const authWindow = window.open('about:blank', '_blank', 'width=520,height=660')
+
         try {
+            const { data: { session } } = await supabase.auth.getSession()
+            if (!session?.access_token) {
+                authWindow?.close()
+                setGcalLoading(false)
+                return
+            }
             const res = await fetch(
                 `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=connect`,
                 { headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
             )
             if (res.ok) {
                 const { url } = await res.json()
-                window.location.href = url
+                if (authWindow) authWindow.location.href = url
+            } else {
+                authWindow?.close()
             }
-        } catch { /* ignore */ }
+        } catch {
+            authWindow?.close()
+        }
         setGcalLoading(false)
     }
 
@@ -184,8 +197,14 @@ export default function ScheduleView() {
                     </button>
                     <button
                         onClick={() => setView('config')}
-                        className={`px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'config' ? 'bg-primary text-black' : 'text-gray-500 hover:text-white'}`}
+                        className={`px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${view === 'config' ? 'bg-primary text-black' : 'text-gray-500 hover:text-white'}`}
                     >
+                        <svg className="size-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill={view === 'config' ? '#222' : '#4285F4'}/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill={view === 'config' ? '#222' : '#34A853'}/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill={view === 'config' ? '#222' : '#FBBC05'}/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill={view === 'config' ? '#222' : '#EA4335'}/>
+                        </svg>
                         Configurações
                     </button>
                 </div>
@@ -305,12 +324,11 @@ export default function ScheduleView() {
                         <div className="backstagefy-glass-card p-8 border-primary/10">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                                    <svg className="size-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="2" y="4" width="20" height="18" rx="2" stroke="#4285F4" strokeWidth="1.5"/>
-                                        <path d="M2 9h20" stroke="#4285F4" strokeWidth="1.5"/>
-                                        <path d="M7 2v4M17 2v4" stroke="#EA4335" strokeWidth="1.5" strokeLinecap="round"/>
-                                        <rect x="6" y="13" width="4" height="4" rx="0.5" fill="#34A853"/>
-                                        <rect x="14" y="13" width="4" height="4" rx="0.5" fill="#FBBC04"/>
+                                    <svg className="size-6" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                                     </svg>
                                 </div>
                                 <div>
@@ -354,18 +372,6 @@ export default function ScheduleView() {
                             )}
                         </div>
 
-                        {/* AI Logic Card */}
-                        <div className="backstagefy-glass-card p-8 border-primary/10">
-                            <div className="size-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary">
-                                <span className="material-symbols-outlined text-2xl">robot_2</span>
-                            </div>
-                            <h4 className="text-white font-heading text-lg mb-3">Lógica da IA</h4>
-                            <p className="text-gray-500 text-sm leading-relaxed mb-6">A BackStageFy Concierge consulta esta agenda em tempo real. Se um lead solicitar uma visita fora desses horários, a IA oferecerá gentilmente a próxima janela disponível.</p>
-                            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                                <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-1">Status do Motor</p>
-                                <p className="text-white text-xs">Sincronizado com Supabase Realtime</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             )}
