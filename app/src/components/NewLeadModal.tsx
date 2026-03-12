@@ -23,6 +23,7 @@ export default function NewLeadModal({ isOpen, onClose, onSuccess }: NewLeadModa
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!supabase) return
+        if (!tenantId) { alert('Tenant não encontrado. Recarregue a página.'); return }
         setLoading(true)
 
         try {
@@ -34,9 +35,10 @@ export default function NewLeadModal({ isOpen, onClose, onSuccess }: NewLeadModa
             onSuccess()
             onClose()
             setFormData({ name: '', phone: '', status: 'morno', pipeline_stage: 'new', event_type: '' })
-        } catch (err) {
+        } catch (err: unknown) {
             console.error('Error creating lead:', err)
-            alert('Erro ao cadastrar lead. Verifique os dados.')
+            const msg = (err as { message?: string })?.message ?? JSON.stringify(err)
+            alert(`Erro: ${msg}`)
         } finally {
             setLoading(false)
         }

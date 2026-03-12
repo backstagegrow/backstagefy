@@ -85,6 +85,8 @@ export default function ScheduleView() {
             if (res.ok) {
                 const data = await res.json()
                 setGcalStatus(data)
+                localStorage.setItem('gcal_connected', data.connected ? '1' : '0')
+                window.dispatchEvent(new StorageEvent('storage', { key: 'gcal_connected', newValue: data.connected ? '1' : '0' }))
             }
         } catch { /* ignore */ }
     }, [supabase])
@@ -190,7 +192,9 @@ export default function ScheduleView() {
                 `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=disconnect`,
                 { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
             )
-            setGcalStatus({ connected: false, google_email: null, connected_at: null })
+            setGcalStatus({ connected: false, google_email: null, connected_at: null, calendar_id: 'primary' })
+            localStorage.setItem('gcal_connected', '0')
+            window.dispatchEvent(new StorageEvent('storage', { key: 'gcal_connected', newValue: '0' }))
         } catch { /* ignore */ }
         setGcalLoading(false)
     }
@@ -414,12 +418,23 @@ export default function ScheduleView() {
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-3 p-4 bg-green-500/5 border border-green-500/20 rounded-2xl">
                                         <div className="size-2 rounded-full bg-green-400 animate-pulse shrink-0" />
-                                        <div>
+                                        <div className="flex-1">
                                             <p className="text-green-400 text-xs font-bold uppercase tracking-widest">Conectado</p>
                                             {gcalStatus.google_email && (
                                                 <p className="text-gray-400 text-xs mt-0.5">{gcalStatus.google_email}</p>
                                             )}
                                         </div>
+                                        <button
+                                            onClick={handleGcalDisconnect}
+                                            disabled={gcalLoading}
+                                            className="flex items-center gap-1.5 text-red-500/60 hover:text-red-400 transition-colors disabled:opacity-30 group"
+                                            title="Desconectar Google Agenda"
+                                        >
+                                            <div className="size-1.5 rounded-full bg-red-500/60 group-hover:bg-red-400 transition-colors" />
+                                            <span className="text-[10px] font-bold uppercase tracking-widest">
+                                                {gcalLoading ? '...' : 'desconectar'}
+                                            </span>
+                                        </button>
                                     </div>
 
                                     {/* Calendar Selector */}
@@ -461,13 +476,6 @@ export default function ScheduleView() {
                                         )}
                                     </div>
 
-                                    <button
-                                        onClick={handleGcalDisconnect}
-                                        disabled={gcalLoading}
-                                        className="w-full py-3 rounded-2xl border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest hover:bg-red-500/10 transition-all disabled:opacity-50"
-                                    >
-                                        {gcalLoading ? 'Aguarde...' : 'Desconectar Google Agenda'}
-                                    </button>
                                 </div>
                             ) : (
                                 <button
