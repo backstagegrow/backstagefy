@@ -18,6 +18,7 @@ interface FunnelStep {
 interface Agent {
     id: string;
     name: string;
+    settings?: { scheduling_enabled?: boolean };
 }
 
 const STEP_TYPES = [
@@ -39,6 +40,7 @@ const FunnelBuilder: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+    const [schedulingEnabled, setSchedulingEnabled] = useState(true);
 
     // AI Optimizer state
     const [optimizing, setOptimizing] = useState(false);
@@ -50,18 +52,25 @@ const FunnelBuilder: React.FC = () => {
     }, [tenantId]);
 
     useEffect(() => {
-        if (selectedAgentId) fetchSteps();
+        if (selectedAgentId) {
+            fetchSteps();
+            const ag = agents.find(a => a.id === selectedAgentId);
+            if (ag) setSchedulingEnabled(ag.settings?.scheduling_enabled !== false);
+        }
     }, [selectedAgentId]);
 
     const fetchAgents = async () => {
         if (!supabase || !tenantId) return;
         const { data } = await supabase
             .from('agents')
-            .select('id, name')
+            .select('id, name, settings')
             .eq('tenant_id', tenantId)
             .order('created_at');
         setAgents(data || []);
-        if (data && data.length > 0) setSelectedAgentId(data[0].id);
+        if (data && data.length > 0) {
+            setSelectedAgentId(data[0].id);
+            setSchedulingEnabled(data[0].settings?.scheduling_enabled !== false);
+        }
         setLoading(false);
     };
 
@@ -225,6 +234,32 @@ const FunnelBuilder: React.FC = () => {
                             ))}
                         </select>
                         <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">expand_more</span>
+                    </div>
+
+                    {/* Scheduling Toggle */}
+                    <div className="relative z-10 mt-4 flex items-center justify-between p-3 bg-black/30 rounded-xl border border-white/5">
+                        <div className="flex items-center gap-2.5">
+                            <span className="material-symbols-outlined text-primary text-lg">calendar_month</span>
+                            <div>
+                                <p className="text-white text-xs font-semibold">Agendamento IA</p>
+                                <p className="text-white/30 text-[9px] leading-tight mt-0.5">Permite a IA agendar visitas</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={async () => {
+                                if (!supabase || !selectedAgentId) return;
+                                const newVal = !schedulingEnabled;
+                                setSchedulingEnabled(newVal);
+                                const selected = agents.find(a => a.id === selectedAgentId);
+                                const currentSettings = (selected as any)?.settings || {};
+                                await supabase.from('agents').update({
+                                    settings: { ...currentSettings, scheduling_enabled: newVal }
+                                }).eq('id', selectedAgentId);
+                            }}
+                            className={`relative w-10 h-6 rounded-full transition-all duration-300 ${schedulingEnabled ? 'bg-primary/40 border-[1.5px] border-primary' : 'bg-white/10 border-[1.5px] border-white/20'}`}
+                        >
+                            <div className={`absolute top-[3px] size-3.5 rounded-full transition-all duration-300 shadow-md ${schedulingEnabled ? 'left-[18px] bg-primary' : 'left-[4px] bg-white/40'}`} />
+                        </button>
                     </div>
                 </div>
 

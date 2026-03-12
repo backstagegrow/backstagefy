@@ -11,6 +11,8 @@ Deno.serve(async (req) => {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? "";
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? "";
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    const GOOGLE_CLIENT_ID = Deno.env.get("GOOGLE_CLIENT_ID") ?? "";
+    const GOOGLE_CLIENT_SECRET = Deno.env.get("GOOGLE_CLIENT_SECRET") ?? "";
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     if (req.method === 'OPTIONS') {
@@ -147,8 +149,37 @@ Deno.serve(async (req) => {
             .from('appointments')
             .select('*')
             .eq('lead_id', lead.id)
-            .eq('status', 'confirmed')
+            .in('status', ['confirmed', 'scheduled'])
             .order('appointment_date', { ascending: true });
+
+        // ─── 6.5 LOAD AVAILABILITY (for smart scheduling) ────
+        const { data: availability } = await supabase
+            .from('availability')
+            .select('day_of_week, start_time, end_time, is_active, appointment_interval')
+            .eq('tenant_id', tenant_id)
+            .order('day_of_week');
+
+        const DAYS_PT = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        let availabilityContext = "";
+        if (availability && availability.length > 0) {
+            const lines = availability.map((a: any) => {
+                const day = DAYS_PT[a.day_of_week];
+                if (!a.is_active) return `  ${day}: FECHADO`;
+                return `  ${day}: ${a.start_time?.slice(0, 5)} - ${a.end_time?.slice(0, 5)} (intervalo ${a.appointment_interval}min)`;
+            });
+            availabilityContext = `\n[HORÁRIOS DISPONÍVEIS PARA AGENDAMENTO]\n${lines.join('\n')}`;
+        }
+
+        // Check if scheduling is enabled for this agent
+        const schedulingEnabled = agent.settings?.scheduling_enabled !== false;
+
+        // Check if Google Calendar is connected
+        const { data: gcalToken } = await supabase
+            .from('google_calendar_tokens')
+            .select('access_token, refresh_token, expiry_date, calendar_id')
+            .eq('tenant_id', tenant_id)
+            .maybeSingle();
+        const hasGCal = !!gcalToken;
 
         // ─── 7. BUILD DYNAMIC SYSTEM PROMPT ──────────────────
         const nowBR = new Date().toLocaleString('pt-BR', {
@@ -170,6 +201,7 @@ ${ragContext}
 
 [AGENDAMENTOS ATIVOS]
 ${appointments && appointments.length > 0 ? JSON.stringify(appointments) : 'Nenhum agendamento'}
+${availabilityContext}
 
 [DATA/HORA ATUAL]
 ${nowBR} (Fuso: America/Sao_Paulo)
@@ -180,27 +212,33 @@ ${nowBR} (Fuso: America/Sao_Paulo)
 - Siga as instruções da etapa atual do funil
 - NUNCA diga "não tenho acesso à agenda" — você TEM acesso total
 - Se precisar atualizar dados do lead, use a tool update_lead
-- Se precisar agendar, use a tool schedule_appointment
-- Se precisar avançar no funil, use a tool advance_funnel`;
+- Se precisar agendar, use a tool schedule_appointment. SEMPRE verifique os HORÁRIOS DISPONÍVEIS antes de sugerir horários.
+- Quando o agendamento for ONLINE, informe que o link do Google Meet será enviado automaticamente.
+- Se precisar avançar no funil, use a tool advance_funnel
+- NÃO agende fora dos horários configurados (veja HORÁRIOS DISPONÍVEIS)
+- NÃO agende em dias marcados como FECHADO`;
 
         // ─── 8. DEFINE TOOLS ─────────────────────────────────
-        const tools = [
-            {
+        const tools: any[] = [];
+
+        if (schedulingEnabled) {
+            tools.push({
                 type: "function",
                 function: {
                     name: "schedule_appointment",
-                    description: "Agenda um compromisso/reunião para o lead.",
+                    description: "Agenda um compromisso/reunião para o lead. Verifique HORÁRIOS DISPONÍVEIS antes de usar.",
                     parameters: {
                         type: "object",
                         properties: {
-                            datetime: { type: "string", description: "Data/hora ISO 8601" },
+                            datetime: { type: "string", description: "Data/hora ISO 8601 (ex: 2026-03-13T10:00:00)" },
                             summary: { type: "string", description: "Descrição do agendamento" },
+                            appointment_type: { type: "string", enum: ["presencial", "online"], description: "Tipo de visita (presencial ou online)" },
                         },
-                        required: ["datetime"],
+                        required: ["datetime", "appointment_type"],
                     },
                 },
-            },
-            {
+            });
+            tools.push({
                 type: "function",
                 function: {
                     name: "cancel_appointment",
@@ -213,7 +251,10 @@ ${nowBR} (Fuso: America/Sao_Paulo)
                         required: ["appointment_id"],
                     },
                 },
-            },
+            });
+        }
+
+        tools.push(
             {
                 type: "function",
                 function: {
@@ -258,7 +299,7 @@ ${nowBR} (Fuso: America/Sao_Paulo)
                     },
                 },
             },
-        ];
+        );
 
         // ─── 9. CALL OPENAI ──────────────────────────────────
         const messages = [
@@ -285,21 +326,110 @@ ${nowBR} (Fuso: America/Sao_Paulo)
         let finalReply = choice?.message?.content || "";
         const toolCalls = choice?.message?.tool_calls;
 
+        // Helper: get valid GCal access token
+        async function getValidGCalToken(): Promise<string | null> {
+            if (!gcalToken) return null;
+            const isExpired = gcalToken.expiry_date && Date.now() > gcalToken.expiry_date - 5 * 60 * 1000;
+            if (!isExpired) return gcalToken.access_token;
+            try {
+                const r = await fetch("https://oauth2.googleapis.com/token", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        refresh_token: gcalToken.refresh_token,
+                        client_id: GOOGLE_CLIENT_ID,
+                        client_secret: GOOGLE_CLIENT_SECRET,
+                        grant_type: "refresh_token"
+                    }),
+                });
+                if (!r.ok) return null;
+                const d = await r.json();
+                await supabase.from("google_calendar_tokens").update({
+                    access_token: d.access_token,
+                    expiry_date: Date.now() + d.expires_in * 1000,
+                    updated_at: new Date().toISOString()
+                }).eq("tenant_id", tenant_id);
+                return d.access_token;
+            } catch { return null; }
+        }
+
         // ─── 10. PROCESS TOOL CALLS ──────────────────────────
         if (toolCalls) {
             for (const call of toolCalls) {
                 const args = JSON.parse(call.function.arguments);
 
                 if (call.function.name === 'schedule_appointment') {
-                    await supabase.from('appointments').insert({
+                    const apptType = args.appointment_type || 'presencial';
+                    const interval = availability?.find((a: any) => {
+                        const d = new Date(args.datetime);
+                        return a.day_of_week === d.getDay();
+                    })?.appointment_interval || 60;
+
+                    const startDate = new Date(args.datetime);
+                    const endDate = new Date(startDate.getTime() + interval * 60 * 1000);
+
+                    // Insert appointment in DB
+                    const { data: newAppt } = await supabase.from('appointments').insert({
                         tenant_id,
                         lead_id: lead.id,
                         appointment_date: args.datetime,
+                        appointment_type: apptType,
                         notes: args.summary || '',
                         status: 'confirmed',
-                    });
+                    }).select('id').single();
                     await supabase.from('leads').update({ pipeline_stage: 'scheduled' }).eq('id', lead.id);
-                    console.log(`[ai-concierge-v2] Scheduled: ${args.datetime}`);
+
+                    // Sync to Google Calendar if connected
+                    let meetLink: string | null = null;
+                    if (hasGCal) {
+                        try {
+                            const accessToken = await getValidGCalToken();
+                            if (accessToken) {
+                                const calendarId = gcalToken.calendar_id || "primary";
+                                const leadName = lead.name || lead.phone;
+                                const eventBody: Record<string, unknown> = {
+                                    summary: `${apptType === 'online' ? '💻' : '🏢'} Visita: ${leadName}`,
+                                    description: `Agendamento BackStageFy\nLead: ${leadName}\nTelefone: ${lead.phone}\nTipo: ${apptType}\n${args.summary || ''}`,
+                                    start: { dateTime: startDate.toISOString(), timeZone: "America/Sao_Paulo" },
+                                    end: { dateTime: endDate.toISOString(), timeZone: "America/Sao_Paulo" },
+                                };
+
+                                if (apptType === "online") {
+                                    eventBody.conferenceData = {
+                                        createRequest: {
+                                            requestId: crypto.randomUUID(),
+                                            conferenceSolutionKey: { type: "hangoutsMeet" },
+                                        },
+                                    };
+                                }
+
+                                const calUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events${apptType === "online" ? "?conferenceDataVersion=1" : ""}`;
+                                const calRes = await fetch(calUrl, {
+                                    method: "POST",
+                                    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+                                    body: JSON.stringify(eventBody),
+                                });
+
+                                if (calRes.ok) {
+                                    const event = await calRes.json();
+                                    meetLink = event.conferenceData?.entryPoints?.find((e: any) => e.entryPointType === "video")?.uri || null;
+                                    if (newAppt?.id) {
+                                        await supabase.from('appointments').update({ google_event_id: event.id }).eq('id', newAppt.id);
+                                    }
+                                    console.log(`[ai-concierge-v2] GCal event created: ${event.id}, meet: ${meetLink}`);
+                                }
+                            }
+                        } catch (gcalErr) {
+                            console.error("[ai-concierge-v2] GCal sync error:", gcalErr);
+                        }
+                    }
+
+                    // If online and Meet link was generated, append to the AI reply
+                    if (apptType === 'online' && meetLink) {
+                        finalReply = (finalReply || "") + `\n\n📹 *Link do Google Meet:*\n${meetLink}`;
+                    }
+
+                    console.log(`[ai-concierge-v2] Scheduled: ${args.datetime} (${apptType})`);
                 }
 
                 if (call.function.name === 'cancel_appointment') {
@@ -323,6 +453,7 @@ ${nowBR} (Fuso: America/Sao_Paulo)
                     }
                     if (args.budget_range) {
                         updates.status = ['A', 'B', 'C'].includes(args.budget_range) ? 'quente' : 'morno';
+                        updates.budget_range = args.budget_range;
                     }
                     await supabase.from('leads').update(updates).eq('id', lead.id);
                     console.log(`[ai-concierge-v2] Lead updated:`, updates);
