@@ -43,7 +43,7 @@ export default function DashboardStats() {
                 .from('appointments')
                 .select('id, status')
                 .eq('tenant_id', tenantId)
-                .eq('status', 'confirmed')
+                .in('status', ['confirmed', 'scheduled'])
 
             if (leads) {
                 const now = new Date()
