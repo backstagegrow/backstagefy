@@ -44,6 +44,14 @@ interface GCalStatus {
     connected: boolean
     google_email: string | null
     connected_at: string | null
+    calendar_id: string
+}
+
+interface GCalendar {
+    id: string
+    summary: string
+    primary?: boolean
+    backgroundColor?: string
 }
 
 export default function ScheduleView() {
@@ -54,8 +62,10 @@ export default function ScheduleView() {
     const [currentMonth, setCurrentMonth] = useState(new Date())
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
     const [loading, setLoading] = useState(true)
-    const [gcalStatus, setGcalStatus] = useState<GCalStatus>({ connected: false, google_email: null, connected_at: null })
+    const [gcalStatus, setGcalStatus] = useState<GCalStatus>({ connected: false, google_email: null, connected_at: null, calendar_id: 'primary' })
     const [gcalLoading, setGcalLoading] = useState(false)
+    const [calendars, setCalendars] = useState<GCalendar[]>([])
+    const [calendarDropdownOpen, setCalendarDropdownOpen] = useState(false)
 
     const fetchAvailability = async () => {
         if (!supabase) return
@@ -72,9 +82,43 @@ export default function ScheduleView() {
                 `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=status`,
                 { headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
             )
-            if (res.ok) setGcalStatus(await res.json())
+            if (res.ok) {
+                const data = await res.json()
+                setGcalStatus(data)
+            }
         } catch { /* ignore */ }
     }, [supabase])
+
+    const handleListCalendars = async () => {
+        if (!supabase || calendars.length > 0) { setCalendarDropdownOpen(v => !v); return; }
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) return
+        try {
+            const res = await fetch(
+                `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=list-calendars`,
+                { headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
+            )
+            if (res.ok) {
+                const { calendars: cals } = await res.json()
+                setCalendars(cals ?? [])
+                setCalendarDropdownOpen(true)
+            }
+        } catch { /* ignore */ }
+    }
+
+    const handleSelectCalendar = async (calendarId: string) => {
+        if (!supabase) return
+        setCalendarDropdownOpen(false)
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) return
+        try {
+            await fetch(
+                `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=select-calendar`,
+                { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ calendar_id: calendarId }) }
+            )
+            setGcalStatus(prev => ({ ...prev, calendar_id: calendarId }))
+        } catch { /* ignore */ }
+    }
 
     const handleGcalConnect = async () => {
         if (!supabase) return
@@ -377,6 +421,46 @@ export default function ScheduleView() {
                                             )}
                                         </div>
                                     </div>
+
+                                    {/* Calendar Selector */}
+                                    <div className="relative">
+                                        <button
+                                            onClick={handleListCalendars}
+                                            className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/10 text-left hover:border-white/20 transition-all"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <span className="material-symbols-outlined text-gray-400 text-base">event_note</span>
+                                                <div>
+                                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest">Agenda selecionada</p>
+                                                    <p className="text-white text-xs mt-0.5 font-medium">
+                                                        {calendars.find(c => c.id === gcalStatus.calendar_id)?.summary ||
+                                                        (gcalStatus.calendar_id === 'primary' ? 'Agenda Principal' : gcalStatus.calendar_id)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <span className="material-symbols-outlined text-gray-500 text-base">{calendarDropdownOpen ? 'expand_less' : 'expand_more'}</span>
+                                        </button>
+
+                                        {calendarDropdownOpen && calendars.length > 0 && (
+                                            <div className="absolute top-full left-0 right-0 mt-2 bg-bg-dark border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-20">
+                                                {calendars.map(cal => (
+                                                    <button
+                                                        key={cal.id}
+                                                        onClick={() => handleSelectCalendar(cal.id)}
+                                                        className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/5 transition-all ${
+                                                            cal.id === gcalStatus.calendar_id ? 'bg-primary/10' : ''
+                                                        }`}
+                                                    >
+                                                        <div className="size-3 rounded-full shrink-0" style={{ backgroundColor: cal.backgroundColor || '#4285F4' }} />
+                                                        <span className="text-white text-xs">{cal.summary}</span>
+                                                        {cal.primary && <span className="ml-auto text-[10px] text-gray-500">principal</span>}
+                                                        {cal.id === gcalStatus.calendar_id && <span className="ml-auto material-symbols-outlined text-primary text-sm">check</span>}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <button
                                         onClick={handleGcalDisconnect}
                                         disabled={gcalLoading}
