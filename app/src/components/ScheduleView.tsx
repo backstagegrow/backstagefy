@@ -24,10 +24,12 @@ interface Appointment {
 
 interface Availability {
     id: string
+    tenant_id: string
     day_of_week: number
     start_time: string
     end_time: string
     is_active: boolean
+    appointment_interval: number
 }
 
 const DAYS = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
@@ -66,11 +68,19 @@ export default function ScheduleView() {
     const [gcalLoading, setGcalLoading] = useState(false)
     const [calendars, setCalendars] = useState<GCalendar[]>([])
     const [calendarDropdownOpen, setCalendarDropdownOpen] = useState(false)
+    const [appointmentInterval, setAppointmentInterval] = useState(60)
 
     const fetchAvailability = async () => {
-        if (!supabase) return
-        const { data } = await supabase.from('availability').select('*').order('day_of_week', { ascending: true })
-        setAvailability(data || [])
+        if (!supabase || !tenantId) return
+        const { data } = await supabase
+            .from('availability')
+            .select('*')
+            .eq('tenant_id', tenantId)
+            .order('day_of_week', { ascending: true })
+        if (data && data.length > 0) {
+            setAvailability(data)
+            setAppointmentInterval(data[0].appointment_interval ?? 60)
+        }
     }
 
     const fetchGcalStatus = useCallback(async () => {
@@ -231,19 +241,33 @@ export default function ScheduleView() {
         return () => { if (supabase) supabase.removeChannel(channel) }
     }, [tenantId])
 
-    const updateTimes = async (id: string, start: string, end: string) => {
-        if (!supabase) return
-        await supabase.from('availability').update({
+    const updateTimes = async (dayOfWeek: number, start: string, end: string) => {
+        if (!supabase || !tenantId) return
+        const { error } = await supabase.from('availability').upsert({
+            tenant_id: tenantId,
+            day_of_week: dayOfWeek,
             start_time: start,
-            end_time: end
-        }).eq('id', id)
-        fetchAvailability()
+            end_time: end,
+        }, { onConflict: 'tenant_id,day_of_week', ignoreDuplicates: false })
+        if (!error) fetchAvailability()
     }
 
-    const toggleActive = async (id: string, current: boolean) => {
-        if (!supabase) return
-        await supabase.from('availability').update({ is_active: !current }).eq('id', id)
-        fetchAvailability()
+    const toggleActive = async (dayOfWeek: number, current: boolean) => {
+        if (!supabase || !tenantId) return
+        const { error } = await supabase.from('availability').upsert({
+            tenant_id: tenantId,
+            day_of_week: dayOfWeek,
+            is_active: !current,
+        }, { onConflict: 'tenant_id,day_of_week', ignoreDuplicates: false })
+        if (!error) fetchAvailability()
+    }
+
+    const updateInterval = async (minutes: number) => {
+        if (!supabase || !tenantId) return
+        setAppointmentInterval(minutes)
+        await supabase.from('availability')
+            .update({ appointment_interval: minutes })
+            .eq('tenant_id', tenantId)
     }
 
     // Calendar Logic
@@ -374,18 +398,18 @@ export default function ScheduleView() {
                                                     <input
                                                         type="time"
                                                         value={slot?.start_time?.slice(0, 5) || '09:00'}
-                                                        onChange={(e) => slot && updateTimes(slot.id, e.target.value, slot.end_time)}
+                                                        onChange={(e) => updateTimes(index, e.target.value, slot?.end_time?.slice(0,5) || '18:00')}
                                                         className="bg-transparent border-none text-white font-mono text-sm focus:ring-0 focus:outline-none w-16 p-0"
                                                     />
                                                     <span className="text-gray-700 text-xs">até</span>
                                                     <input
                                                         type="time"
                                                         value={slot?.end_time?.slice(0, 5) || '18:00'}
-                                                        onChange={(e) => slot && updateTimes(slot.id, slot.start_time, e.target.value)}
+                                                        onChange={(e) => updateTimes(index, slot?.start_time?.slice(0,5) || '09:00', e.target.value)}
                                                         className="bg-transparent border-none text-white font-mono text-sm focus:ring-0 focus:outline-none w-16 p-0"
                                                     />
                                                 </div>
-                                                <button onClick={() => slot && toggleActive(slot.id, slot.is_active)}
+                                                <button onClick={() => toggleActive(index, slot?.is_active ?? false)}
                                                     className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all ${slot?.is_active ? 'bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20' : 'bg-white/5 text-gray-500 border border-white/10 hover:border-white/20'}`}>
                                                     {slot?.is_active ? 'Ativo' : 'Pausado'}
                                                 </button>
@@ -394,11 +418,34 @@ export default function ScheduleView() {
                                     )
                                 })}
                             </div>
+
+                            {/* Appointment Interval */}
+                            <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-between">
+                                <div>
+                                    <p className="text-white text-sm font-bold">Intervalo entre agendamentos</p>
+                                    <p className="text-gray-500 text-xs mt-0.5">Tempo mínimo entre visitas</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    {[30, 45, 60, 90].map(min => (
+                                        <button
+                                            key={min}
+                                            onClick={() => updateInterval(min)}
+                                            className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${
+                                                appointmentInterval === min
+                                                    ? 'bg-primary text-black'
+                                                    : 'bg-white/5 text-gray-400 border border-white/10 hover:border-primary/30'
+                                            }`}
+                                        >
+                                            {min}min
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="space-y-6">
                         {/* Google Calendar Card */}
-                        <div className="backstagefy-glass-card p-8 border-primary/10">
+                        <div className="backstagefy-glass-card p-8 border-primary/10 overflow-visible">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                                     <svg className="size-6" viewBox="0 0 24 24" aria-hidden="true">
