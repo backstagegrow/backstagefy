@@ -11,7 +11,7 @@ const APP_URL = Deno.env.get("APP_URL") ?? "https://backstagefy.com.br";
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Authorization, apikey, Content-Type",
+  "Access-Control-Allow-Headers": "Authorization, apikey, Content-Type, x-user-token",
 };
 
 const SCOPES = [
@@ -20,20 +20,24 @@ const SCOPES = [
   "https://www.googleapis.com/auth/userinfo.email",
 ].join(" ");
 
+// Extracts user JWT from x-user-token header (frontend passes anon key as Authorization for Kong)
+function getUserToken(req: Request): string | null {
+  return req.headers.get("x-user-token") ?? req.headers.get("Authorization")?.replace("Bearer ", "") ?? null;
+}
+
 Deno.serve(async (req: Request) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: CORS });
   }
 
   const url = new URL(req.url);
   const action = url.searchParams.get("action");
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
   if (action === "connect") {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return Response.json({ error: "Missing Authorization" }, { status: 401, headers: CORS });
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-    const { data: { user }, error } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+    const userToken = getUserToken(req);
+    if (!userToken) return Response.json({ error: "Missing token" }, { status: 401, headers: CORS });
+    const { data: { user }, error } = await supabase.auth.getUser(userToken);
     if (error || !user) return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
     const state = btoa(JSON.stringify({ userId: user.id, ts: Date.now() }));
     const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
@@ -70,7 +74,6 @@ Deno.serve(async (req: Request) => {
       const ui = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", { headers: { Authorization: `Bearer ${tokens.access_token}` } });
       if (ui.ok) { const d = await ui.json(); googleEmail = d.email ?? ""; }
     } catch {}
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     const { data: tenant } = await supabase.from("tenants").select("id").eq("owner_id", userId).single();
     if (!tenant) return Response.redirect(`${APP_URL}/?gcal=error`);
     const expiryDate = tokens.expires_in ? Date.now() + tokens.expires_in * 1000 : null;
@@ -82,14 +85,26 @@ Deno.serve(async (req: Request) => {
       google_email: googleEmail,
       updated_at: new Date().toISOString(),
     }, { onConflict: "tenant_id" });
-    return Response.redirect(`${APP_URL}/viewings?gcal=success`);
+
+    // Envia postMessage para a janela pai e fecha o popup
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
+<script>
+  try {
+    window.opener?.postMessage({ gcal: 'success' }, '*');
+  } catch(e) {}
+  window.close();
+</script>
+<p style="font-family:sans-serif;text-align:center;padding:40px;color:#333">
+  Conectado! Fechando...
+</p>
+</body></html>`;
+    return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
   }
 
   if (action === "disconnect") {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return Response.json({ error: "Missing Authorization" }, { status: 401, headers: CORS });
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-    const { data: { user }, error } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+    const userToken = getUserToken(req);
+    if (!userToken) return Response.json({ error: "Missing token" }, { status: 401, headers: CORS });
+    const { data: { user }, error } = await supabase.auth.getUser(userToken);
     if (error || !user) return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
     const { data: tenant } = await supabase.from("tenants").select("id").eq("owner_id", user.id).single();
     if (tenant) await supabase.from("google_calendar_tokens").delete().eq("tenant_id", tenant.id);
@@ -97,10 +112,9 @@ Deno.serve(async (req: Request) => {
   }
 
   if (action === "status") {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return Response.json({ connected: false }, { headers: CORS });
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-    const { data: { user }, error } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+    const userToken = getUserToken(req);
+    if (!userToken) return Response.json({ connected: false }, { headers: CORS });
+    const { data: { user }, error } = await supabase.auth.getUser(userToken);
     if (error || !user) return Response.json({ connected: false }, { headers: CORS });
     const { data: tenant } = await supabase.from("tenants").select("id").eq("owner_id", user.id).single();
     if (!tenant) return Response.json({ connected: false }, { headers: CORS });

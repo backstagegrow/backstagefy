@@ -70,7 +70,7 @@ export default function ScheduleView() {
         try {
             const res = await fetch(
                 `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=status`,
-                { headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
+                { headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}`, apikey: SUPABASE_ANON_KEY, 'x-user-token': session.access_token } }
             )
             if (res.ok) setGcalStatus(await res.json())
         } catch { /* ignore */ }
@@ -80,31 +80,49 @@ export default function ScheduleView() {
         if (!supabase) return
         setGcalLoading(true)
 
-        // Abre janela imediatamente (antes de qualquer await) para evitar popup blocker
-        // Sem 'noopener' para manter referência e poder redirecionar depois
+        // Escuta o postMessage que o popup vai enviar após o OAuth
+        const onMessage = (e: MessageEvent) => {
+            if (e.data?.gcal === 'success') {
+                window.removeEventListener('message', onMessage)
+                setGcalLoading(false)
+                fetchGcalStatus()
+            }
+        }
+        window.addEventListener('message', onMessage)
+
+        // Abre janela ANTES de qualquer await (evita popup blocker)
         const authWindow = window.open('about:blank', '_blank', 'width=520,height=660')
 
         try {
             const { data: { session } } = await supabase.auth.getSession()
             if (!session?.access_token) {
                 authWindow?.close()
+                window.removeEventListener('message', onMessage)
                 setGcalLoading(false)
                 return
             }
             const res = await fetch(
                 `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=connect`,
-                { headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
+                { headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}`, apikey: SUPABASE_ANON_KEY, 'x-user-token': session.access_token } }
             )
             if (res.ok) {
                 const { url } = await res.json()
-                if (authWindow) authWindow.location.href = url
+                if (authWindow) {
+                    authWindow.location.href = url
+                }
             } else {
+                const err = await res.text()
+                console.error('❌ Edge Function error:', res.status, err)
                 authWindow?.close()
+                window.removeEventListener('message', onMessage)
+                setGcalLoading(false)
             }
-        } catch {
+        } catch (err) {
+            console.error('❌ Erro ao abrir OAuth:', err)
             authWindow?.close()
+            window.removeEventListener('message', onMessage)
+            setGcalLoading(false)
         }
-        setGcalLoading(false)
     }
 
     const handleGcalDisconnect = async () => {
@@ -115,7 +133,7 @@ export default function ScheduleView() {
         try {
             await fetch(
                 `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=disconnect`,
-                { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
+                { method: 'POST', headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}`, apikey: SUPABASE_ANON_KEY, 'x-user-token': session.access_token } }
             )
             setGcalStatus({ connected: false, google_email: null, connected_at: null })
         } catch { /* ignore */ }
