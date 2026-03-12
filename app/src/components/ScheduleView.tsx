@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useTenant } from '../context/TenantContext'
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 
 interface Appointment {
     id: string
@@ -37,6 +40,12 @@ const getBudgetLabel = (range: string | null) => {
     return range;
 }
 
+interface GCalStatus {
+    connected: boolean
+    google_email: string | null
+    connected_at: string | null
+}
+
 export default function ScheduleView() {
     const { tenantId } = useTenant()
     const [view, setView] = useState<'calendar' | 'config'>('calendar')
@@ -45,11 +54,59 @@ export default function ScheduleView() {
     const [currentMonth, setCurrentMonth] = useState(new Date())
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
     const [loading, setLoading] = useState(true)
+    const [gcalStatus, setGcalStatus] = useState<GCalStatus>({ connected: false, google_email: null, connected_at: null })
+    const [gcalLoading, setGcalLoading] = useState(false)
 
     const fetchAvailability = async () => {
         if (!supabase) return
         const { data } = await supabase.from('availability').select('*').order('day_of_week', { ascending: true })
         setAvailability(data || [])
+    }
+
+    const fetchGcalStatus = useCallback(async () => {
+        if (!supabase) return
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) return
+        try {
+            const res = await fetch(
+                `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=status`,
+                { headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
+            )
+            if (res.ok) setGcalStatus(await res.json())
+        } catch { /* ignore */ }
+    }, [supabase])
+
+    const handleGcalConnect = async () => {
+        if (!supabase) return
+        setGcalLoading(true)
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) { setGcalLoading(false); return }
+        try {
+            const res = await fetch(
+                `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=connect`,
+                { headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
+            )
+            if (res.ok) {
+                const { url } = await res.json()
+                window.location.href = url
+            }
+        } catch { /* ignore */ }
+        setGcalLoading(false)
+    }
+
+    const handleGcalDisconnect = async () => {
+        if (!supabase) return
+        setGcalLoading(true)
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) { setGcalLoading(false); return }
+        try {
+            await fetch(
+                `${SUPABASE_URL}/functions/v1/google-calendar-auth?action=disconnect`,
+                { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY } }
+            )
+            setGcalStatus({ connected: false, google_email: null, connected_at: null })
+        } catch { /* ignore */ }
+        setGcalLoading(false)
     }
 
     const fetchAppointments = async () => {
@@ -65,7 +122,15 @@ export default function ScheduleView() {
     useEffect(() => {
         if (!supabase || !tenantId) return
         setLoading(true)
-        Promise.all([fetchAvailability(), fetchAppointments()]).then(() => setLoading(false))
+        Promise.all([fetchAvailability(), fetchAppointments(), fetchGcalStatus()]).then(() => setLoading(false))
+
+        // Detecta callback do Google OAuth na URL
+        const urlParams = new URLSearchParams(window.location.search)
+        const gcalParam = urlParams.get('gcal')
+        if (gcalParam === 'success') {
+            fetchGcalStatus()
+            window.history.replaceState({}, '', window.location.pathname)
+        }
 
         const channel = supabase.channel('calendar-realtime')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, () => {
@@ -235,15 +300,71 @@ export default function ScheduleView() {
                             </div>
                         </div>
                     </div>
-                    <div className="backstagefy-glass-card p-10 border-primary/10 h-fit">
-                        <div className="size-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary">
-                            <span className="material-symbols-outlined text-2xl">robot_2</span>
+                    <div className="space-y-6">
+                        {/* Google Calendar Card */}
+                        <div className="backstagefy-glass-card p-8 border-primary/10">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                    <svg className="size-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="2" y="4" width="20" height="18" rx="2" stroke="#4285F4" strokeWidth="1.5"/>
+                                        <path d="M2 9h20" stroke="#4285F4" strokeWidth="1.5"/>
+                                        <path d="M7 2v4M17 2v4" stroke="#EA4335" strokeWidth="1.5" strokeLinecap="round"/>
+                                        <rect x="6" y="13" width="4" height="4" rx="0.5" fill="#34A853"/>
+                                        <rect x="14" y="13" width="4" height="4" rx="0.5" fill="#FBBC04"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 className="text-white font-heading text-base">Google Agenda</h4>
+                                    <p className="text-gray-600 text-xs mt-0.5">Sincronize agendamentos direto com o Google Calendar</p>
+                                </div>
+                            </div>
+
+                            {gcalStatus.connected ? (
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3 p-4 bg-green-500/5 border border-green-500/20 rounded-2xl">
+                                        <div className="size-2 rounded-full bg-green-400 animate-pulse shrink-0" />
+                                        <div>
+                                            <p className="text-green-400 text-xs font-bold uppercase tracking-widest">Conectado</p>
+                                            {gcalStatus.google_email && (
+                                                <p className="text-gray-400 text-xs mt-0.5">{gcalStatus.google_email}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={handleGcalDisconnect}
+                                        disabled={gcalLoading}
+                                        className="w-full py-3 rounded-2xl border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest hover:bg-red-500/10 transition-all disabled:opacity-50"
+                                    >
+                                        {gcalLoading ? 'Aguarde...' : 'Desconectar Google Agenda'}
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={handleGcalConnect}
+                                    disabled={gcalLoading}
+                                    className="w-full backstagefy-btn-primary py-4 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
+                                >
+                                    {gcalLoading ? (
+                                        <div className="size-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                                    ) : (
+                                        <span className="material-symbols-outlined text-sm">event_available</span>
+                                    )}
+                                    {gcalLoading ? 'Redirecionando...' : 'Conectar Google Agenda'}
+                                </button>
+                            )}
                         </div>
-                        <h4 className="text-white font-heading text-lg mb-3">Lógica da IA</h4>
-                        <p className="text-gray-500 text-sm leading-relaxed mb-6">A BackStageFy Concierge consulta esta agenda em tempo real. Se um lead solicitar uma visita fora desses horários, a IA oferecerá gentilmente a próxima janela disponível.</p>
-                        <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                            <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-1">Status do Motor</p>
-                            <p className="text-white text-xs">Sincronizado com Supabase Realtime</p>
+
+                        {/* AI Logic Card */}
+                        <div className="backstagefy-glass-card p-8 border-primary/10">
+                            <div className="size-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary">
+                                <span className="material-symbols-outlined text-2xl">robot_2</span>
+                            </div>
+                            <h4 className="text-white font-heading text-lg mb-3">Lógica da IA</h4>
+                            <p className="text-gray-500 text-sm leading-relaxed mb-6">A BackStageFy Concierge consulta esta agenda em tempo real. Se um lead solicitar uma visita fora desses horários, a IA oferecerá gentilmente a próxima janela disponível.</p>
+                            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                                <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-1">Status do Motor</p>
+                                <p className="text-white text-xs">Sincronizado com Supabase Realtime</p>
+                            </div>
                         </div>
                     </div>
                 </div>
