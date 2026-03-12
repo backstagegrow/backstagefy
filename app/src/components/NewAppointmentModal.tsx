@@ -113,6 +113,7 @@ export default function NewAppointmentModal({ isOpen, onClose, onSuccess }: NewA
                 appointment_type: formData.appointment_type,
                 notes: formData.notes || null,
                 status: 'scheduled',
+                scheduled_by: 'human',
             }]).select('id').single()
             if (error) throw error
 

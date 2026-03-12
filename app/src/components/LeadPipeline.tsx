@@ -4,6 +4,15 @@ import { supabase } from '../lib/supabase'
 import { useTenant } from '../context/TenantContext'
 import LeadDetailModal from './LeadDetailModal'
 
+interface Appointment {
+    appointment_date: string
+    appointment_time?: string
+    notes: string
+    status: string
+    appointment_type?: string
+    scheduled_by?: string
+}
+
 interface Lead {
     id: string
     name: string
@@ -17,11 +26,7 @@ interface Lead {
     corporate_email: string
     created_at: string
     last_interaction?: string
-    appointments?: {
-        appointment_date: string
-        notes: string
-        status: string
-    }[]
+    appointments?: Appointment[]
 }
 
 interface Column {
@@ -49,7 +54,7 @@ export default function LeadPipeline() {
         try {
             const { data, error } = await supabase
                 .from('leads')
-                .select('*, appointments(appointment_date, notes, status)')
+                .select('*, appointments(appointment_date, appointment_time, notes, status, appointment_type, scheduled_by)')
                 .eq('tenant_id', tenantId)
                 .order('created_at', { ascending: false })
 
@@ -64,14 +69,18 @@ export default function LeadPipeline() {
                 ...col,
                 leads: data?.filter(l => {
                     const stage = l.pipeline_stage || 'new';
+                    const hasActiveAppt = l.appointments?.some(
+                        (a: Appointment) => a.status === 'confirmed' || a.status === 'scheduled'
+                    );
 
+                    // Leads with pipeline_stage = 'scheduled' go to "Visita Agendada"
                     if (col.id === 'scheduled') {
-                        // Only auto-move to scheduled if it's NOT already in a later stage
-                        const isLaterStage = stage === 'booked' || stage === 'attending';
-                        const hasConfirmedAppt = l.appointments?.some((a: { status: string }) => a.status === 'confirmed');
-                        if (!isLaterStage && hasConfirmedAppt) {
-                            return true;
-                        }
+                        return stage === 'scheduled' || (hasActiveAppt && stage !== 'booked');
+                    }
+
+                    // Don't show leads with active appointments in other columns (except booked)
+                    if (col.id !== 'booked' && col.id !== 'scheduled' && (stage === 'scheduled' || hasActiveAppt)) {
+                        return false;
                     }
 
                     return stage === col.id;
@@ -87,8 +96,6 @@ export default function LeadPipeline() {
 
     const handleDragEnd = async (leadId: string, info: any) => {
         setDraggingId(null);
-
-        // Find columns based on X position
         const elements = document.querySelectorAll('[data-column-id]');
         let targetColumnId = null;
 
@@ -101,12 +108,8 @@ export default function LeadPipeline() {
         }
 
         if (targetColumnId) {
-            // Optimistic update
             const lead = columns.flatMap(c => c.leads).find(l => l.id === leadId);
             if (lead && lead.pipeline_stage !== targetColumnId) {
-                console.log(`[PIPELINE] Moving ${leadId} to ${targetColumnId}`);
-
-                // Update Local UI Fast
                 setColumns(prev => prev.map(col => ({
                     ...col,
                     leads: col.id === targetColumnId
@@ -114,13 +117,12 @@ export default function LeadPipeline() {
                         : col.leads.filter(l => l.id !== leadId)
                 })));
 
-                // Persist to DB
                 try {
                     const { error } = await supabase!.from('leads').update({ pipeline_stage: targetColumnId }).eq('id', leadId);
                     if (error) throw error;
                 } catch (err) {
                     console.error('Update Status Error:', err);
-                    fetchLeads(); // Rollback to real data
+                    fetchLeads();
                 }
             }
         }
@@ -165,9 +167,16 @@ export default function LeadPipeline() {
                         <div className="flex-1 space-y-4 pr-1 scrollbar-hide">
                             <AnimatePresence mode="popLayout">
                                 {column.leads.map((lead) => {
-                                    const app = lead.appointments?.find(a => a.status === 'confirmed');
-                                    const hasAppointment = !!app;
-                                    const appointmentDate = app ? new Date(app.appointment_date) : null;
+                                    const activeAppt = lead.appointments?.find(
+                                        a => a.status === 'confirmed' || a.status === 'scheduled'
+                                    );
+                                    const hasAppointment = !!activeAppt;
+                                    const apptDate = activeAppt?.appointment_date
+                                        ? new Date(activeAppt.appointment_date)
+                                        : null;
+                                    const apptType = activeAppt?.appointment_type || 'presencial';
+                                    const scheduledBy = activeAppt?.scheduled_by || 'human';
+                                    const isOnline = apptType === 'online';
 
                                     return (
                                         <motion.div
@@ -187,12 +196,14 @@ export default function LeadPipeline() {
                                             }}
                                             className={`backstagefy-glass-card p-5 group cursor-grab active:cursor-grabbing border transition-all duration-500 relative overflow-hidden ${lead.budget_range === 'C'
                                                 ? 'border-amber-500/30'
-                                                : lead.budget_range === 'B'
-                                                    ? 'border-primary/20 hover:border-primary/40'
-                                                    : 'border-white/[0.03] hover:border-white/10'
+                                                : hasAppointment
+                                                    ? 'border-amber-500/20 hover:border-amber-500/40'
+                                                    : lead.budget_range === 'B'
+                                                        ? 'border-primary/20 hover:border-primary/40'
+                                                        : 'border-white/[0.03] hover:border-white/10'
                                                 }`}
                                         >
-                                            {/* Rank Badge */}
+                                            {/* Lead Header */}
                                             <div className="flex justify-between items-start mb-4">
                                                 <div className="flex flex-col">
                                                     <div className="flex items-center gap-2">
@@ -207,11 +218,23 @@ export default function LeadPipeline() {
                                                     </div>
                                                     <p className="text-gray-500 text-sm font-mono tracking-tighter mt-1">{lead.phone}</p>
                                                 </div>
-                                                <div className={`px-2 py-1 rounded text-[11px] font-bold uppercase tracking-widest ${lead.status === 'quente' ? 'bg-red-500/10 text-red-500' :
-                                                    lead.status === 'morno' ? 'bg-amber-500/10 text-amber-400' :
-                                                        'bg-gray-500/10 text-gray-500'
-                                                    }`}>
-                                                    {lead.status === 'quente' ? 'Hot' : lead.status === 'morno' ? 'Warm' : 'Cold'}
+
+                                                {/* Status + Type Icons */}
+                                                <div className="flex items-center gap-1.5">
+                                                    {hasAppointment && (
+                                                        <span
+                                                            className={`material-symbols-outlined text-[18px] ${isOnline ? 'text-blue-400' : 'text-amber-400'}`}
+                                                            title={isOnline ? 'Online (Meet)' : 'Presencial'}
+                                                        >
+                                                            {isOnline ? 'laptop_mac' : 'business'}
+                                                        </span>
+                                                    )}
+                                                    <div className={`px-2 py-1 rounded text-[11px] font-bold uppercase tracking-widest ${lead.status === 'quente' ? 'bg-red-500/10 text-red-500' :
+                                                        lead.status === 'morno' ? 'bg-amber-500/10 text-amber-400' :
+                                                            'bg-gray-500/10 text-gray-500'
+                                                        }`}>
+                                                        {lead.status === 'quente' ? 'Hot' : lead.status === 'morno' ? 'Warm' : 'Cold'}
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -226,26 +249,45 @@ export default function LeadPipeline() {
                                                     </span>
                                                 </div>
 
-                                                {hasAppointment && (
-                                                    <div className="mt-2 p-2 bg-amber-500/5 border border-amber-500/10 rounded-xl">
-                                                        <div className="flex items-center gap-2 text-amber-500 mb-1">
-                                                            <span className="material-symbols-outlined text-[16px]">calendar_today</span>
-                                                            <span className="text-xs font-bold uppercase tracking-[0.1em]">Agendado</span>
+                                                {/* Appointment Card */}
+                                                {hasAppointment && apptDate && (
+                                                    <div className={`mt-2 p-3 rounded-xl border ${isOnline
+                                                        ? 'bg-blue-500/5 border-blue-500/10'
+                                                        : 'bg-amber-500/5 border-amber-500/10'
+                                                        }`}>
+                                                        <div className="flex items-center justify-between mb-1.5">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <span className={`material-symbols-outlined text-[14px] ${isOnline ? 'text-blue-400' : 'text-amber-500'}`}>
+                                                                    {isOnline ? 'videocam' : 'calendar_today'}
+                                                                </span>
+                                                                <span className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isOnline ? 'text-blue-400' : 'text-amber-500'}`}>
+                                                                    {isOnline ? 'Reunião Online' : 'Visita Presencial'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex items-center gap-1" title={scheduledBy === 'ai' ? 'Agendado pela IA' : 'Agendado manualmente'}>
+                                                                <span className={`material-symbols-outlined text-[13px] ${scheduledBy === 'ai' ? 'text-purple-400' : 'text-white/30'}`}>
+                                                                    {scheduledBy === 'ai' ? 'smart_toy' : 'person'}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <p className="text-white text-sm font-medium">
-                                                            {appointmentDate?.toLocaleString('pt-BR', {
+                                                        <p className="text-white text-sm font-semibold">
+                                                            {apptDate.toLocaleString('pt-BR', {
                                                                 day: '2-digit',
                                                                 month: '2-digit',
                                                                 hour: '2-digit',
                                                                 minute: '2-digit'
                                                             })}
                                                         </p>
+                                                        {activeAppt?.notes && (
+                                                            <p className="text-white/30 text-[10px] mt-1 truncate">{activeAppt.notes}</p>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
 
                                             {/* Glass Overlay Glow */}
-                                            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${lead.budget_range === 'C' ? 'bg-amber-500/5' : 'bg-primary/5'
+                                            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${lead.budget_range === 'C' ? 'bg-amber-500/5' :
+                                                hasAppointment ? 'bg-amber-500/3' : 'bg-primary/5'
                                                 }`}></div>
                                         </motion.div>
                                     )

@@ -376,6 +376,7 @@ ${nowBR} (Fuso: America/Sao_Paulo)
                         appointment_type: apptType,
                         notes: args.summary || '',
                         status: 'confirmed',
+                        scheduled_by: 'ai',
                     }).select('id').single();
                     await supabase.from('leads').update({ pipeline_stage: 'scheduled' }).eq('id', lead.id);
 
