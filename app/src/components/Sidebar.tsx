@@ -21,6 +21,7 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
         { id: 'whatsapp', icon: 'chat', label: 'WhatsApp & Canais' },
         { id: 'knowledge', icon: 'menu_book', label: 'Base de Conhecimento' },
         { id: 'funnel', icon: 'filter_alt', label: 'Editor de Funil' },
+        { id: 'sales', icon: 'store', label: 'Vendas & Plataformas' },
         { id: 'broadcast', icon: 'campaign', label: 'Campanhas', badge: 'Em Breve' },
         { id: 'viewings', icon: 'calendar_month', label: 'Agenda' },
         { id: 'billing', icon: 'credit_card', label: 'Plano & Uso' },
@@ -101,7 +102,7 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
                                 >
                                     {isFunnelLocked ? 'lock' : item.icon}
                                 </span>
-                                <span className={`text-xs md:text-[13px] font-medium tracking-wide flex-1 ${isActive && !hasBadge && !isFunnelLocked ? 'font-bold' : ''}`}>
+                                <span className={`text-xs md:text-[13px] font-medium tracking-wide text-left ${isActive && !hasBadge && !isFunnelLocked ? 'font-bold' : ''}`}>
                                     {item.label}
                                 </span>
                                 {item.id === 'viewings' && gcalConnected && (

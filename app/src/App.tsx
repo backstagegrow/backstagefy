@@ -12,6 +12,7 @@ import Onboarding from './components/Onboarding'
 import AgentConfigurator from './components/AgentConfigurator'
 import FunnelBuilder from './components/FunnelBuilder'
 import KnowledgeBase from './components/KnowledgeBase'
+import TicketDashboard from './components/TicketDashboard'
 import { useKnowledgeUnlock } from './lib/useKnowledgeUnlock'
 
 import { TenantProvider, useTenant } from './context/TenantContext'
@@ -36,6 +37,7 @@ const Header = ({ activeTab, onAddClick, onMenuClick }: { activeTab: string, onA
         'whatsapp': { title: 'WhatsApp & Canais', subtitle: 'Configure a integração dos canais' },
         'knowledge': { title: 'Base de Conhecimento', subtitle: 'Gerencie documentos e FAQ do agente' },
         'funnel': { title: 'Editor de Funil', subtitle: 'Configure as etapas de atendimento' },
+        'sales': { title: 'Vendas & Plataformas', subtitle: 'Central de vendas e integrações' },
         'viewings': { title: 'Agenda', subtitle: 'Visitas e agendamentos programados' },
         'billing': { title: 'Plano & Uso', subtitle: 'Gerencie assinatura e limites' },
     }
@@ -219,9 +221,11 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
 
                         {activeTab === 'knowledge' && <KnowledgeBase onNavigate={setActiveTab} />}
 
+                        {activeTab === 'sales' && <TicketDashboard />}
+
                         {activeTab === 'portfolio' && <MediaGallery />}
 
-                        {!['dashboard', 'leads', 'agents', 'whatsapp', 'viewings', 'funnel', 'knowledge', 'portfolio'].includes(activeTab) && (
+                        {!['dashboard', 'leads', 'agents', 'whatsapp', 'viewings', 'funnel', 'knowledge', 'sales', 'portfolio'].includes(activeTab) && (
                             <ComingSoon title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} />
                         )}
                     </div>
