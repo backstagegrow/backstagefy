@@ -146,12 +146,12 @@ export default function LeadPipeline() {
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 h-full overflow-x-auto pb-10 scrollbar-hide">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 h-full overflow-auto pb-10 scrollbar-hide">
                 {columns.map((column) => (
                     <div
                         key={column.id}
                         data-column-id={column.id}
-                        className="flex flex-col h-full min-w-[300px] backstagefy-glass-card bg-white/[0.01] border-white/[0.02] p-4 rounded-3xl"
+                        className="flex flex-col h-full min-h-0 min-w-[300px] backstagefy-glass-card bg-white/[0.01] border-white/[0.02] p-4 rounded-3xl"
                     >
                         {/* Column Header */}
                         <div className="flex items-center justify-between mb-8 px-2 pt-2">
@@ -165,7 +165,7 @@ export default function LeadPipeline() {
                         </div>
 
                         {/* Column Body */}
-                        <div className="flex-1 space-y-4 pr-1 scrollbar-hide">
+                        <div className="flex-1 space-y-4 pr-1 overflow-y-auto scrollbar-hide">
                             <AnimatePresence mode="popLayout">
                                 {column.leads.map((lead) => {
                                     const activeAppts = (lead.appointments || []).filter(
