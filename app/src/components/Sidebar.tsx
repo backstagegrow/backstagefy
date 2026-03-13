@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Session } from '@supabase/supabase-js'
+import { useKnowledgeUnlock } from '../lib/useKnowledgeUnlock'
 
 interface SidebarProps {
     activeTab: string
@@ -11,6 +12,8 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activeTab, onTabChange, session, onLogout, isOpen, onClose }: SidebarProps) {
+    const { unlocked: funnelUnlocked, filledCount, totalCount } = useKnowledgeUnlock()
+
     const menuItems = [
         { id: 'dashboard', icon: 'dashboard', label: 'Painel Geral' },
         { id: 'leads', icon: 'groups', label: 'Pipeline de Leads' },
@@ -32,6 +35,12 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
     }, [])
 
     const handleTabChange = (id: string) => {
+        // Redirect locked funnel to knowledge base
+        if (id === 'funnel' && !funnelUnlocked) {
+            onTabChange('knowledge')
+            onClose?.()
+            return
+        }
         onTabChange(id)
         onClose?.()
     }
@@ -72,25 +81,27 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
                     {menuItems.map((item) => {
                         const isActive = activeTab === item.id
                         const hasBadge = 'badge' in item && item.badge
+                        const isFunnelLocked = item.id === 'funnel' && !funnelUnlocked
                         return (
                             <button
                                 key={item.id}
                                 onClick={() => !hasBadge && handleTabChange(item.id)}
-                                className={`w-full group flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 rounded-2xl transition-all duration-300 relative ${hasBadge
-                                    ? 'text-gray-600 cursor-default border border-transparent'
+                                className={`w-full group flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 rounded-2xl transition-all duration-300 relative ${hasBadge || isFunnelLocked
+                                    ? 'text-gray-600 cursor-pointer border border-transparent'
                                     : isActive
                                         ? 'bg-primary/5 text-primary border border-primary/20'
                                         : 'text-gray-500 hover:text-white hover:bg-white/[0.02] border border-transparent'
                                     }`}
+                                title={isFunnelLocked ? 'Preencha ao menos 1 item em cada categoria da Base de Conhecimento para desbloquear' : undefined}
                             >
-                                {isActive && !hasBadge && <div className="absolute left-0 w-1 h-6 bg-primary rounded-r-full shadow-primary"></div>}
+                                {isActive && !hasBadge && !isFunnelLocked && <div className="absolute left-0 w-1 h-6 bg-primary rounded-r-full shadow-primary"></div>}
                                 <span
-                                    className={`material-symbols-outlined text-xl md:text-2xl transition-transform ${hasBadge ? 'text-gray-600' : isActive ? 'text-primary' : 'group-hover:text-white group-hover:scale-110'}`}
-                                    style={isActive && !hasBadge ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                    className={`material-symbols-outlined text-xl md:text-2xl transition-transform ${hasBadge || isFunnelLocked ? 'text-gray-600' : isActive ? 'text-primary' : 'group-hover:text-white group-hover:scale-110'}`}
+                                    style={isActive && !hasBadge && !isFunnelLocked ? { fontVariationSettings: "'FILL' 1" } : {}}
                                 >
-                                    {item.icon}
+                                    {isFunnelLocked ? 'lock' : item.icon}
                                 </span>
-                                <span className={`text-xs md:text-[13px] font-medium tracking-wide flex-1 ${isActive && !hasBadge ? 'font-bold' : ''}`}>
+                                <span className={`text-xs md:text-[13px] font-medium tracking-wide flex-1 ${isActive && !hasBadge && !isFunnelLocked ? 'font-bold' : ''}`}>
                                     {item.label}
                                 </span>
                                 {item.id === 'viewings' && gcalConnected && (
@@ -101,7 +112,12 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
                                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                                     </svg>
                                 )}
-                                {hasBadge && (
+                                {isFunnelLocked && (
+                                    <span className="ml-auto text-[8px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-bold font-mono border border-amber-500/30">
+                                        {filledCount}/{totalCount}
+                                    </span>
+                                )}
+                                {hasBadge && !isFunnelLocked && (
                                     <span className="ml-auto text-[8px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-primary/50 shadow-[0_0_10px_rgba(34,197,94,0.4)] animate-pulse">
                                         {item.badge}
                                     </span>

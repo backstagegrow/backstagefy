@@ -47,6 +47,9 @@ const FunnelBuilder: React.FC = () => {
     const [optimizedPrompt, setOptimizedPrompt] = useState<string | null>(null);
     const [showOptimized, setShowOptimized] = useState(false);
 
+    // AI funnel generation state
+    const [generating, setGenerating] = useState(false);
+
     useEffect(() => {
         if (tenantId) fetchAgents();
     }, [tenantId]);
@@ -280,14 +283,68 @@ const FunnelBuilder: React.FC = () => {
 
                     <div className="flex-1 overflow-y-auto p-5 relative">
                         {steps.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full text-center opacity-70">
-                                <div className="size-20 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                                    <span className="material-symbols-outlined text-4xl text-primary/50">account_tree</span>
+                            <div className="flex flex-col items-center justify-center h-full text-center">
+                                <div className="relative mb-6">
+                                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-[40px] pointer-events-none" />
+                                    <div className="size-20 rounded-[1.5rem] bg-white/[0.02] border border-white/5 flex items-center justify-center relative z-10 shadow-2xl">
+                                        <span className="material-symbols-outlined text-4xl text-primary/50">auto_awesome</span>
+                                    </div>
                                 </div>
-                                <p className="text-white/50 text-sm font-medium">Jornada Vazia</p>
-                                <p className="text-white/30 text-[10px] mt-2 max-w-[200px] leading-relaxed">
-                                    Clique em "Adicionar" para criar a primeira etapa de atendimento e desenhar o funil do seu agente.
+                                <p className="text-white/70 text-sm font-medium mb-1">Jornada Vazia</p>
+                                <p className="text-white/30 text-[10px] mt-1 max-w-[260px] leading-relaxed mb-6">
+                                    Gere um funil personalizado usando a Base de Conhecimento da empresa, ou crie manualmente.
                                 </p>
+
+                                <button
+                                    onClick={async () => {
+                                        if (!supabase || !tenantId || !selectedAgentId) return;
+                                        setGenerating(true);
+                                        try {
+                                            const { data, error } = await supabase.functions.invoke('generate-funnel', {
+                                                body: { tenant_id: tenantId, agent_id: selectedAgentId },
+                                            });
+                                            if (error) throw error;
+                                            if (data?.steps) {
+                                                for (const step of data.steps) {
+                                                    await supabase.from('funnel_steps').insert({
+                                                        tenant_id: tenantId,
+                                                        agent_id: selectedAgentId,
+                                                        step_order: step.step_order,
+                                                        name: step.name,
+                                                        type: step.type,
+                                                        prompt_instructions: step.prompt_instructions,
+                                                        is_active: true,
+                                                    });
+                                                }
+                                                fetchSteps();
+                                            }
+                                        } catch (err: any) {
+                                            console.error('Generate funnel error:', err);
+                                            alert('Erro ao gerar funil: ' + (err.message || 'Tente novamente.'));
+                                        } finally {
+                                            setGenerating(false);
+                                        }
+                                    }}
+                                    disabled={generating}
+                                    className="group relative backstagefy-btn-primary flex items-center gap-2.5 px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest disabled:opacity-50 mb-3"
+                                >
+                                    <span className={`material-symbols-outlined text-sm ${generating ? 'animate-spin' : ''}`}>
+                                        {generating ? 'progress_activity' : 'auto_awesome'}
+                                    </span>
+                                    {generating ? 'Gerando Funil Personalizado...' : 'Gerar Funil com IA'}
+                                </button>
+
+                                {generating && (
+                                    <p className="text-white/20 text-[9px] animate-pulse">Analisando Base de Conhecimento e criando etapas...</p>
+                                )}
+
+                                <button
+                                    onClick={handleAddStep}
+                                    disabled={generating}
+                                    className="text-white/30 text-[10px] mt-4 hover:text-white/60 transition-colors disabled:opacity-30"
+                                >
+                                    ou criar etapa manualmente
+                                </button>
                             </div>
                         ) : (
                             <div className="relative">

@@ -12,6 +12,7 @@ import Onboarding from './components/Onboarding'
 import AgentConfigurator from './components/AgentConfigurator'
 import FunnelBuilder from './components/FunnelBuilder'
 import KnowledgeBase from './components/KnowledgeBase'
+import { useKnowledgeUnlock } from './lib/useKnowledgeUnlock'
 
 import { TenantProvider, useTenant } from './context/TenantContext'
 import { supabase } from './lib/supabase'
@@ -80,6 +81,67 @@ const Header = ({ activeTab, onAddClick, onMenuClick }: { activeTab: string, onA
             </div>
         </header>
     )
+}
+
+const FunnelGuard = ({ onNavigate }: { onNavigate: (tab: string) => void }) => {
+    const kbUnlock = useKnowledgeUnlock()
+
+    if (kbUnlock.loading) {
+        return (
+            <div className="flex items-center justify-center h-[60vh]">
+                <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
+            </div>
+        )
+    }
+
+    if (!kbUnlock.unlocked) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[60vh] text-center animate-in fade-in duration-700">
+                <div className="relative mb-8">
+                    <div className="absolute inset-0 bg-amber-500/20 rounded-full blur-[50px] pointer-events-none" />
+                    <div className="size-28 rounded-[2rem] bg-white/[0.02] border border-white/5 flex items-center justify-center relative z-10 shadow-2xl">
+                        <span className="material-symbols-outlined text-5xl text-amber-400/60">lock</span>
+                    </div>
+                </div>
+                <h3 className="text-2xl text-white font-heading font-light mb-3">Editor de Funil Bloqueado</h3>
+                <p className="text-white/40 text-sm max-w-md mb-8 leading-relaxed">
+                    Preencha a Base de Conhecimento para que a IA conheça sua empresa e possa criar funis de atendimento personalizados.
+                </p>
+
+                <div className="flex flex-wrap justify-center gap-2 mb-6 max-w-lg">
+                    {kbUnlock.categories.map(cat => (
+                        <div
+                            key={cat.id}
+                            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                                cat.filled
+                                    ? 'bg-primary/10 border-primary/20 text-primary'
+                                    : 'bg-white/[0.02] border-amber-500/20 text-amber-400 animate-pulse'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined text-xs">
+                                {cat.filled ? 'check_circle' : 'radio_button_unchecked'}
+                            </span>
+                            {cat.label}
+                        </div>
+                    ))}
+                </div>
+
+                <p className="text-white/25 text-xs mb-6">
+                    {kbUnlock.filledCount} de {kbUnlock.totalCount} categorias preenchidas
+                </p>
+
+                <button
+                    onClick={() => onNavigate('knowledge')}
+                    className="backstagefy-btn-primary flex items-center gap-2 px-8 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest"
+                >
+                    <span className="material-symbols-outlined text-sm">menu_book</span>
+                    Ir para Base de Conhecimento
+                </button>
+            </div>
+        )
+    }
+
+    return <FunnelBuilder />
 }
 
 function DashboardContent({ session, onLogout }: { session: Session, onLogout: () => void }) {
@@ -153,9 +215,9 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
 
                         {activeTab === 'viewings' && <ScheduleView />}
 
-                        {activeTab === 'funnel' && <FunnelBuilder />}
+                        {activeTab === 'funnel' && <FunnelGuard onNavigate={setActiveTab} />}
 
-                        {activeTab === 'knowledge' && <KnowledgeBase />}
+                        {activeTab === 'knowledge' && <KnowledgeBase onNavigate={setActiveTab} />}
 
                         {activeTab === 'portfolio' && <MediaGallery />}
 

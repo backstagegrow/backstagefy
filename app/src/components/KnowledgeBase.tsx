@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTenant } from '../context/TenantContext'
 import { supabase } from '../lib/supabase'
+import { useKnowledgeUnlock } from '../lib/useKnowledgeUnlock'
 
 type Category = 'company_info' | 'products' | 'faq' | 'documents' | 'media'
 
@@ -57,9 +58,10 @@ const COMPANY_FIELDS = [
     { key: 'description', label: 'Sobre a Empresa', icon: 'info', placeholder: 'Descreva sua empresa, missão e diferenciais...' },
 ]
 
-export default function KnowledgeBase() {
+export default function KnowledgeBase({ onNavigate }: { onNavigate?: (tab: string) => void }) {
     const { tenant } = useTenant()
     const tenantId = tenant?.id
+    const kbUnlock = useKnowledgeUnlock()
 
     const [docs, setDocs] = useState<KnowledgeDoc[]>([])
     const [loading, setLoading] = useState(true)
@@ -328,6 +330,71 @@ export default function KnowledgeBase() {
                     </motion.div>
                 ))}
             </div>
+
+            {/* Funnel Unlock Progress Banner */}
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className={`p-5 rounded-2xl border transition-all ${
+                    kbUnlock.unlocked
+                        ? 'bg-primary/5 border-primary/20'
+                        : 'bg-white/[0.02] border-white/5'
+                }`}
+            >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className={`material-symbols-outlined text-lg ${kbUnlock.unlocked ? 'text-primary' : 'text-amber-400'}`}>
+                                {kbUnlock.unlocked ? 'lock_open' : 'lock'}
+                            </span>
+                            <h3 className="text-white text-sm font-semibold">
+                                {kbUnlock.unlocked ? 'Editor de Funil Desbloqueado!' : 'Progresso para desbloquear Editor de Funil'}
+                            </h3>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {kbUnlock.categories.map(cat => (
+                                <div
+                                    key={cat.id}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                                        cat.filled
+                                            ? 'bg-primary/10 border-primary/20 text-primary'
+                                            : 'bg-white/[0.02] border-white/10 text-white/40 animate-pulse'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-xs">
+                                        {cat.filled ? 'check_circle' : 'radio_button_unchecked'}
+                                    </span>
+                                    {cat.label}
+                                </div>
+                            ))}
+                        </div>
+                        {!kbUnlock.unlocked && (
+                            <p className="text-white/30 text-[10px] mt-2">
+                                {kbUnlock.filledCount} de {kbUnlock.totalCount} categorias preenchidas — falta {kbUnlock.totalCount - kbUnlock.filledCount} para desbloquear
+                            </p>
+                        )}
+                    </div>
+                    {kbUnlock.unlocked && onNavigate && (
+                        <button
+                            onClick={() => onNavigate('funnel')}
+                            className="backstagefy-btn-primary flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0"
+                        >
+                            <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                            Ir para Editor de Funil
+                        </button>
+                    )}
+                </div>
+                {/* Mini progress bar */}
+                {!kbUnlock.unlocked && (
+                    <div className="h-1 bg-white/5 rounded-full overflow-hidden mt-3">
+                        <div
+                            className="h-full bg-gradient-to-r from-amber-500/80 to-primary rounded-full transition-all duration-700"
+                            style={{ width: `${(kbUnlock.filledCount / kbUnlock.totalCount) * 100}%` }}
+                        />
+                    </div>
+                )}
+            </motion.div>
 
             {/* Two-section layout */}
             <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-8">
