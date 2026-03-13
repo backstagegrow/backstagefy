@@ -281,21 +281,33 @@ export default function LeadPipeline() {
                                             <div className="space-y-3 pt-2 border-t border-white/[0.03]">
                                                 <div className="flex items-center justify-between text-xs font-bold">
                                                     <span className="text-primary/60 uppercase tracking-widest">Budget</span>
-                                                    <span
-                                                        className="text-white text-base font-bold cursor-pointer hover:text-primary transition-colors"
-                                                        onClick={e => {
-                                                            e.stopPropagation()
-                                                            const cycle: Record<string, string> = { '': 'D', 'D': 'A', 'A': 'B', 'B': 'C', 'C': 'D' }
-                                                            const next = cycle[lead.budget_range || ''] || 'D'
-                                                            updateLeadField(lead.id, 'budget_range', next)
-                                                        }}
-                                                        title="Clique para alterar faixa de budget"
-                                                    >
-                                                        {lead.budget_range === 'A' ? 'R$ 35k-60k' :
-                                                            lead.budget_range === 'B' ? 'R$ 60k-100k' :
-                                                                lead.budget_range === 'C' ? 'R$ 100k+' :
-                                                                    lead.budget_range === 'D' ? '< R$ 35k' : '---'}
-                                                    </span>
+                                                    {editingField?.leadId === lead.id && editingField?.field === 'budget' ? (
+                                                        <input
+                                                            autoFocus
+                                                            value={editValue}
+                                                            onChange={e => setEditValue(e.target.value)}
+                                                            onBlur={() => updateLeadField(lead.id, 'budget', editValue)}
+                                                            onKeyDown={e => {
+                                                                if (e.key === 'Enter') updateLeadField(lead.id, 'budget', editValue)
+                                                                if (e.key === 'Escape') setEditingField(null)
+                                                            }}
+                                                            onClick={e => e.stopPropagation()}
+                                                            placeholder="Ex: R$ 120"
+                                                            className="bg-white/5 border border-primary/30 text-white font-bold text-sm rounded-lg px-2 py-0.5 w-[120px] text-right focus:outline-none focus:border-primary"
+                                                        />
+                                                    ) : (
+                                                        <span
+                                                            className="text-white text-base font-bold cursor-text hover:bg-white/5 rounded px-1.5 py-0.5 -mr-1.5 transition-colors"
+                                                            onClick={e => {
+                                                                e.stopPropagation()
+                                                                setEditingField({ leadId: lead.id, field: 'budget' })
+                                                                setEditValue(lead.budget || '')
+                                                            }}
+                                                            title="Clique para definir valor"
+                                                        >
+                                                            {lead.budget || '---'}
+                                                        </span>
+                                                    )}
                                                 </div>
 
                                                 {/* ALL Appointment Cards */}
