@@ -48,6 +48,21 @@ export default function LeadPipeline() {
     const [loading, setLoading] = useState(true)
     const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
     const [draggingId, setDraggingId] = useState<string | null>(null);
+    const [editingField, setEditingField] = useState<{ leadId: string; field: string } | null>(null)
+    const [editValue, setEditValue] = useState('')
+
+    const updateLeadField = async (leadId: string, field: string, value: string) => {
+        if (!supabase) return
+        const update: Record<string, string> = { [field]: value }
+        const { error } = await supabase.from('leads').update(update).eq('id', leadId)
+        if (!error) {
+            setColumns(prev => prev.map(col => ({
+                ...col,
+                leads: col.leads.map(l => l.id === leadId ? { ...l, [field]: value } : l)
+            })))
+        }
+        setEditingField(null)
+    }
 
     const fetchLeads = async () => {
         if (!supabase || !tenantId) return
@@ -204,9 +219,32 @@ export default function LeadPipeline() {
                                             <div className="flex justify-between items-start mb-4">
                                                 <div className="flex flex-col">
                                                     <div className="flex items-center gap-2">
-                                                        <h4 className="text-white font-bold text-base tracking-tight group-hover:text-primary transition-colors truncate max-w-[150px]">
-                                                            {lead.name || lead.company_name || lead.phone}
-                                                        </h4>
+                                                        {editingField?.leadId === lead.id && editingField?.field === 'name' ? (
+                                                            <input
+                                                                autoFocus
+                                                                value={editValue}
+                                                                onChange={e => setEditValue(e.target.value)}
+                                                                onBlur={() => updateLeadField(lead.id, 'name', editValue)}
+                                                                onKeyDown={e => {
+                                                                    if (e.key === 'Enter') updateLeadField(lead.id, 'name', editValue)
+                                                                    if (e.key === 'Escape') setEditingField(null)
+                                                                }}
+                                                                onClick={e => e.stopPropagation()}
+                                                                className="bg-white/5 border border-primary/30 text-white font-bold text-base rounded-lg px-2 py-0.5 w-[150px] focus:outline-none focus:border-primary"
+                                                            />
+                                                        ) : (
+                                                            <h4
+                                                                className="text-white font-bold text-base tracking-tight group-hover:text-primary transition-colors truncate max-w-[150px] cursor-text hover:bg-white/5 rounded px-1 -mx-1"
+                                                                onClick={e => {
+                                                                    e.stopPropagation()
+                                                                    setEditingField({ leadId: lead.id, field: 'name' })
+                                                                    setEditValue(lead.name || '')
+                                                                }}
+                                                                title="Clique para editar"
+                                                            >
+                                                                {lead.name || lead.company_name || lead.phone}
+                                                            </h4>
+                                                        )}
                                                         {lead.budget_range === 'C' && (
                                                             <span className="flex items-center gap-0.5 px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-tighter border border-amber-500/20">
                                                                 VIP
@@ -222,10 +260,19 @@ export default function LeadPipeline() {
                                                             {activeAppts.length}
                                                         </span>
                                                     )}
-                                                    <div className={`px-2 py-1 rounded text-[11px] font-bold uppercase tracking-widest ${lead.status === 'quente' ? 'bg-red-500/10 text-red-500' :
-                                                        lead.status === 'morno' ? 'bg-amber-500/10 text-amber-400' :
-                                                            'bg-gray-500/10 text-gray-500'
-                                                        }`}>
+                                                    <div
+                                                        className={`px-2 py-1 rounded text-[11px] font-bold uppercase tracking-widest cursor-pointer hover:ring-1 hover:ring-white/20 transition-all ${lead.status === 'quente' ? 'bg-red-500/10 text-red-500' :
+                                                            lead.status === 'morno' ? 'bg-amber-500/10 text-amber-400' :
+                                                                'bg-gray-500/10 text-gray-500'
+                                                            }`}
+                                                        onClick={e => {
+                                                            e.stopPropagation()
+                                                            const cycle: Record<string, string> = { frio: 'morno', morno: 'quente', quente: 'frio' }
+                                                            const next = cycle[lead.status] || 'morno'
+                                                            updateLeadField(lead.id, 'status', next)
+                                                        }}
+                                                        title="Clique para alterar temperatura"
+                                                    >
                                                         {lead.status === 'quente' ? 'Hot' : lead.status === 'morno' ? 'Warm' : 'Cold'}
                                                     </div>
                                                 </div>
@@ -234,7 +281,16 @@ export default function LeadPipeline() {
                                             <div className="space-y-3 pt-2 border-t border-white/[0.03]">
                                                 <div className="flex items-center justify-between text-xs font-bold">
                                                     <span className="text-primary/60 uppercase tracking-widest">Budget</span>
-                                                    <span className="text-white text-base font-bold">
+                                                    <span
+                                                        className="text-white text-base font-bold cursor-pointer hover:text-primary transition-colors"
+                                                        onClick={e => {
+                                                            e.stopPropagation()
+                                                            const cycle: Record<string, string> = { '': 'D', 'D': 'A', 'A': 'B', 'B': 'C', 'C': 'D' }
+                                                            const next = cycle[lead.budget_range || ''] || 'D'
+                                                            updateLeadField(lead.id, 'budget_range', next)
+                                                        }}
+                                                        title="Clique para alterar faixa de budget"
+                                                    >
                                                         {lead.budget_range === 'A' ? 'R$ 35k-60k' :
                                                             lead.budget_range === 'B' ? 'R$ 60k-100k' :
                                                                 lead.budget_range === 'C' ? 'R$ 100k+' :
