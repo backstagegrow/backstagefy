@@ -144,7 +144,7 @@ export default function TicketDashboard() {
     async function connectPlatform() {
         if (!connectModal || !tenant?.id) return
         setConnecting(true)
-        const { error } = await supabase.from('platform_connections').upsert({
+        const { error } = await supabase!.from('platform_connections').upsert({
             tenant_id: tenant.id,
             platform: connectModal,
             credentials: { api_key: apiKey, api_secret: apiSecret },
@@ -163,7 +163,7 @@ export default function TicketDashboard() {
 
     async function disconnectPlatform(platform: string) {
         if (!tenant?.id) return
-        await supabase.from('platform_connections').delete().eq('tenant_id', tenant.id).eq('platform', platform)
+        await supabase!.from('platform_connections').delete().eq('tenant_id', tenant.id).eq('platform', platform)
         fetchAll()
     }
 
