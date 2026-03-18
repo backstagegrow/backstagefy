@@ -1,0 +1,77 @@
+═══ UAZAPI INSTANCE COMPARISON ═══
+
+--- Instance: bsf_04a07217 ---
+  Status: {
+  "instance": {
+    "id": "r3ab60e3f7c5a1b",
+    "token": "f9d2fe56-cd98-4c79-aa28-3b1fb195d971",
+    "status": "connected",
+    "paircode": "",
+    "qrcode": "",
+    "name": "bsf_04a07217",
+    "profileName": "Robson Nobre",
+    "profilePicUrl": "https://pps.whatsapp.net/v/t61.24694-24/628574305_1398520404762011_2134180060911368070_n.jpg?ccb=11-4&oh=01_Q5Aa4AEo-ermdRKLaNFP3yMPjLagAry8xR2pzuKsKj
+  Webhook: [
+  {
+    "addUrlEvents": false,
+    "addUrlTypesMessages": true,
+    "enabled": true,
+    "events": [
+      "messages",
+      "messages_update"
+    ],
+    "excludeMessages": [
+      "wasSentByApi"
+    ],
+    "id": "r0846519ff32e26",
+    "url": "https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final"
+  }
+]
+  GET /chats: 404
+  GET /chat/lastMessages: 404
+
+--- Instance: bsf_fad8107f ---
+  Status: {
+  "instance": {
+    "id": "r7f1f330d3243b1",
+    "token": "575cf019-710f-411f-b7af-0d9daa6afa36",
+    "status": "connected",
+    "paircode": "",
+    "qrcode": "",
+    "name": "bsf_fad8107f",
+    "profileName": "Suporte Backstage Grow",
+    "profilePicUrl": "https://pps.whatsapp.net/v/t61.24694-24/531003655_1967132737355807_4232983323692194535_n.jpg?ccb=11-4&oh=01_Q5Aa4AEKLnE-eicrL5xxgdjwgkyEwMA0
+  Webhook: [
+  {
+    "addUrlEvents": false,
+    "addUrlTypesMessages": false,
+    "enabled": true,
+    "events": [
+      "message",
+      "messages.upsert",
+      "status",
+      "connection",
+      "chat.upsert"
+    ],
+    "excludeMessages": [],
+    "id": "r517df36bdad4d2",
+    "url": "https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final"
+  }
+]
+  GET /chats: 404
+  GET /chat/lastMessages: 404
+
+
+═══ WEBHOOK ENABLED CHECK ═══
+  bsf_04a07217: enabled=True url=https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+    events=['messages', 'messages_update']
+    excludeMessages=['wasSentByApi']
+    addUrlEvents=False
+    addUrlTypesMessages=True
+  bsf_fad8107f: enabled=True url=https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+    events=['message', 'messages.upsert', 'status', 'connection', 'chat.upsert']
+    excludeMessages=[]
+    addUrlEvents=False
+    addUrlTypesMessages=False
+
+═══ INSTANCE SETTINGS COMPARISON ═══
