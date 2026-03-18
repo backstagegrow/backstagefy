@@ -1,0 +1,24 @@
+=== UAZAPI DIAGNOSTIC ===
+
+GET /instance/all => 200
+Total instances: 2
+
+--- Instance: bsf_04a07217 ---
+  Number: ?
+  Status: connected
+  Token: f9d2fe56-cd98-4c79-a...
+  Webhook GET => 200
+  Webhook URL: https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+  Enabled: True
+  Events: ['messages', 'messages_update']
+  Status check => 200: {"instance":{"id":"r3ab60e3f7c5a1b","token":"f9d2fe56-cd98-4c79-aa28-3b1fb195d971","status":"connected","paircode":"","qrcode":"","name":"bsf_04a07217","profileName":"Robson Nobre","profilePicUrl":"ht
+
+--- Instance: bsf_fad8107f ---
+  Number: ?
+  Status: connected
+  Token: 575cf019-710f-411f-b...
+  Webhook GET => 200
+  Webhook URL: https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+  Enabled: True
+  Events: ['message', 'messages.upsert', 'status', 'connection', 'chat.upsert']
+  Status check => 200: {"instance":{"id":"r7f1f330d3243b1","token":"575cf019-710f-411f-b7af-0d9daa6afa36","status":"connected","paircode":"","qrcode":"","name":"bsf_fad8107f","profileName":"Suporte Backstage Grow","profileP

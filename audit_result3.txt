@@ -1,0 +1,28 @@
+═══ WEBHOOK PAYLOAD INTERCEPT ═══
+
+═══ 1. UAZAPI WEBHOOK FORMAT TEST ═══
+  Checking webhook delivery by updating to use webhook with debug header...
+
+═══ 2. LOOKING FOR WEBHOOK PAYLOAD IN RECENT INVOCATIONS ═══
+  Sending a test message from bsf_fad8107f to trigger auto-response...
+  (This message will trigger the user to reply, and Uazapi should forward the webhook)
+
+═══ 3. WEBHOOK URL VALIDATION ═══
+  URL: https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+  Direct POST (no auth): 200 → ignored
+  POST with service key: 200 → ignored
+
+═══ 4. CHECK IF FUNCTION HAD JWT VERIFICATION BEFORE ═══
+  We deployed with --no-verify-jwt, so now it should not require JWT
+  But if it was ORIGINALLY deployed WITH JWT verification,
+  then Uazapi webhooks would have been failing with 401/403!
+  POST without auth: 200 → ignored
+
+═══ 5. REAL UAZAPI SIMULATION (no auth) ═══
+  Status: 200
+  Response: ok
+
+  Post-test chat_history check:
+    [2026-03-18T23:23:53] assistant: Olá, Lucas! É um prazer tê-lo aqui! Como posso ajudá-lo hoje? Se precisar de alg | tenant: fad8107f-e5a
+    [2026-03-18T23:23:44] user: teste sem auth | tenant: fad8107f-e5a
+    [2026-03-18T23:20:32] assistant: Olá, Lucas! Seja bem-vindo ao nosso atendimento. Como posso ajudá-lo hoje? Se pu | tenant: fad8107f-e5a

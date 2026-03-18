@@ -12,6 +12,22 @@ Deno.serve(async (req) => {
         const payload = await req.json();
         console.log("[V6-MT] Incoming:", JSON.stringify(payload).substring(0, 300));
 
+        // --- DEBUG: Log raw payload to DB for audit ---
+        const payloadKeys = Object.keys(payload);
+        const instanceField = payload.instance || payload.instanceName || payload.instance_key || payload.name || 'NONE';
+        const eventField = payload.event || 'no_event';
+        await supabase.from('debug_logs').insert({
+            step: 'v6_raw_webhook',
+            data: {
+                event: eventField,
+                instance: instanceField,
+                keys: payloadKeys,
+                has_message: !!payload.message,
+                has_data: !!payload.data,
+                payload_preview: JSON.stringify(payload).substring(0, 500),
+            }
+        }).then(() => {}).catch(() => {});
+
         // --- 1. EXTRACT MESSAGE ---
         const msg = payload.message || payload.data || payload.body || payload;
         const remoteJid = msg.key?.remoteJid || msg.sender || msg.chatid || msg.remoteJid || payload.remoteJid || msg.Chat || "";
@@ -103,8 +119,23 @@ Deno.serve(async (req) => {
         const agentTemp = parseFloat(agent.temperature) || 0.7;
 
         // --- 5. FIND OR CREATE LEAD ---
+        // Try exact match first, then without country code prefix
         let { data: lead } = await supabase.from('leads').select('*')
             .eq('tenant_id', tenantId).eq('phone', cleanPhone).single();
+
+        if (!lead && cleanPhone.startsWith('55') && cleanPhone.length > 10) {
+            // Try without country code (legacy leads may be stored without '55')
+            const phoneWithoutCC = cleanPhone.slice(2);
+            const { data: legacyLead } = await supabase.from('leads').select('*')
+                .eq('tenant_id', tenantId).eq('phone', phoneWithoutCC).single();
+            if (legacyLead) {
+                lead = legacyLead;
+                // Normalize the phone to include country code
+                await supabase.from('leads').update({ phone: cleanPhone }).eq('id', lead.id);
+                lead.phone = cleanPhone;
+                console.log(`[V6-MT] Normalized lead phone: ${phoneWithoutCC} -> ${cleanPhone}`);
+            }
+        }
 
         // Load funnel steps for this agent
         const { data: funnelSteps } = await supabase.from('funnel_steps')
@@ -119,7 +150,7 @@ Deno.serve(async (req) => {
                 agent_id: agentId,
                 phone: cleanPhone,
                 pipeline_stage: 'new',
-                status: 'novo',
+                status: 'frio',
                 current_funnel_step: firstStep?.id || null,
             }).select().single();
 

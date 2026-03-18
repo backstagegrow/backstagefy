@@ -1,0 +1,285 @@
+═══════════════════════════════════════════
+       FULL AI CONCIERGE AUDIT
+═══════════════════════════════════════════
+
+═══ 1. TENANT SETTINGS ═══
+
+  Tenant: Erick (ID: 07997a2d-216...)
+  Plan: starter | Status: active
+  Settings: {}
+
+  Tenant: Rob Auto (ID: d60fc04f-639...)
+  Plan: starter | Status: active
+  Settings: {
+    "autoRead": false,
+    "viewStatus": false,
+    "historySync": false,
+    "rejectCalls": false,
+    "alwaysOnline": false,
+    "ignoreGroups": false,
+    "handoverNumber": "",
+    "whitelistEnabled": true,
+    "whitelistNumbers": [
+        "5519981316733"
+    ]
+}
+
+  Tenant: Agencia ZMKT (ID: c3049aa5-408...)
+  Plan: starter | Status: active
+  Settings: {
+    "hours": "",
+    "phone": "",
+    "social": "",
+    "address": "",
+    "website": "",
+    "description": ""
+}
+
+  Tenant: vicasaints.co (ID: 5c7af66a-aec...)
+  Plan: starter | Status: active
+  Settings: {
+    "hours": "Seg - Sexta das 08h as 18h",
+    "phone": "11912996468",
+    "social": "@vicasaints.co",
+    "address": "Av. Adolfo Coelho, 289",
+    "website": "",
+    "description": "Especialista em estrat\u00e9gia de marca para designers e infoprodutores que desejam se posicionar no mercado digital"
+}
+
+  Tenant: Beto Online (ID: 98bff59f-7c2...)
+  Plan: starter | Status: active
+  Settings: {}
+
+  Tenant: Backstage Grow (ID: fad8107f-e5a...)
+  Plan: starter | Status: active
+  Settings: {
+    "hours": "segunda a sexta das 09h as 20h",
+    "phone": "11991605660",
+    "social": "",
+    "address": "Rio Negro, 503 - alphaville",
+    "website": "",
+    "description": ""
+}
+
+  Tenant: Auto Nobre (ID: 04a07217-9bc...)
+  Plan: starter | Status: active
+  Settings: {
+    "hours": "segunda das 8hs at\u00e9 as 22hs",
+    "phone": "19996598748",
+    "social": "@algumacoisa, @outracoisa",
+    "address": "Hipolito Lopes, 497, jardim Paulista - Barra Bonita",
+    "website": "https://backstagefy.com.br/",
+    "autoRead": true,
+    "viewStatus": false,
+    "description": "a miss\u00e3o \u00e9 ser grande de sucesso",
+    "historySync": false,
+    "rejectCalls": false,
+    "alwaysOnline": false,
+    "ignoreGroups": true,
+    "handoverNumber": "5519981374216",
+    "whitelistEnabled": true,
+    "whitelistNumbers": [
+        "5519981316733",
+        "5511991605660",
+        "551981374216"
+    ]
+}
+
+═══ 2. AGENTS ═══
+
+  Agent: Guga (ID: c4872620-9ca...)
+  Tenant: d60fc04f-639...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"scheduling_enabled": true}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível....
+
+  Agent: Bella (ID: 6f19e574-619...)
+  Tenant: d60fc04f-639...
+  Active: True | Model: gpt-4.1 | Temp: 1.2 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"scheduling_enabled": true}
+  System Prompt: Você é um assistente profissional e amigável....
+
+  Agent: Zeus (ID: 94630c6e-482...)
+  Tenant: 07997a2d-216...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"scheduling_enabled": true}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível....
+
+  Agent: Zara (ID: 9daf66a8-f50...)
+  Tenant: 04a07217-9bc...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"scheduling_enabled": true}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível....
+
+  Agent: Zara (ID: 8afe4420-f49...)
+  Tenant: c3049aa5-408...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"scheduling_enabled": true}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível....
+
+  Agent: Nyra (ID: 801518c6-ba9...)
+  Tenant: 5c7af66a-aec...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"scheduling_enabled": true}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível....
+
+  Agent: Bella (ID: 3f33cf91-80f...)
+  Tenant: 04a07217-9bc...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"ttsVoice": "nova", "audioEnabled": true, "audioMaxChars": 500, "audioReplyMode": "mirror", "scheduling_enabled": true}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível....
+
+  Agent: Betinho (ID: 278223cd-f4f...)
+  Tenant: 98bff59f-7c2...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível....
+
+  Agent: Iara (ID: b603e0eb-028...)
+  Tenant: fad8107f-e5a...
+  Active: True | Model: gpt-4o-mini | Temp: 0.7 | Channel: whatsapp
+  WPP Instance: None | WPP ApiKey: None...
+  Settings: {"scheduling_enabled": true}
+  System Prompt: Você é um assistente de atendimento profissional e amigável. Responda de forma clara e objetiva, sempre buscando ajudar o cliente da melhor forma possível.
+
+Você vende assessoria de marketing e automa...
+
+═══ 3. WHATSAPP INSTANCES (DB) ═══
+  {
+  "id": "41954178-8501-40fb-bb50-bc933dda3d81",
+  "tenant_id": "fad8107f-e5a7-46be-8e9c-90d98417182d",
+  "agent_id": "b603e0eb-028d-4d1c-8abe-2d7e4bfbaeff",
+  "instance_name": "bsf_fad8107f",
+  "apikey": "575cf019-710f-411f-b7af-0d9daa6afa36",
+  "phone_number": "5511998577077",
+  "status": "connected",
+  "qr_code": null,
+  "connected_at": null,
+  "created_at": "2026-03-18T23:11:12.390491+00:00"
+}
+  {
+  "id": "8bf43a52-b645-40cf-849d-c011b34a5459",
+  "tenant_id": "04a07217-9bc8-42f0-a837-a8f01f845a60",
+  "agent_id": "3f33cf91-80ff-4f53-8b7c-9b41c5fdde6e",
+  "instance_name": "bsf_04a07217",
+  "apikey": "f9d2fe56-cd98-4c79-aa28-3b1fb195d971",
+  "phone_number": "5519996597169",
+  "status": "connected",
+  "qr_code": null,
+  "connected_at": null,
+  "created_at": "2026-02-26T11:20:35.841505+00:00"
+}
+
+═══ 4. APP_CONFIG ═══
+  UAZAPI_BASE_URL: https://backstagefy.uazapi.com
+  UAZAPI_ADMIN_TOKEN: OGBLC86mcq9yDY9B2BR3Y2735GTOn7TJDA9rqpqb6t8loN67SV
+  UAZAPI_KEY: OGBLC86mcq9yDY9B2BR3Y2735GTOn7TJDA9rqpqb6t8loN67SV
+  UAZAPI_INSTANCE_NAME: backstagefy
+  WHITELIST_ENABLED: true
+  WHITELIST_NUMBERS: ["5519996597169","5511991605660"]
+  BLACKLIST_NUMBERS: []
+  HUMAN_HANDOVER_NUMBER: 5511991605660
+  REJECT_CALLS: false
+  IGNORE_GROUPS: true
+  VIEW_STATUS: false
+  AUTO_READ: false
+  ALWAYS_ONLINE: false
+  HISTORY_SYNC: false
+  UAZAPI_INSTANCE_STATUS: disconnected
+  UAZAPI_QR_CODE: 
+  UAZAPI_INSTANCE_TOKEN: 310e3a3c-0d40-4c57-a406-a08e90d8d1e7
+
+═══ 5. UAZAPI WEBHOOKS ═══
+
+  Instance: bsf_04a07217
+  Token: f9d2fe56-cd98-4c79-aa28-3b1fb195d971
+  Webhook: [
+    {
+        "addUrlEvents": false,
+        "addUrlTypesMessages": true,
+        "enabled": true,
+        "events": [
+            "messages",
+            "messages_update"
+        ],
+        "excludeMessages": [
+            "wasSentByApi"
+        ],
+        "id": "r0846519ff32e26",
+        "url": "https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final"
+    }
+]
+
+  Instance: bsf_fad8107f
+  Token: 575cf019-710f-411f-b7af-0d9daa6afa36
+  Webhook: [
+    {
+        "addUrlEvents": false,
+        "addUrlTypesMessages": false,
+        "enabled": true,
+        "events": [
+            "message",
+            "messages.upsert",
+            "status",
+            "connection",
+            "chat.upsert"
+        ],
+        "excludeMessages": [],
+        "id": "r517df36bdad4d2",
+        "url": "https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final"
+    }
+]
+
+═══ 6. SIMULATE WEBHOOK (bsf_fad8107f → Iara) ═══
+  Payload: {
+  "event": "messages.upsert",
+  "instance": "bsf_fad8107f",
+  "instanceName": "bsf_fad8107f",
+  "name": "bsf_fad8107f",
+  "data": {
+    "key": {
+      "remoteJid": "5511991605660@s.whatsapp.net",
+      "fromMe": false,
+      "id": "AUDIT_TEST_1773876019"
+    },
+    "pushName": "Audit Test",
+    "message": {
+      "conversation": "teste auditoria"
+    },
+    "messageType": "conversation"
+  },
+  "message": {
+    "key": {
+      "remoteJid": "5511991605660@s.whatsapp.net",
+      "fromMe": false,
+ 
+
+  Calling ai-concierge-v5-final...
+  Response status: 200
+  Response body: ok
+
+═══ 7. POST-TEST CHECK ═══
+  Recent chat_history:
+    [2026-03-18T23:20:32] assistant: Olá, Lucas! Seja bem-vindo ao nosso atendimento. Como posso ajudá-lo hoje? Se puder, me diga seu nom | tenant: fad8107f-e5a
+    [2026-03-18T23:20:23] user: teste auditoria | tenant: fad8107f-e5a
+    [2026-03-18T22:40:42] assistant: Seja muito bem-vindo, Robson! 🎉 Fico feliz em te receber. Qual é o seu nome completo para que eu pos | tenant: 04a07217-9bc
+    [2026-03-18T22:40:33] user: primeira vez | tenant: 04a07217-9bc
+    [2026-03-18T22:39:38] assistant: Olá, Robson! 😊 Como posso te ajudar hoje? Você já é nosso cliente ou está nos visitando pela primeir | tenant: 04a07217-9bc
+
+  Recent debug_logs:
+    [2026-03-18T23:20:33] v6mt_executed: {"agent": "Iara", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Sauda\u00e7\u00e3o", "reply_length": 148}
+    [2026-03-18T22:40:43] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 156}
+    [2026-03-18T22:39:38] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 107}
+    [2026-03-03T18:19:29] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 232}
+    [2026-03-03T18:18:56] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 57}
+
+  Leads (Backstage Grow):
+    Phone: 5511991605660 | Name: Lucas | Status: quente | Agent: b603e0eb-028 | Funnel: 59bb0d7f-6418-4b79-8810-31e7403502b8

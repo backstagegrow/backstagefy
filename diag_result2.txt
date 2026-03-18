@@ -1,0 +1,54 @@
+=== DEEP DIAGNOSTIC ===
+
+--- TEST 1: Edge Function Reachability ---
+  Status: 200
+  Response: ignored
+
+--- TEST 1b: webhook-router Reachability ---
+  Status: 404
+  Response: {"code":"NOT_FOUND","message":"Requested function was not found"}
+
+--- TEST 1c: ai-concierge-v2 Reachability ---
+  Status: 400
+  Response: missing_params
+
+--- TEST 2: Instance Routing Test (bsf_04a07217) ---
+  Would send to: https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+  Payload instance: bsf_04a07217
+  Event: messages.upsert
+
+--- TEST 3: Webhook Events Analysis ---
+  bsf_04a07217:
+    URL: https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+    Events: ['messages', 'messages_update']
+    Has 'messages.upsert': False
+    Has 'messages': True
+    Has 'message': False
+
+  bsf_fad8107f:
+    URL: https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final
+    Events: ['message', 'messages.upsert', 'status', 'connection', 'chat.upsert']
+    Has 'messages.upsert': True
+    Has 'messages': False
+    Has 'message': True
+
+--- TEST 4: Uazapi Webhook Format ---
+  v5-final expects payload format:
+    { instance: 'name', message: { key: { remoteJid, fromMe, id }, message: { conversation: 'text' } } }
+  webhook-router expects:
+    { event: 'messages.upsert', data: { key: { remoteJid, fromMe }, message: { conversation: 'text' } } }
+
+--- TEST 5: Instance bsf_04a07217 Event Issue ---
+  bsf_04a07217 has events: ['messages', 'messages_update'] - MISSING 'messages.upsert'!
+  bsf_fad8107f has events: ['message', 'messages.upsert', 'status', 'connection', 'chat.upsert']
+  Both point to: ai-concierge-v5-final
+
+  v5-final code does NOT check event type - it processes any incoming POST
+  So the issue is NOT event filtering in the function itself
+
+  POSSIBLE CAUSES:
+  1. ai-concierge-v5-final not deployed on Supabase (404)
+  2. whatsapp_instances table missing records for these instances
+  3. OpenAI API key expired or quota exceeded
+  4. Tenant plan_status != 'active' (only checked in webhook-router)
+  5. No agent configured or agent is_active = false

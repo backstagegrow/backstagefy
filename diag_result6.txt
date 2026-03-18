@@ -1,0 +1,17 @@
+--- ALL LEADS (phone format check) ---
+  Phone: '11991605660' | Name: Lucas | tenant: fad8107f-e5a | status: quente
+  Phone: '5519981316733' | Name: Robson Nobre  | tenant: 04a07217-9bc | status: morno
+  Phone: '159098557493432@lid' | Name: None | tenant: 04a07217-9bc | status: frio
+  Phone: '197018890813546@lid' | Name: None | tenant: 04a07217-9bc | status: frio
+
+--- LEADS TABLE CONSTRAINTS ---
+Testing which status values are allowed:
+  status='novo' => 400: {"code":"23514","details":"Failing row contains (717eed97-f66d-4b7d-bcfd-7347d3748acd, fad8107f-e5a7-46be-8e9c-90d98417182d, null, TEST_novo, null, novo, 2026-03-18 23:14:54.680594+00, {}, 2026-03-18 
+  status='frio' => 201: 
+  status='morno' => 201: 
+  status='quente' => 201: 
+  status='convertido' => 400: {"code":"23514","details":"Failing row contains (9546e0cb-f72d-4e09-b1fd-115582cb1ccf, fad8107f-e5a7-46be-8e9c-90d98417182d, null, TEST_convertido, null, convertido, 2026-03-18 23:14:56.71566+00, {}, 
+  status='new' => 400: {"code":"23514","details":"Failing row contains (ce1e7d0f-1093-4631-9822-78b1f794ff82, fad8107f-e5a7-46be-8e9c-90d98417182d, null, TEST_new, null, new, 2026-03-18 23:14:57.037442+00, {}, 2026-03-18 23
+
+--- DISTINCT LEAD STATUSES IN DB ---
+  Statuses found: {'quente', 'morno', 'frio'}

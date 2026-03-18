@@ -1,0 +1,95 @@
+=== FULL DIAGNOSTIC ===
+
+--- 1. WHATSAPP INSTANCES ---
+  [200] whatsapp_instances
+  Total: 1
+  Name: bsf_04a07217 | tenant: 04a07217-9bc8-42f0-a837-a8f01f845a60 | agent: 3f33cf91-80ff-4f53-8b7c-9b41c5fdde6e | status: connected | apikey: f9d2fe56-cd98-4c79-a...
+
+--- 2. AGENTS ---
+  [200] agents
+  Total: 9
+  Guga | ID: c4872620... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+  Bella | ID: 6f19e574... | active: True | model: gpt-4.1 | wpp_inst: None | channel: whatsapp
+  Zeus | ID: 94630c6e... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+  Zara | ID: 9daf66a8... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+  Zara | ID: 8afe4420... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+  Nyra | ID: 801518c6... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+  Bella | ID: 3f33cf91... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+  Betinho | ID: 278223cd... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+  Iara | ID: b603e0eb... | active: True | model: gpt-4o-mini | wpp_inst: None | channel: whatsapp
+
+--- 3. TENANTS ---
+  [200] tenants
+  Total: 7
+  Erick | ID: 07997a2d... | plan: starter | status: active
+    limits: {"agents": 1, "rag_docs": 50, "messages_month": 1000}
+    usage: {"messages_used": 0, "rag_docs_used": 0}
+  Rob Auto | ID: d60fc04f... | plan: starter | status: active
+    limits: {"agents": 1, "rag_docs": 50, "messages_month": 1000}
+    usage: {"messages_used": 0, "rag_docs_used": 0}
+  Agencia ZMKT | ID: c3049aa5... | plan: starter | status: active
+    limits: {"agents": 1, "rag_docs": 50, "messages_month": 1000}
+    usage: {"messages_used": 0, "rag_docs_used": 0}
+  vicasaints.co | ID: 5c7af66a... | plan: starter | status: active
+    limits: {"agents": 1, "rag_docs": 50, "messages_month": 1000}
+    usage: {"messages_used": 0, "rag_docs_used": 0}
+  Beto Online | ID: 98bff59f... | plan: starter | status: active
+    limits: {"agents": 1, "rag_docs": 50, "messages_month": 1000}
+    usage: {"messages_used": 0, "rag_docs_used": 0}
+  Backstage Grow | ID: fad8107f... | plan: starter | status: active
+    limits: {"agents": 1, "rag_docs": 50, "messages_month": 1000}
+    usage: {"messages_used": 0, "rag_docs_used": 0}
+  Auto Nobre | ID: 04a07217... | plan: starter | status: active
+    limits: {"agents": 1, "rag_docs": 50, "messages_month": 1000}
+    usage: {"messages_used": 0, "rag_docs_used": 0}
+
+--- 4. LEADS (phone=5511991605660) ---
+  [200] leads
+  NO LEAD FOUND for this phone!
+
+--- 5. RECENT CHAT HISTORY (last 20) ---
+  [200] chat_history
+  [2026-03-18T22:40:42] assistant: Seja muito bem-vindo, Robson! 🎉 Fico feliz em te receber. Qual é o seu nome completo para que eu pos
+  [2026-03-18T22:40:33] user: primeira vez
+  [2026-03-18T22:39:38] assistant: Olá, Robson! 😊 Como posso te ajudar hoje? Você já é nosso cliente ou está nos visitando pela primeir
+  [2026-03-18T22:39:28] user: ola
+  [2026-03-13T17:04:06] assistant: Olá Robson Nobre ! 😊
+
+Passando para lembrar que temos uma *reunião online* agendada para *13/03, 15:
+
+--- 6. DEBUG LOGS (last 10) ---
+  [200] debug_logs
+  [2026-03-18T22:40:43] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 156}
+  [2026-03-18T22:39:38] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 107}
+  [2026-03-03T18:19:29] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 232}
+  [2026-03-03T18:18:56] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 57}
+  [2026-02-26T16:03:23] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre", "MEDIA_SENT:Doc - Carro Nobre"], "funnel_step": "Boas Vindas", "reply_l
+  [2026-02-26T16:03:00] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre", "MEDIA_SENT:Doc - Carro Nobre"], "funnel_step": "Boas Vindas", "reply_l
+  [2026-02-26T16:02:14] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 234}
+  [2026-02-26T15:52:52] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre"], "funnel_step": "Boas Vindas", "reply_length": 157}
+  [2026-02-26T15:52:33] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre"], "funnel_step": "Boas Vindas", "reply_length": 164}
+  [2026-02-26T15:42:17] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 267}
+
+--- 7. FUNNEL STEPS ---
+  [200] funnel_steps
+  Total: 20
+  [1] Boas-vindas | agent: None... | active: True | type: greeting
+  [1] Saudação | agent: b603e0eb... | active: True | type: greeting
+  [1] Boas vindas | agent: 94630c6e... | active: True | type: greeting
+  [1] Etapa 1 | agent: 8afe4420... | active: True | type: custom
+  [1] Boas-vindas  | agent: 801518c6... | active: True | type: greeting
+  [1] Boas Vindas | agent: 3f33cf91... | active: True | type: greeting
+  [1] Saudação Inicial | agent: 3f33cf91... | active: True | type: greeting
+  [2] qualificação | agent: 94630c6e... | active: True | type: qualification
+  [2] Qualificação | agent: 801518c6... | active: True | type: qualification
+  [2] Triagem | agent: b603e0eb... | active: True | type: qualification
+  [2] Etapa 2 | agent: 8afe4420... | active: True | type: custom
+  [2] Qualificação do Cliente | agent: 3f33cf91... | active: True | type: qualification
+  [2] Qualificação | agent: None... | active: True | type: qualification
+  [3] Ancoragem de Valor | agent: None... | active: True | type: value_anchoring
+  [3] Etapa 3 | agent: b603e0eb... | active: True | type: custom
+  [4] Investimento | agent: None... | active: True | type: investment
+  [5] Fechamento da Venda | agent: 3f33cf91... | active: True | type: closing
+  [5] Fechamento | agent: None... | active: True | type: closing
+  [6] Pós-venda / SAC | agent: None... | active: True | type: sac
+  [6] Suporte e Atendimento Pós-Venda | agent: 3f33cf91... | active: True | type: sac

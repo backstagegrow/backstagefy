@@ -1,0 +1,68 @@
+--- RECENT CHAT HISTORY (all, last 10) ---
+  [2026-03-18T22:40:42] assistant: Seja muito bem-vindo, Robson! 🎉 Fico feliz em te receber. Qual é o seu nome completo para que eu pos | tenant: 04a07217-9bc
+  [2026-03-18T22:40:33] user: primeira vez | tenant: 04a07217-9bc
+  [2026-03-18T22:39:38] assistant: Olá, Robson! 😊 Como posso te ajudar hoje? Você já é nosso cliente ou está nos visitando pela primeir | tenant: 04a07217-9bc
+  [2026-03-18T22:39:28] user: ola | tenant: 04a07217-9bc
+  [2026-03-13T17:04:06] assistant: Olá Robson Nobre ! 😊
+
+Passando para lembrar que temos uma *reunião online* agendada para *13/03, 15: | tenant: 04a07217-9bc
+
+--- RECENT DEBUG LOGS (last 10) ---
+  [2026-03-18T22:40:43] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 156} | tenant: 04a07217-9bc
+  [2026-03-18T22:39:38] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 107} | tenant: 04a07217-9bc
+  [2026-03-03T18:19:29] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 232} | tenant: 04a07217-9bc
+  [2026-03-03T18:18:56] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 57} | tenant: 04a07217-9bc
+  [2026-02-26T16:03:23] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre", "MEDIA_SENT:Doc - Carro Nobre"], "funnel_step": "Boas Vindas", "reply_length": 0} | tenant: 04a07217-9bc
+  [2026-02-26T16:03:00] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre", "MEDIA_SENT:Doc - Carro Nobre"], "funnel_step": "Boas Vindas", "reply_length": 0} | tenant: 04a07217-9bc
+  [2026-02-26T16:02:14] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 234} | tenant: 04a07217-9bc
+  [2026-02-26T15:52:52] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre"], "funnel_step": "Boas Vindas", "reply_length": 157} | tenant: 04a07217-9bc
+  [2026-02-26T15:52:33] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": ["MEDIA_SENT:Carro Nobre"], "funnel_step": "Boas Vindas", "reply_length": 164} | tenant: 04a07217-9bc
+  [2026-02-26T15:42:17] v6mt_executed: {"agent": "Bella", "model": "gpt-4o-mini", "tools": [], "funnel_step": "Boas Vindas", "reply_length": 267} | tenant: 04a07217-9bc
+
+--- LEADS FOR BACKSTAGE GROW (fad8107f) ---
+  Total: 1
+  Phone: 11991605660 | Name: Lucas | Status: quente | Last: 2026-03-18T22:14:03.895912+00:00
+
+--- WHATSAPP INSTANCES (verify) ---
+  bsf_04a07217 | tenant: 04a07217-9bc... | agent: 3f33cf91-80f... | status: connected | phone: 5519996597169
+  bsf_fad8107f | tenant: fad8107f-e5a... | agent: b603e0eb-028... | status: connected | phone: 5511998577077
+
+--- UAZAPI WEBHOOK CONFIG (full) ---
+  bsf_04a07217: [
+  {
+    "addUrlEvents": false,
+    "addUrlTypesMessages": true,
+    "enabled": true,
+    "events": [
+      "messages",
+      "messages_update"
+    ],
+    "excludeMessages": [
+      "wasSentByApi"
+    ],
+    "id": "r0846519ff32e26",
+    "url": "https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final"
+  }
+]
+
+  bsf_fad8107f: [
+  {
+    "addUrlEvents": false,
+    "addUrlTypesMessages": false,
+    "enabled": true,
+    "events": [
+      "message",
+      "messages.upsert",
+      "status",
+      "connection",
+      "chat.upsert"
+    ],
+    "excludeMessages": [],
+    "id": "r517df36bdad4d2",
+    "url": "https://xaivgzrmxewkevlqvphi.supabase.co/functions/v1/ai-concierge-v5-final"
+  }
+]
+
+--- FUNCTION REACHABILITY TEST ---
+  Test call status: 200
+  Test call response: new row for relation "leads" violates check constraint "leads_status_check"

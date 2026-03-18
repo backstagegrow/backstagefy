@@ -1,0 +1,37 @@
+═══ UAZAPI DELIVERY AUDIT ═══
+
+═══ 1. RECENT CHATS on bsf_fad8107f ═══
+  GET /chat/all: 404
+    {"code":404,"message":"Not Found.","data":{}}
+
+  GET /chat/list: 404
+    {"code":404,"message":"Not Found.","data":{}}
+
+  GET /message/list: 404
+    {"code":404,"message":"Not Found.","data":{}}
+
+
+═══ 2. TEST SEND on bsf_fad8107f ═══
+  POST /send/text/bsf_fad8107f: 405
+    Response: {"code":405,"message":"Method Not Allowed.","data":{}}
+
+
+  POST /message/text/bsf_fad8107f: 405
+    Response: {"code":405,"message":"Method Not Allowed.","data":{}}
+
+
+═══ 3. TEST SEND (v5-final format) ═══
+  POST /send/text (v5 format): 200
+    Response: {"chatid":"5511991605660@s.whatsapp.net","content":{"text":"🤖 Teste 2 - formato v5-final","contextInfo":{}},"convertOptions":"","edited":"","fromMe":true,"id":"5511998577077:3EB0BA6AC39F612C77D5DE","isGroup":false,"messageTimestamp":1773876116181,"messageType":"ExtendedTextMessage","messageid":"3EB0
+
+═══ 4. TEST SEND (Uazapi /message/text format) ═══
+  POST /message/text/bsf_fad8107f: 405
+    Response: {"code":405,"message":"Method Not Allowed.","data":{}}
+
+  POST /chat/send: 405
+    Response: {"code":405,"message":"Method Not Allowed.","data":{}}
+
+
+═══ 5. INSTANCE DETAILED STATUS ═══
+  bsf_fad8107f status: 200
+    {"instance":{"id":"r7f1f330d3243b1","token":"575cf019-710f-411f-b7af-0d9daa6afa36","status":"connected","paircode":"","qrcode":"","name":"bsf_fad8107f","profileName":"Suporte Backstage Grow","profilePicUrl":"https://pps.whatsapp.net/v/t61.24694-24/531003655_1967132737355807_4232983323692194535_n.jpg?ccb=11-4\u0026oh=01_Q5Aa4AEKLnE-eicrL5xxgdjwgkyEwMA07vRfUPbwk_6aM72QgA\u0026oe=69C82004\u0026_nc_sid=5e03e0\u0026_nc_cat=109","isBusiness":true,"plataform":"smbi","systemName":"uazapiGO","owner":"551
