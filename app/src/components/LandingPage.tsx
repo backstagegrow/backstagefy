@@ -3,6 +3,7 @@ import MatrixRain from './MatrixRain'
 import MatrixExplosion from './MatrixExplosion'
 import { TestimonialsColumn } from './TestimonialsColumns'
 import { PixelCanvas } from './ui/PixelCanvas'
+import { CardStack, CardStackItem } from './ui/CardStack'
 
 interface LandingPageProps {
     onNavigateToLogin: () => void
@@ -317,11 +318,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
                 </div>
             </section>
 
+            {/* Transition: Problema → Solução */}
+            <div className="relative z-10 h-24" style={{ background: 'linear-gradient(to bottom, #0a0a0a, #0a0a0a)' }} />
+
             {/* ═══════════════════ SECTION 3: SOLUÇÃO ═══════════════════ */}
             <section
                 id="solucao"
                 ref={setRef('solucao')}
-                className="relative z-10 bg-[#0a0a0a] py-24 md:py-32 px-6 overflow-hidden -mt-px"
+                className="relative z-10 bg-[#0a0a0a] py-24 md:py-32 px-6 overflow-hidden"
             >
                 {/* Dashboard as background with low opacity */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -353,56 +357,97 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
                         </p>
                     </div>
 
-                    {/* Integration cards grid */}
-                    <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 mb-16 transition-all duration-1000 delay-200 ${isVisible('solucao') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-                        {[
-                            { name: 'WhatsApp', icon: 'chat', color: '#25D366', desc: 'Atendimento IA 24/7' },
-                            { name: 'Stripe', icon: 'payments', color: '#635BFF', desc: 'Pagamentos globais' },
-                            { name: 'Mercado Pago', icon: 'account_balance', color: '#00AEEF', desc: 'Checkout Brasil' },
-                            { name: 'Google Calendar', icon: 'calendar_month', color: '#4285F4', desc: 'Agenda integrada' },
-                            { name: 'PagSeguro', icon: 'credit_card', color: '#00A650', desc: 'Pagamentos PIX' },
-                            { name: 'Hotmart', icon: 'school', color: '#F04E23', desc: 'Cursos e infoprodutos' },
-                            { name: 'Google Ads', icon: 'ads_click', color: '#FBBC04', desc: 'Leads automatizados', comingSoon: true },
-                            { name: 'Meta Ads', icon: 'campaign', color: '#0081FB', desc: 'Tráfego pago', comingSoon: true },
-                        ].map((integration, i) => (
-                            <div
-                                key={i}
-                                className={`group relative overflow-hidden bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 hover:border-white/15 transition-all duration-500 hover:-translate-y-1 ${isVisible('solucao') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                                style={{ transitionDelay: `${i * 80 + 300}ms` }}
-                            >
-                                <PixelCanvas
-                                    gap={8}
-                                    speed={30}
-                                    colors={[`${integration.color}`, '#22c55e', '#0a0a0a']}
-                                    noFocus
-                                    style={{ borderRadius: '1rem' }}
-                                />
-                                <div
-                                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                                    style={{ background: `radial-gradient(circle at 50% 0%, ${integration.color}10, transparent 70%)` }}
-                                />
-                                {integration.comingSoon && (
-                                    <span className="absolute top-3 right-3 text-[9px] font-light tracking-[0.15em] uppercase italic text-primary animate-neon-pulse">
-                                        em breve
-                                    </span>
-                                )}
-                                <div className="relative z-10">
-                                    <div
-                                        className="size-11 rounded-xl flex items-center justify-center mb-3 transition-transform duration-500 group-hover:scale-110"
-                                        style={{ backgroundColor: `${integration.color}15`, border: `1px solid ${integration.color}25` }}
-                                    >
-                                        <span
-                                            className="material-symbols-outlined text-xl"
-                                            style={{ color: integration.color }}
-                                        >
-                                            {integration.icon}
-                                        </span>
-                                    </div>
-                                    <h4 className="text-white text-sm font-medium mb-1">{integration.name}</h4>
-                                    <p className="text-white/30 text-xs">{integration.desc}</p>
-                                </div>
-                            </div>
-                        ))}
+                    {/* Integration CardStack 3D Carousel */}
+                    <div className={`mb-16 transition-all duration-1000 delay-200 ${isVisible('solucao') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+                        <CardStack
+                            items={[
+                                {
+                                    id: 'whatsapp',
+                                    title: 'WhatsApp',
+                                    description: 'Atendimento IA 24/7 com chatbot inteligente que qualifica e converte leads automaticamente.',
+                                    color: '#25D366',
+                                    icon: (
+                                        <svg viewBox="0 0 24 24" className="w-7 h-7" fill="#25D366">
+                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                        </svg>
+                                    ),
+                                },
+                                {
+                                    id: 'hotmart',
+                                    title: 'Hotmart',
+                                    description: 'Integração completa com a maior plataforma de infoprodutos do Brasil. Cursos, mentorias e assinaturas.',
+                                    color: '#F04E23',
+                                    icon: <span className="text-2xl font-black" style={{ color: '#F04E23' }}>H</span>,
+                                },
+                                {
+                                    id: 'kiwify',
+                                    title: 'Kiwify',
+                                    description: 'Vendas digitais com checkout otimizado. Gerencie seus produtos e assinaturas em um só lugar.',
+                                    color: '#00C853',
+                                    icon: <span className="text-2xl font-black" style={{ color: '#00C853' }}>K</span>,
+                                },
+                                {
+                                    id: 'sympla',
+                                    title: 'Sympla',
+                                    description: 'Gestão de eventos e venda de ingressos integrada. Controle total da sua bilheteria digital.',
+                                    color: '#FF6B35',
+                                    icon: <span className="text-2xl font-black" style={{ color: '#FF6B35' }}>S</span>,
+                                },
+                                {
+                                    id: 'blinket',
+                                    title: 'Blinket',
+                                    description: 'Ingressos digitais com QR Code, check-in automático e relatórios em tempo real.',
+                                    color: '#3B82F6',
+                                    icon: <span className="text-2xl font-black" style={{ color: '#3B82F6' }}>B</span>,
+                                },
+                                {
+                                    id: 'eventin',
+                                    title: 'Eventin',
+                                    description: 'Plataforma completa de gestão de eventos. Inscrições, pagamentos e comunicação automatizada.',
+                                    color: '#8B5CF6',
+                                    icon: <span className="text-2xl font-black" style={{ color: '#8B5CF6' }}>E</span>,
+                                },
+                                {
+                                    id: 'gcalendar',
+                                    title: 'Google Calendar',
+                                    description: 'Agenda integrada com sincronização automática de eventos, reuniões e lembretes.',
+                                    color: '#4285F4',
+                                    icon: (
+                                        <svg viewBox="0 0 24 24" className="w-7 h-7" fill="#4285F4">
+                                            <path d="M18.316 5.684H24v12.632h-5.684V5.684zM5.684 24h12.632v-5.684H5.684V24zM18.316 5.684V0H1.895A1.894 1.894 0 000 1.895v16.421h5.684V5.684h12.632zM22.105 0h-3.289v5.184H24V1.895A1.894 1.894 0 0022.105 0zm-3.289 23.5l4.684-4.684h-4.684V23.5zM0 22.105C0 23.152.848 24 1.895 24h3.289v-5.184H0v3.289z" />
+                                        </svg>
+                                    ),
+                                },
+                                {
+                                    id: 'gads',
+                                    title: 'Google Ads',
+                                    description: 'Geração automática de leads qualificados. Campanhas otimizadas por IA.',
+                                    color: '#FBBC04',
+                                    icon: <span className="text-2xl font-black" style={{ color: '#FBBC04' }}>GA</span>,
+                                    comingSoon: true,
+                                },
+                                {
+                                    id: 'meta',
+                                    title: 'Meta Ads',
+                                    description: 'Tráfego pago integrado com Facebook e Instagram. Relatórios e otimização automática.',
+                                    color: '#0081FB',
+                                    icon: <span className="text-2xl font-black" style={{ color: '#0081FB' }}>M</span>,
+                                    comingSoon: true,
+                                },
+                            ] as (CardStackItem & { icon: React.ReactNode })[]}
+                            cardWidth={460}
+                            cardHeight={280}
+                            autoAdvance
+                            intervalMs={3000}
+                            pauseOnHover
+                            showDots
+                            overlap={0.52}
+                            spreadDeg={42}
+                            depthPx={120}
+                            tiltXDeg={10}
+                            activeScale={1.05}
+                            inactiveScale={0.9}
+                        />
                     </div>
 
                     {/* Bottom stats row */}
@@ -421,11 +466,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
                 </div>
             </section>
 
+            {/* Transition: Solução → Features */}
+            <div className="relative z-10 h-24" style={{ background: 'linear-gradient(to bottom, #0a0a0a, #050505)' }} />
+
             {/* ═══════════════════ SECTION 4: FEATURES ═══════════════════ */}
             <section
                 id="features"
                 ref={setRef('features')}
-                className="relative z-10 bg-[#050505] py-24 md:py-32 px-6 -mt-px"
+                className="relative z-10 bg-[#050505] py-24 md:py-32 px-6"
             >
                 <div className="max-w-6xl mx-auto">
                     <div className={`text-center mb-16 transition-all duration-1000 ${isVisible('features') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
@@ -464,11 +512,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
                 </div>
             </section>
 
+            {/* Transition: Features → Como Funciona */}
+            <div className="relative z-10 h-24" style={{ background: 'linear-gradient(to bottom, #050505, #050505)' }} />
+
             {/* ═══════════════════ SECTION 5: COMO FUNCIONA ═══════════════════ */}
             <section
                 id="como-funciona"
                 ref={setRef('como-funciona')}
-                className="relative z-10 bg-[#050505] py-24 md:py-32 px-6 -mt-px"
+                className="relative z-10 bg-[#050505] py-24 md:py-32 px-6"
             >
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent pointer-events-none" />
 
@@ -576,7 +627,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
             <section
                 id="cta"
                 ref={setRef('cta')}
-                className="relative z-10 bg-[#050505] py-24 md:py-32 px-6 -mt-px"
+                className="relative z-10 bg-[#050505] py-24 md:py-32 px-6"
             >
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 blur-[150px] rounded-full" />
