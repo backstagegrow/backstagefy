@@ -8,6 +8,7 @@ import ScheduleView from './components/ScheduleView'
 import DashboardStats from './components/DashboardStats'
 import MediaGallery from './components/MediaGallery'
 import Login from './components/Login'
+import LandingPage from './components/LandingPage'
 import Onboarding from './components/Onboarding'
 import AgentConfigurator from './components/AgentConfigurator'
 import FunnelBuilder from './components/FunnelBuilder'
@@ -251,6 +252,7 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
 function App() {
     const [session, setSession] = useState<Session | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [showLogin, setShowLogin] = useState(false)
 
     const handleLogout = async () => {
         if (!supabase) return;
@@ -284,7 +286,10 @@ function App() {
     }
 
     if (!session) {
-        return <Login onLoginSuccess={() => window.location.reload()} />;
+        if (showLogin) {
+            return <Login onLoginSuccess={() => window.location.reload()} />;
+        }
+        return <LandingPage onNavigateToLogin={() => setShowLogin(true)} />;
     }
 
     return (

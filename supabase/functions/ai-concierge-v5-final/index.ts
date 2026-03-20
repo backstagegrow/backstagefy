@@ -12,34 +12,69 @@ Deno.serve(async (req) => {
         const payload = await req.json();
         console.log("[V6-MT] Incoming:", JSON.stringify(payload).substring(0, 300));
 
-        // --- DEBUG: Log raw payload to DB for audit ---
-        const payloadKeys = Object.keys(payload);
-        const instanceField = payload.instance || payload.instanceName || payload.instance_key || payload.name || 'NONE';
-        const eventField = payload.event || 'no_event';
-        await supabase.from('debug_logs').insert({
-            step: 'v6_raw_webhook',
-            data: {
-                event: eventField,
-                instance: instanceField,
-                keys: payloadKeys,
-                has_message: !!payload.message,
-                has_data: !!payload.data,
-                payload_preview: JSON.stringify(payload).substring(0, 500),
-            }
-        }).then(() => {}).catch(() => {});
-
         // --- 1. EXTRACT MESSAGE ---
         const msg = payload.message || payload.data || payload.body || payload;
-        const remoteJid = msg.key?.remoteJid || msg.sender || msg.chatid || msg.remoteJid || payload.remoteJid || msg.Chat || "";
+        
+        // Uazapi sends event.Chat with the real phone, and event.Type with the event type
+        const eventData = typeof payload.event === 'object' ? payload.event : null;
+        const eventType = eventData?.Type || payload.EventType || '';
+        
+        // Skip status events (Read, Delivered, Played, etc.) — these are NOT user messages
+        const statusEvents = ['Read', 'Delivered', 'Played', 'DeliveredAll', 'ReadAll', 'Composing'];
+        if (statusEvents.includes(eventType)) {
+            return new Response("status_event_ignored", { status: 200 });
+        }
+        
+        // Extract remoteJid — prefer msg.key.remoteJid, but fall back to Uazapi-specific fields
+        let remoteJid = msg.key?.remoteJid || "";
+        
+        // If remoteJid is a LID (Linked ID) or empty, resolve real phone from Uazapi fields
+        // Key field: sender_pn contains the real phone number (e.g. "5519981374216@s.whatsapp.net")
+        if (!remoteJid || remoteJid.includes("@lid")) {
+            const candidates = [
+                payload.sender_pn,                          // Uazapi phone number field (primary)
+                msg.sender_pn,                              // sender phone in msg
+                payload.chat?.id,                           // chat.id 
+                payload.chatid,                             // payload-level chatid
+                msg.sender,                                 // sender field
+                eventData?.Chat,                            // event.Chat
+                msg.Chat,                                   // msg.Chat fallback
+                eventData?.Sender,                          // event.Sender
+                msg.chatid,                                 // msg-level chatid
+                payload.remoteJid,                          // payload.remoteJid
+                msg.remoteJid,                              // msg.remoteJid
+            ];
+            
+            // First pass: find value with @s.whatsapp.net
+            for (const c of candidates) {
+                if (c && typeof c === 'string' && c.includes("@s.whatsapp.net")) {
+                    remoteJid = c;
+                    break;
+                }
+            }
+            
+            // Second pass: find any phone-like value (10-15 digits, no @lid)
+            if (!remoteJid || remoteJid.includes("@lid")) {
+                for (const c of candidates) {
+                    if (c && typeof c === 'string' && /^\d{10,15}$/.test(c.replace("@s.whatsapp.net", "").replace("@c.us", "").replace("@lid", ""))) {
+                        if (!c.includes("@lid")) {
+                            remoteJid = c.includes("@") ? c : c + "@s.whatsapp.net";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         if (!remoteJid || remoteJid.includes("status@broadcast")) {
             return new Response("ignored", { status: 200 });
         }
 
-        const cleanPhone = remoteJid.replace("@s.whatsapp.net", "").replace("@c.us", "");
+        const cleanPhone = remoteJid.replace("@s.whatsapp.net", "").replace("@c.us", "").replace("@lid", "");
         const isGroup = remoteJid.includes("@g.us");
         const fromMe = msg.key?.fromMe || msg.fromMe || msg.IsFromMe || false;
         const wasSentByApi = msg.wasSentByApi || false;
+
         if (fromMe || wasSentByApi) return new Response("own message", { status: 200 });
 
         // --- DEDUP: Skip if this message was already processed ---
@@ -89,9 +124,11 @@ Deno.serve(async (req) => {
         if (config.whitelistEnabled === true) {
             const allowed = Array.isArray(config.whitelistNumbers) ? config.whitelistNumbers : [];
             if (allowed.length > 0 && !allowed.includes(cleanPhone)) {
+                console.log(`[V6-MT] Whitelist blocked: ${cleanPhone} not in [${allowed.join(',')}]`);
                 return new Response("unauthorized", { status: 200 });
             }
         }
+
 
         // --- 4. LOAD AGENT ---
         let agent: any = null;
@@ -329,7 +366,11 @@ Status: ${lead.status || 'novo'}
 Pipeline: ${lead.pipeline_stage || 'new'}
 Telefone: ${lead.phone}
 Data/Hora atual: ${nowBR}
-${appts?.length ? `Agendamentos: ${JSON.stringify(appts)}` : 'Sem agendamentos'}`;
+${appts?.length ? `Agendamentos:\n${appts.map((a: any) => {
+    const d = new Date(a.appointment_date);
+    const dataBR = d.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return `- [ID:${a.id}] ${dataBR} | Status: ${a.status}${a.ai_summary ? ' | ' + a.ai_summary : ''}`;
+}).join('\n')}` : 'Sem agendamentos'}`;
 
         // Layer 4: Rules & Transitions
         let transitionRules = "";
@@ -395,6 +436,22 @@ ${appts?.length ? `Agendamentos: ${JSON.stringify(appts)}` : 'Sem agendamentos'}
                         type: "object",
                         properties: { id: { type: "string", description: "ID do agendamento" } },
                         required: ["id"]
+                    }
+                }
+            },
+            {
+                type: "function",
+                function: {
+                    name: "reschedule_appointment",
+                    description: "Reagenda um agendamento existente para nova data/hora. Cancela o antigo e cria um novo.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            id: { type: "string", description: "ID do agendamento a ser reagendado" },
+                            datetime: { type: "string", description: "Nova data e hora no formato YYYY-MM-DD HH:mm" },
+                            summary: { type: "string", description: "Resumo atualizado do agendamento" }
+                        },
+                        required: ["id", "datetime"]
                     }
                 }
             },
@@ -484,18 +541,65 @@ ${appts?.length ? `Agendamentos: ${JSON.stringify(appts)}` : 'Sem agendamentos'}
 
                 if (call.function.name === 'schedule_appointment') {
                     const dt = args.datetime.includes("-03:00") ? args.datetime : `${args.datetime} -03:00`;
-                    await supabase.from('appointments').insert({
-                        tenant_id: tenantId, lead_id: lead.id,
-                        appointment_date: new Date(dt).toISOString(),
-                        status: 'confirmed', ai_summary: args.summary
-                    });
-                    executed.push('SCHEDULED');
-                    await notifyAdmin(config, `🚀 **Novo Agendamento**\nAgente: ${agentName}\nLead: ${lead.name || cleanPhone}\nData: ${args.datetime}`, UAZ_BASE, UAZ_KEY);
+                    const appointmentDate = new Date(dt);
+
+                    // Conflict detection: check ±30min window
+                    const windowStart = new Date(appointmentDate.getTime() - 30 * 60000).toISOString();
+                    const windowEnd = new Date(appointmentDate.getTime() + 30 * 60000).toISOString();
+                    const { data: conflicts } = await supabase.from('appointments')
+                        .select('id,appointment_date')
+                        .eq('tenant_id', tenantId)
+                        .in('status', ['confirmed', 'scheduled'])
+                        .gte('appointment_date', windowStart)
+                        .lte('appointment_date', windowEnd);
+
+                    if (conflicts?.length) {
+                        executed.push('CONFLICT_DETECTED');
+                        console.log(`[V6-MT] Schedule conflict: ${conflicts.length} existing at ${args.datetime}`);
+                    } else {
+                        await supabase.from('appointments').insert({
+                            tenant_id: tenantId, lead_id: lead.id,
+                            appointment_date: appointmentDate.toISOString(),
+                            status: 'confirmed', ai_summary: args.summary
+                        });
+
+                        // Auto-update lead pipeline + status
+                        const pipelineUpdate: any = { pipeline_stage: 'attending' };
+                        if (['novo', 'frio'].includes(lead.status)) pipelineUpdate.status = 'morno';
+                        await supabase.from('leads').update(pipelineUpdate).eq('id', lead.id);
+                        lead = { ...lead, ...pipelineUpdate };
+
+                        executed.push('SCHEDULED');
+                        await notifyAdmin(config, `🚀 **Novo Agendamento**\nAgente: ${agentName}\nLead: ${lead.name || cleanPhone}\nData: ${args.datetime}`, UAZ_BASE, UAZ_KEY);
+                    }
                 }
 
                 if (call.function.name === 'cancel_appointment') {
                     await supabase.from('appointments').update({ status: 'cancelled' }).eq('id', args.id);
+                    // Check if lead has remaining active appointments
+                    const { data: remaining } = await supabase.from('appointments')
+                        .select('id').eq('lead_id', lead.id).eq('tenant_id', tenantId)
+                        .in('status', ['confirmed', 'scheduled']);
+                    if (!remaining?.length) {
+                        await supabase.from('leads').update({ pipeline_stage: 'new' }).eq('id', lead.id);
+                        lead = { ...lead, pipeline_stage: 'new' };
+                    }
                     executed.push(`CANCELLED:${args.id}`);
+                }
+
+                if (call.function.name === 'reschedule_appointment') {
+                    // Cancel old
+                    await supabase.from('appointments').update({ status: 'cancelled' }).eq('id', args.id);
+                    // Create new
+                    const dt = args.datetime.includes("-03:00") ? args.datetime : `${args.datetime} -03:00`;
+                    const appointmentDate = new Date(dt);
+                    await supabase.from('appointments').insert({
+                        tenant_id: tenantId, lead_id: lead.id,
+                        appointment_date: appointmentDate.toISOString(),
+                        status: 'confirmed', ai_summary: args.summary || 'Reagendamento'
+                    });
+                    executed.push(`RESCHEDULED:${args.id}`);
+                    await notifyAdmin(config, `🔄 **Reagendamento**\nAgente: ${agentName}\nLead: ${lead.name || cleanPhone}\nNova data: ${args.datetime}`, UAZ_BASE, UAZ_KEY);
                 }
 
                 if (call.function.name === 'advance_step') {

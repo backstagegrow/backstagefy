@@ -13,6 +13,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     const [error, setError] = useState<string | null>(null);
     const [isSignUp, setIsSignUp] = useState(false);
     const [signUpSuccess, setSignUpSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -67,7 +68,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                     {/* Branding Section */}
                     <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 mt-16 pb-8">
                         <div className="flex flex-col items-center space-y-2">
-                            <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase opacity-80">The Hub</p>
+                            <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase opacity-80">O Hub</p>
                             <h1 className="font-serif text-6xl md:text-8xl tracking-tight shimmer-text">BACKSTAGEFY</h1>
                         </div>
                     </div>
@@ -79,7 +80,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                             <div className="pt-16 pb-12 px-10 md:px-14">
                                 <div className="mb-10">
                                     <h3 className="text-primary text-[10px] font-bold tracking-[0.5em] uppercase mb-2">
-                                        {isSignUp ? 'Create Account' : 'Authorization Required'}
+                                        {isSignUp ? 'Criar Conta' : 'Acesso Restrito'}
                                     </h3>
                                     <div className="h-px w-12 bg-primary/40"></div>
                                 </div>
@@ -103,14 +104,14 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                                         {/* Name field (Sign Up only) */}
                                         {isSignUp && (
                                             <div className="space-y-3 animate-in fade-in slide-in-from-top-4 duration-300">
-                                                <label className="text-[10px] text-white/40 uppercase tracking-widest pl-1 font-bold">Full Name</label>
+                                                <label className="text-[10px] text-white/40 uppercase tracking-widest pl-1 font-bold">Nome Completo</label>
                                                 <div className="relative group">
                                                     <input
                                                         type="text"
                                                         value={fullName}
                                                         onChange={(e) => setFullName(e.target.value)}
                                                         className="w-full bg-transparent border-0 border-b border-white/10 text-white py-3 pl-8 focus:ring-0 focus:border-primary transition-all duration-500 placeholder-white/20 font-light text-lg"
-                                                        placeholder="Your name"
+                                                        placeholder="Seu nome"
                                                         required
                                                     />
                                                     <span className="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors text-xl">person</span>
@@ -119,14 +120,14 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                                         )}
 
                                         <div className="space-y-3">
-                                            <label className="text-[10px] text-white/40 uppercase tracking-widest pl-1 font-bold">Identity</label>
+                                            <label className="text-[10px] text-white/40 uppercase tracking-widest pl-1 font-bold">E-mail</label>
                                             <div className="relative group">
                                                 <input
                                                     type="email"
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                     className="w-full bg-transparent border-0 border-b border-white/10 text-white py-3 pl-8 focus:ring-0 focus:border-primary transition-all duration-500 placeholder-white/20 font-light text-lg"
-                                                    placeholder="Enter digital ID"
+                                                    placeholder="Digite seu e-mail"
                                                     required
                                                 />
                                                 <span className="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors text-xl">account_circle</span>
@@ -134,18 +135,28 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                                         </div>
 
                                         <div className="space-y-3">
-                                            <label className="text-[10px] text-white/40 uppercase tracking-widest pl-1 font-bold">Security Key</label>
+                                            <label className="text-[10px] text-white/40 uppercase tracking-widest pl-1 font-bold">Senha</label>
                                             <div className="relative group">
                                                 <input
-                                                    type="password"
+                                                    type={showPassword ? 'text' : 'password'}
                                                     value={password}
                                                     onChange={(e) => setPassword(e.target.value)}
-                                                    className="w-full bg-transparent border-0 border-b border-white/10 text-white py-3 pl-8 focus:ring-0 focus:border-primary transition-all duration-500 placeholder-white/20 font-light text-lg"
+                                                    className="w-full bg-transparent border-0 border-b border-white/10 text-white py-3 pl-8 pr-10 focus:ring-0 focus:border-primary transition-all duration-500 placeholder-white/20 font-light text-lg"
                                                     placeholder="••••••••"
                                                     required
                                                     minLength={6}
                                                 />
                                                 <span className="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors text-xl">vpn_key</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-primary transition-colors p-1"
+                                                    tabIndex={-1}
+                                                >
+                                                    <span className="material-symbols-outlined text-xl">
+                                                        {showPassword ? 'visibility_off' : 'visibility'}
+                                                    </span>
+                                                </button>
                                             </div>
                                         </div>
 
@@ -163,10 +174,10 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                                             >
                                                 <span className="text-[10px] tracking-[0.3em] uppercase ml-2">
                                                     {loading
-                                                        ? 'Processing...'
+                                                        ? 'Processando...'
                                                         : isSignUp
-                                                            ? 'Create Account'
-                                                            : 'Access Intelligence'}
+                                                            ? 'Criar Conta'
+                                                            : 'Acessar Plataforma'}
                                                 </span>
                                                 <div className="bg-black/10 p-1 rounded-sm group-hover:translate-x-1 transition-transform">
                                                     <span className="material-symbols-outlined text-lg">
@@ -180,7 +191,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                                                 onClick={toggleMode}
                                                 className="mt-6 text-[10px] text-white/30 hover:text-primary tracking-widest uppercase transition-colors duration-300"
                                             >
-                                                {isSignUp ? '← Already have an account? Sign In' : 'New here? Create Account →'}
+                                                {isSignUp ? '← Já tem conta? Entrar' : 'Novo aqui? Criar Conta →'}
                                             </button>
                                         </div>
                                     </form>
@@ -201,7 +212,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                         <span className="hover:text-white/40 transition-colors cursor-pointer text-center">Security Protocol 8.2</span>
                         <span className="hover:text-white/40 transition-colors cursor-pointer text-center">Geneva Node</span>
                     </div>
-                    <p className="text-center">© 2026 BACKSTAGEFY Global • All Rights Reserved</p>
+                    <p className="text-center">© 2026 BACKSTAGEFY Global • Todos os direitos reservados</p>
                 </div>
             </div>
         </div>
