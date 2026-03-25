@@ -162,3 +162,9 @@
 .animate-neon-pulse {
   animation: neon-pulse 3s ease-in-out infinite;
 }
+
+/* Fix native <option> elements in dark mode selects */
+select option {
+  background-color: #1a1a2e;
+  color: #e0e0e0;
+}
