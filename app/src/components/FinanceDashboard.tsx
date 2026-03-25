@@ -179,7 +179,7 @@ export default function FinanceDashboard() {
             .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_products' }, fetchAll)
             .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_categories' }, fetchAll)
             .subscribe()
-        return () => { supabase.removeChannel(ch) }
+        return () => { supabase!.removeChannel(ch) }
     }, [tenantId])
 
     /* ── FILTERED TRANSACTIONS ── */
