@@ -14,6 +14,7 @@ import AgentConfigurator from './components/AgentConfigurator'
 import FunnelBuilder from './components/FunnelBuilder'
 import KnowledgeBase from './components/KnowledgeBase'
 import TicketDashboard from './components/TicketDashboard'
+import FinanceDashboard from './components/FinanceDashboard'
 import { useKnowledgeUnlock } from './lib/useKnowledgeUnlock'
 
 import { TenantProvider, useTenant } from './context/TenantContext'
@@ -40,6 +41,7 @@ const Header = ({ activeTab, onAddClick, onMenuClick }: { activeTab: string, onA
         'funnel': { title: 'Editor de Funil', subtitle: 'Configure as etapas de atendimento' },
         'sales': { title: 'Vendas & Plataformas', subtitle: 'Central de vendas e integrações' },
         'viewings': { title: 'Agenda', subtitle: 'Visitas e agendamentos programados' },
+        'finance': { title: 'Financeiro', subtitle: 'Gestão financeira e fluxo de caixa' },
         'billing': { title: 'Plano & Uso', subtitle: 'Gerencie assinatura e limites' },
     }
 
@@ -224,9 +226,11 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
 
                         {activeTab === 'sales' && <TicketDashboard />}
 
+                        {activeTab === 'finance' && <FinanceDashboard />}
+
                         {activeTab === 'portfolio' && <MediaGallery />}
 
-                        {!['dashboard', 'leads', 'agents', 'whatsapp', 'viewings', 'funnel', 'knowledge', 'sales', 'portfolio'].includes(activeTab) && (
+                        {!['dashboard', 'leads', 'agents', 'whatsapp', 'viewings', 'funnel', 'knowledge', 'sales', 'portfolio', 'finance'].includes(activeTab) && (
                             <ComingSoon title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} />
                         )}
                     </div>

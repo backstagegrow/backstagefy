@@ -24,6 +24,7 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
         { id: 'sales', icon: 'store', label: 'Vendas & Plataformas' },
         { id: 'broadcast', icon: 'campaign', label: 'Campanhas', badge: 'Em Breve' },
         { id: 'viewings', icon: 'calendar_month', label: 'Agenda' },
+        { id: 'finance', icon: 'account_balance', label: 'Financeiro' },
         { id: 'billing', icon: 'credit_card', label: 'Plano & Uso' },
     ] as const
 
