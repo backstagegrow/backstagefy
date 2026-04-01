@@ -401,7 +401,25 @@ ${appts?.length ? `Agendamentos:\n${appts.map((a: any) => {
 - Use create_follow_up quando o lead não responder ou precisar de acompanhamento.
 - Use transfer_to_human para transferir para um atendente humano se solicitado.
 - IMPORTANTE: Quando o cliente pedir fotos, imagens ou documentos, use a ferramenta send_media com o ID do arquivo disponível na seção [MÍDIAS E DOCUMENTOS DISPONÍVEIS]. Você PODE e DEVE enviar mídias quando relevante!
-- Use send_gallery para enviar fotos de uma categoria específica.${transitionRules}`;
+- Use send_gallery para enviar fotos de uma categoria específica.
+
+[FORMATAÇÃO OBRIGATÓRIA PARA WHATSAPP]
+- Você está respondendo via WhatsApp. SEMPRE formate suas respostas com boa legibilidade.
+- Use uma linha em branco (duas quebras de linha) para separar parágrafos e ideias diferentes.
+- Mantenha parágrafos curtos (2-3 frases no máximo).
+- Use *negrito* para destacar informações importantes.
+- Use emojis com moderação para tornar a conversa mais amigável.
+- NUNCA envie um bloco único de texto longo. Sempre quebre em parágrafos separados.
+- Exemplo de boa formatação:
+"Olá! 😊 Que bom falar com você!
+
+Temos várias opções que podem te interessar. Deixa eu te explicar:
+
+*Produto A* - Descrição breve do produto.
+
+*Produto B* - Descrição breve do produto.
+
+Qual deles te interessa mais?"${transitionRules}`;
 
         const SYSTEM_PROMPT = layer1 + layer2 + layer3 + kbContext + mediaContext + layer4;
 
@@ -524,6 +542,15 @@ ${appts?.length ? `Agendamentos:\n${appts.map((a: any) => {
             { role: 'system', content: SYSTEM_PROMPT },
             ...(history || []).slice().reverse()
         ];
+
+        // Show "typing..." presence BEFORE calling OpenAI (takes 5-15s)
+        const UAZ_KEY_EARLY = instanceRow.apikey || globalConfig['UAZAPI_KEY'];
+        const UAZ_BASE_EARLY = (globalConfig['UAZAPI_BASE_URL'] || 'https://backstagefy.uazapi.com').replace(/\/$/, "");
+        await fetch(`${UAZ_BASE_EARLY}/send/presence`, {
+            method: 'POST',
+            headers: { 'token': UAZ_KEY_EARLY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ number: remoteJid, presence: 'composing' })
+        }).catch(() => { });
 
         const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",

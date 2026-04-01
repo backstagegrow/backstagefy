@@ -108,8 +108,14 @@ const AgentConfigurator: React.FC = () => {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
     const widgetBase = window.location.origin;
 
+    // Webchat customization state
+    const [wcBotName, setWcBotName] = useState('Assistente IA');
+    const [wcColor, setWcColor] = useState('#7c3aed');
+    const [wcWelcome, setWcWelcome] = useState('Olá! Como posso ajudar você hoje?');
+    const [wcPosition, setWcPosition] = useState<'right' | 'left'>('right');
+
     const embedCode = tenantId
-        ? `<script\n  src="${widgetBase}/webchat-widget.js"\n  data-tenant-id="${tenantId}"\n  data-supabase-url="${supabaseUrl}"\n  data-bot-name="Assistente IA"\n  data-primary-color="#7c3aed"\n  data-welcome-message="Olá! Como posso ajudar você hoje?"\n></script>`
+        ? `<script\n  src="${widgetBase}/webchat-widget.js"\n  data-tenant-id="${tenantId}"\n  data-supabase-url="${supabaseUrl}"\n  data-bot-name="${wcBotName}"\n  data-primary-color="${wcColor}"\n  data-welcome-message="${wcWelcome}"\n  data-position="${wcPosition}"\n></script>`
         : '';
 
     const copyEmbedCode = useCallback(async () => {
@@ -240,54 +246,183 @@ const AgentConfigurator: React.FC = () => {
                         <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-40 md:pt-36 pb-8 md:pb-12 space-y-6">
 
                         {activeTab === 'webchat' && (
-                            <div className="space-y-6">
+                            <div className="space-y-5">
+
+                                {/* STEP 1 — Personalização visual */}
+                                <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl space-y-5">
+                                    <div className="flex items-center gap-3 mb-1">
+                                        <div className="size-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                                            <span className="text-primary text-xs font-bold">1</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-white text-sm font-semibold">Personalize o chat</h3>
+                                            <p className="text-white/30 text-xs mt-0.5">Defina como o chat vai aparecer no site do seu cliente</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {/* Bot Name */}
+                                        <div>
+                                            <label className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2 block">
+                                                Nome do Assistente
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={wcBotName}
+                                                onChange={e => setWcBotName(e.target.value)}
+                                                placeholder="Ex: Luna, Guga, Atendimento..."
+                                                className="w-full bg-black/20 border border-white/10 text-white py-3 px-4 rounded-xl focus:border-primary outline-none transition-all text-sm placeholder-white/20"
+                                            />
+                                            <p className="text-white/25 text-[10px] mt-1.5">Aparece no topo do chat</p>
+                                        </div>
+
+                                        {/* Welcome message */}
+                                        <div>
+                                            <label className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2 block">
+                                                Mensagem de Boas-vindas
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={wcWelcome}
+                                                onChange={e => setWcWelcome(e.target.value)}
+                                                placeholder="Ex: Olá! Como posso ajudar?"
+                                                className="w-full bg-black/20 border border-white/10 text-white py-3 px-4 rounded-xl focus:border-primary outline-none transition-all text-sm placeholder-white/20"
+                                            />
+                                            <p className="text-white/25 text-[10px] mt-1.5">Primeira mensagem que o visitante vê</p>
+                                        </div>
+
+                                        {/* Color */}
+                                        <div>
+                                            <label className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2 block">
+                                                Cor Principal
+                                            </label>
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="color"
+                                                    value={wcColor}
+                                                    onChange={e => setWcColor(e.target.value)}
+                                                    className="w-12 h-11 rounded-xl border border-white/10 bg-black/20 cursor-pointer p-1"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={wcColor}
+                                                    onChange={e => setWcColor(e.target.value)}
+                                                    className="flex-1 bg-black/20 border border-white/10 text-white py-3 px-4 rounded-xl focus:border-primary outline-none transition-all text-sm font-mono"
+                                                />
+                                            </div>
+                                            <p className="text-white/25 text-[10px] mt-1.5">Cor do botão e cabeçalho</p>
+                                        </div>
+
+                                        {/* Position */}
+                                        <div>
+                                            <label className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2 block">
+                                                Posição na Tela
+                                            </label>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {(['right', 'left'] as const).map(pos => (
+                                                    <button
+                                                        key={pos}
+                                                        onClick={() => setWcPosition(pos)}
+                                                        className={`py-3 rounded-xl border text-xs font-semibold transition-all flex items-center justify-center gap-2 ${wcPosition === pos
+                                                            ? 'bg-primary/15 border-primary/40 text-primary'
+                                                            : 'bg-black/20 border-white/10 text-white/40 hover:border-white/20 hover:text-white/60'
+                                                        }`}
+                                                    >
+                                                        <span className="material-symbols-outlined text-sm">
+                                                            {pos === 'right' ? 'align_justify_flex_end' : 'align_justify_flex_start'}
+                                                        </span>
+                                                        {pos === 'right' ? 'Direita' : 'Esquerda'}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <p className="text-white/25 text-[10px] mt-1.5">Canto onde o botão flutuante aparece</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* STEP 2 — Preview */}
                                 <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
-                                    <h3 className="text-white/80 text-sm font-medium flex items-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined text-primary text-lg">integration_instructions</span>
-                                        Código de Embed para o Site do Cliente
-                                    </h3>
-                                    <p className="text-white/30 text-xs mb-5">
-                                        Cole este código antes do fechamento da tag <code className="text-primary/80 bg-white/5 px-1 py-0.5 rounded">&lt;/body&gt;</code> no site do cliente. O chat aparecerá automaticamente.
-                                    </p>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="size-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                                            <span className="text-primary text-xs font-bold">2</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-white text-sm font-semibold">Prévia do chat</h3>
+                                            <p className="text-white/30 text-xs mt-0.5">Veja como ficará no site do cliente</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-black/30 rounded-2xl p-6 flex items-end justify-end min-h-[220px] relative overflow-hidden border border-white/5">
+                                        {/* fake site bg lines */}
+                                        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{backgroundImage:'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 1px,transparent 80px)'}} />
+
+                                        {/* chat preview */}
+                                        <div className={`flex flex-col items-end gap-2 ${wcPosition === 'left' ? 'mr-auto ml-0' : ''}`}>
+                                            {/* mini chat window */}
+                                            <div className="w-56 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                                                <div className="px-3 py-2.5 flex items-center gap-2" style={{background: wcColor}}>
+                                                    <div className="size-6 rounded-full bg-white/20 flex items-center justify-center text-xs">🤖</div>
+                                                    <div>
+                                                        <p className="text-white text-[11px] font-semibold leading-none">{wcBotName || 'Assistente IA'}</p>
+                                                        <p className="text-white/70 text-[9px] mt-0.5">● Online</p>
+                                                    </div>
+                                                </div>
+                                                <div className="bg-[#f8f8fc] px-3 py-3">
+                                                    <div className="bg-white rounded-xl rounded-tl-sm px-3 py-2 shadow-sm text-[10px] text-gray-700 max-w-[90%]">
+                                                        {wcWelcome || 'Olá! Como posso ajudar?'}
+                                                    </div>
+                                                </div>
+                                                <div className="bg-white flex gap-1.5 px-2 py-1.5 border-t border-gray-100">
+                                                    <div className="flex-1 bg-gray-100 rounded-full px-2 py-1 text-[9px] text-gray-400">Digite sua mensagem...</div>
+                                                    <div className="size-5 rounded-full flex items-center justify-center" style={{background: wcColor}}>
+                                                        <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* fab button */}
+                                            <div className="size-11 rounded-full shadow-lg flex items-center justify-center" style={{background: wcColor}}>
+                                                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* STEP 3 — Código gerado */}
+                                <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="size-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                                            <span className="text-primary text-xs font-bold">3</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-white text-sm font-semibold">Copie e cole no site</h3>
+                                            <p className="text-white/30 text-xs mt-0.5">
+                                                Mande este código para o desenvolvedor do cliente colar antes do <span className="font-mono text-white/50">&lt;/body&gt;</span>
+                                            </p>
+                                        </div>
+                                    </div>
+
                                     <div className="relative">
-                                        <pre className="bg-black/40 border border-white/10 rounded-xl p-4 text-xs text-green-400/90 font-mono whitespace-pre overflow-x-auto leading-relaxed">
+                                        <pre className="bg-black/50 border border-white/10 rounded-xl p-4 pr-28 text-xs text-green-400/90 font-mono whitespace-pre overflow-x-auto leading-relaxed">
                                             {embedCode}
                                         </pre>
                                         <button
                                             onClick={copyEmbedCode}
-                                            className="absolute top-3 right-3 flex items-center gap-1.5 bg-primary/20 hover:bg-primary/30 border border-primary/30 text-primary text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                                            className={`absolute top-3 right-3 flex items-center gap-1.5 border text-xs font-bold px-3 py-2 rounded-lg transition-all ${copied
+                                                ? 'bg-green-500/20 border-green-500/40 text-green-400'
+                                                : 'bg-primary/20 hover:bg-primary/30 border-primary/30 text-primary'
+                                            }`}
                                         >
-                                            <span className="material-symbols-outlined text-sm">{copied ? 'check' : 'content_copy'}</span>
-                                            {copied ? 'Copiado!' : 'Copiar'}
+                                            <span className="material-symbols-outlined text-sm">{copied ? 'check_circle' : 'content_copy'}</span>
+                                            {copied ? 'Copiado!' : 'Copiar código'}
                                         </button>
                                     </div>
-                                </div>
 
-                                <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4">
-                                    <h3 className="text-white/80 text-sm font-medium flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-primary text-lg">tune</span>
-                                        Parâmetros Customizáveis
-                                    </h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                                        {[
-                                            { attr: 'data-bot-name', desc: 'Nome exibido no cabeçalho do chat' },
-                                            { attr: 'data-primary-color', desc: 'Cor principal (hex, ex: #7c3aed)' },
-                                            { attr: 'data-welcome-message', desc: 'Mensagem de boas-vindas' },
-                                            { attr: 'data-position', desc: '"right" ou "left" — lado da tela' },
-                                        ].map(({ attr, desc }) => (
-                                            <div key={attr} className="bg-black/20 border border-white/5 rounded-xl p-3">
-                                                <code className="text-primary/80 font-mono text-[10px]">{attr}</code>
-                                                <p className="text-white/40 mt-1">{desc}</p>
-                                            </div>
-                                        ))}
+                                    <div className="mt-4 flex items-start gap-2.5 p-3.5 bg-amber-500/5 border border-amber-500/15 rounded-xl">
+                                        <span className="material-symbols-outlined text-amber-400/70 text-base shrink-0 mt-0.5">lightbulb</span>
+                                        <p className="text-white/40 text-xs leading-relaxed">
+                                            Não tem acesso ao site? Encaminhe o código para o desenvolvedor ou responsável pelo site do cliente — é só colar uma linha.
+                                        </p>
                                     </div>
-                                </div>
-
-                                <div className="p-5 bg-primary/5 border border-primary/10 rounded-2xl flex items-start gap-3">
-                                    <span className="material-symbols-outlined text-primary text-xl shrink-0 mt-0.5">info</span>
-                                    <p className="text-white/50 text-xs leading-relaxed">
-                                        O widget usa as <strong className="text-white/70">instruções base do agente selecionado</strong> e a base de conhecimento do seu tenant. O histórico de cada visitante é salvo por sessão usando <code className="text-primary/70 bg-white/5 px-1 rounded">localStorage</code>.
-                                    </p>
                                 </div>
                             </div>
                         )}
