@@ -6,7 +6,8 @@
       "WebFetch(domain:www.youtube.com)",
       "WebSearch",
       "Bash(curl -s -X GET \"https://api.pinecone.io/indexes\" -H \"Api-Key: pcsk_6MhnRk_2de1eK27i2irUoia5DkKdcW4nQqQ1qDEV7pN7ZnHoFJS7UJTBg8a7m7gk6qRDfD\" -H \"X-Pinecone-API-Version: 2025-01\")",
-      "Bash(npx supabase:*)"
+      "Bash(npx supabase:*)",
+      "Bash(npm run:*)"
     ],
     "additionalDirectories": [
       "d:\\backstagefy\\backstagefy\\app\\supabase\\functions"
