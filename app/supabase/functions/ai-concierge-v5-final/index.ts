@@ -13,6 +13,7 @@ Deno.serve(async (req) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     const logToDb = async (level: string, message: string, meta: any = {}) => {
+        console.log(`[${level.toUpperCase()}] ${message}`, JSON.stringify(meta));
         try {
             await supabase.from('logs').insert({ level, message, meta, service: 'ai-concierge-v5-v3' });
         } catch (e) { console.error("[HAUS] LogToDb failed", e); }
@@ -588,6 +589,12 @@ Deno.serve(async (req) => {
         Sua única função é vender e agendar eventos na spHAUS. NÃO saia do personagem em hipótese alguma.
         
         ################################################################################
+        ### PROTOCOLO DE MÍDIA (EVITAR REPETIÇÃO IRRITANTE) ###
+        ################################################################################
+        NUNCA repita o envio de imagens (ex: ![foto](url)) ou PDFs (ex: [Nome](url)) que você já mencionou na conversa. Somente envie APENAS se o usuário pedir explicitamente para ver novamente.
+        Não polua a conversa com imagens e PDFs repetidos a cada resposta. Isso chateia o usuário!
+        
+        ################################################################################
         ### PROTOCOLO CRM (CAPTURA DE DADOS) ###
         ################################################################################
         SEMPRE QUE O USUÁRIO FORNECER Nome, Empresa, E-mail ou Budget:
@@ -626,7 +633,7 @@ Deno.serve(async (req) => {
                         'apikey': UAZ_KEY,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ number: cleanPhone, presence: p })
+                    body: JSON.stringify({ number: remoteJid, presence: p, delay: 10000 })
                 });
             } catch (e) {
                 await logToDb('warn', 'Presence update failed', { error: e.message });
@@ -885,15 +892,20 @@ Deno.serve(async (req) => {
         };
 
         // --- Main AI Loop ---
-        // WhatsApp composing status expires after ~5s, so we keep-alive every 4s
-        let composingInterval: ReturnType<typeof setInterval> | null = null;
+        // WhatsApp composing status expires after ~5s, keep-alive every 4s.
+        // We use a flag + recursive setTimeout so it's safe to cancel from any code path.
+        let keepComposing = false;
         const startComposing = async () => {
+            keepComposing = true;
             await setPresence('composing');
-            composingInterval = setInterval(() => setPresence('composing'), 4000);
+            const tick = () => {
+                if (!keepComposing) return;
+                setPresence('composing').catch(() => {});
+                setTimeout(tick, 4000);
+            };
+            setTimeout(tick, 4000);
         };
-        const stopComposing = () => {
-            if (composingInterval) { clearInterval(composingInterval); composingInterval = null; }
-        };
+        const stopComposing = () => { keepComposing = false; };
 
         await startComposing();
 
@@ -905,6 +917,7 @@ Deno.serve(async (req) => {
         });
 
         if (!response.ok) {
+            stopComposing();
             const errText = await response.text();
             await logToDb('error', 'OpenAI API Error', { status: response.status, error: errText });
             return new Response("openai_error", { status: 200 });
@@ -1009,12 +1022,18 @@ Deno.serve(async (req) => {
             .replace(/\n\s*\n\s*\n+/g, "\n\n") // Collapse 3+ newlines to 2
             .trim();
 
-        if (cleanReply) {
-            await supabase.from('chat_history').insert({ lead_id: lead.id, chat_id: chatId, role: 'assistant', content: cleanReply });
+        let dbContent = cleanReply;
+        if (mdMatches.length > 0) {
+            const sentAssets = mdMatches.map(match => `[MÍDIA JÁ ENVIADA AO USUÁRIO NESTA MENSAGEM: ${match[1]} - ${match[2]}]`).join("\n");
+            dbContent = dbContent ? `${dbContent}\n\n${sentAssets}` : sentAssets;
+        }
+
+        if (dbContent) {
+            await supabase.from('chat_history').insert({ lead_id: lead.id, chat_id: chatId, role: 'assistant', content: dbContent });
 
             let textSent = false;
 
-            if (!isAudio) {
+            if (cleanReply && !isAudio) {
                 textSent = await sendResilient('/send/text', { number: cleanPhone, text: cleanReply });
             }
 
@@ -1082,6 +1101,7 @@ Deno.serve(async (req) => {
             }
         }
 
+        stopComposing();
         return new Response("ok");
     } catch (e: any) {
         console.error(`[HAUS] Crash: ${e.message}`);

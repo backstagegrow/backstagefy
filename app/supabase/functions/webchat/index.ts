@@ -8,7 +8,7 @@ const CORS = {
 };
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  if (req.method === "OPTIONS") return new Response(null, { status: 200, headers: CORS });
   if (req.method !== "POST") return new Response("Method Not Allowed", { status: 405, headers: CORS });
 
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
@@ -22,6 +22,42 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
+
+    // ── TTS Preview action (voice card play button in dashboard) ──────────
+    if (body?.action === "tts_preview") {
+      const VALID = ["alloy","echo","fable","onyx","nova","shimmer"];
+      const voice = VALID.includes(body?.voice) ? body.voice : "onyx";
+      if (!OPENAI_API_KEY) {
+        return new Response(JSON.stringify({ error: "OPENAI_API_KEY não configurada" }), { status: 500, headers: CORS });
+      }
+      const ttsRes = await fetch("https://api.openai.com/v1/audio/speech", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "tts-1",
+          input: "Olá! Eu serei a voz da sua IA. Se me escolher, atenderei seus clientes com muito prazer!",
+          voice,
+          response_format: "mp3",
+        }),
+      });
+      if (!ttsRes.ok) {
+        return new Response(JSON.stringify({ error: "TTS failed" }), { status: 502, headers: CORS });
+      }
+      const audioBuf = await ttsRes.arrayBuffer();
+      const audioCors = { ...CORS, "Content-Type": "audio/mpeg", "Cache-Control": "public, max-age=86400" };
+      delete (audioCors as any)["Content-Type"]; // remove JSON content-type from spread
+      return new Response(audioBuf, {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+          "Content-Type": "audio/mpeg",
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
+    }
+    // ─────────────────────────────────────────────────────────────────────
+
     // Required: tenant_id, message
     // Optional: session_id (to persist conversation), visitor_name, visitor_email
     const { tenant_id, message, audio_base64, audio_mime, session_id, visitor_name, visitor_email } = body;

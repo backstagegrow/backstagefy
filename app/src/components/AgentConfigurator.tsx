@@ -34,6 +34,8 @@ const AgentConfigurator: React.FC = () => {
     const [waApikey, setWaApikey] = useState('');
     const [isActive, setIsActive] = useState(true);
     const [ttsVoice, setTtsVoice] = useState('onyx');
+    const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+    const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
         if (tenantId) fetchAgents();
@@ -109,6 +111,44 @@ const AgentConfigurator: React.FC = () => {
         setTtsVoice('onyx');
         setShowNew(true);
     };
+
+    const previewVoice = useCallback(async (voice: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (playingVoice === voice) {
+            audioRef.current?.pause();
+            setPlayingVoice(null);
+            return;
+        }
+        audioRef.current?.pause();
+        setPlayingVoice(voice);
+        try {
+            if (!supabase) throw new Error('Supabase not initialized');
+            const { data: { session } } = await supabase.auth.getSession();
+            const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+            const base = import.meta.env.VITE_SUPABASE_URL || '';
+            const token = session?.access_token || anonKey;
+            // Use the webchat function (already working with CORS) with action=tts_preview
+            const res = await fetch(`${base}/functions/v1/webchat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'apikey': anonKey,
+                },
+                body: JSON.stringify({ action: 'tts_preview', voice }),
+            });
+            if (!res.ok) throw new Error(`TTS error ${res.status}`);
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audioRef.current = audio;
+            audio.onended = () => { setPlayingVoice(null); URL.revokeObjectURL(url); };
+            audio.onerror = () => { setPlayingVoice(null); URL.revokeObjectURL(url); };
+            await audio.play();
+        } catch (_) {
+            setPlayingVoice(null);
+        }
+    }, [playingVoice]);
 
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
     const widgetBase = window.location.origin;
@@ -520,25 +560,51 @@ const AgentConfigurator: React.FC = () => {
                                             {[
                                                 { id: 'alloy',   label: 'Alloy',   desc: 'Neutro, claro',     icon: '🎙️' },
                                                 { id: 'echo',    label: 'Echo',    desc: 'Masculino, firme',  icon: '🔊' },
-                                                { id: 'fable',   label: 'Fable',   desc: 'Expressivo',       icon: '✨' },
+                                                { id: 'fable',   label: 'Fable',   desc: 'Expressivo',        icon: '✨' },
                                                 { id: 'onyx',    label: 'Onyx',    desc: 'Grave, autoridade', icon: '🎯' },
-                                                { id: 'nova',    label: 'Nova',    desc: 'Feminino, caloroso',icon: '🌟' },
+                                                { id: 'nova',    label: 'Nova',    desc: 'Feminino, caloroso', icon: '🌟' },
                                                 { id: 'shimmer', label: 'Shimmer', desc: 'Feminino, suave',   icon: '💫' },
-                                            ].map(v => (
-                                                <button
+                                            ].map(v => {
+                                                const isSelected = ttsVoice === v.id;
+                                                const isPlaying  = playingVoice === v.id;
+                                                return (
+                                                <div
                                                     key={v.id}
-                                                    type="button"
                                                     onClick={() => setTtsVoice(v.id)}
-                                                    className={`p-3 rounded-xl border text-left transition-all ${ttsVoice === v.id
+                                                    className={`relative p-3 rounded-xl border cursor-pointer transition-all select-none ${isSelected
                                                         ? 'bg-primary/15 border-primary/40'
                                                         : 'bg-black/20 border-white/5 hover:border-white/15'
                                                     }`}
                                                 >
-                                                    <div className="text-base mb-1">{v.icon}</div>
-                                                    <div className={`text-xs font-bold ${ttsVoice === v.id ? 'text-primary' : 'text-white/70'}`}>{v.label}</div>
+                                                    <div className="flex items-start justify-between gap-1 mb-1">
+                                                        <span className="text-base leading-none">{v.icon}</span>
+                                                        {/* Play preview button */}
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => previewVoice(v.id, e)}
+                                                            title="Ouvir prévia"
+                                                            className={`flex items-center justify-center size-6 rounded-full border transition-all flex-shrink-0 ${isPlaying
+                                                                ? 'bg-primary border-primary text-white animate-pulse'
+                                                                : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white/70 hover:border-white/20'
+                                                            }`}
+                                                        >
+                                                            {isPlaying ? (
+                                                                <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                                            ) : (
+                                                                <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current"><path d="M8 5v14l11-7z"/></svg>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                    <div className={`text-xs font-bold ${isSelected ? 'text-primary' : 'text-white/70'}`}>{v.label}</div>
                                                     <div className="text-[10px] text-white/30 mt-0.5">{v.desc}</div>
-                                                </button>
-                                            ))}
+                                                    {isPlaying && (
+                                                        <div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-b-xl overflow-hidden bg-white/5">
+                                                            <div className="h-full bg-primary animate-[progressBar_3s_linear_forwards]" style={{width:'100%', animation:'none', transition:'none'}} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
