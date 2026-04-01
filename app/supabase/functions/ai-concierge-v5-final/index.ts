@@ -885,7 +885,17 @@ Deno.serve(async (req) => {
         };
 
         // --- Main AI Loop ---
-        await setPresence('composing');
+        // WhatsApp composing status expires after ~5s, so we keep-alive every 4s
+        let composingInterval: ReturnType<typeof setInterval> | null = null;
+        const startComposing = async () => {
+            await setPresence('composing');
+            composingInterval = setInterval(() => setPresence('composing'), 4000);
+        };
+        const stopComposing = () => {
+            if (composingInterval) { clearInterval(composingInterval); composingInterval = null; }
+        };
+
+        await startComposing();
 
         // First Call
         await logToDb('debug', 'Calling OpenAI...', { model: "gpt-4o", msgCount: messages.length });

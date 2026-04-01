@@ -24,10 +24,10 @@ Deno.serve(async (req) => {
     const body = await req.json();
     // Required: tenant_id, message
     // Optional: session_id (to persist conversation), visitor_name, visitor_email
-    const { tenant_id, message, session_id, visitor_name, visitor_email } = body;
+    const { tenant_id, message, audio_base64, audio_mime, session_id, visitor_name, visitor_email } = body;
 
-    if (!tenant_id || !message) {
-      return new Response(JSON.stringify({ error: "tenant_id e message são obrigatórios" }), { status: 400, headers: CORS });
+    if (!tenant_id || (!message && !audio_base64)) {
+      return new Response(JSON.stringify({ error: "tenant_id e message (ou audio_base64) são obrigatórios" }), { status: 400, headers: CORS });
     }
 
     // --- Load tenant agent config ---
@@ -97,11 +97,48 @@ Deno.serve(async (req) => {
       sessionId = newSession?.id || crypto.randomUUID();
     }
 
+    // --- Transcribe audio if provided ---
+    let userMessage = message || "";
+    if (audio_base64 && OPENAI_API_KEY) {
+      try {
+        const mimeType = audio_mime || "audio/webm";
+        const ext      = mimeType.includes("ogg") ? "ogg" : mimeType.includes("mp4") ? "mp4" : "webm";
+        const binary   = atob(audio_base64);
+        const bytes    = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const audioBlob = new Blob([bytes], { type: mimeType });
+
+        const fd = new FormData();
+        fd.append("file",  audioBlob, `audio.${ext}`);
+        fd.append("model", "whisper-1");
+        fd.append("language", "pt");
+
+        const whisperRes = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+          body: fd,
+        });
+
+        if (whisperRes.ok) {
+          const whisperData = await whisperRes.json();
+          userMessage = whisperData.text || "[Áudio não transcrito]";
+        } else {
+          userMessage = "[Áudio recebido, mas não foi possível transcrever]";
+        }
+      } catch (_) {
+        userMessage = "[Erro ao processar áudio]";
+      }
+    }
+
+    if (!userMessage) {
+      return new Response(JSON.stringify({ error: "Mensagem vazia" }), { status: 400, headers: CORS });
+    }
+
     // --- Save incoming user message ---
     await supabase.from("webchat_messages").insert({
       session_id: sessionId,
       role: "user",
-      content: message,
+      content: userMessage,
     });
 
     // --- Load history (last 10 turns) ---
@@ -180,6 +217,8 @@ Deno.serve(async (req) => {
         content: systemPrompt + knowledgeContext + `\n\nData/Hora Atual: ${nowBR}`,
       },
       ...historyItems,
+      // Ensure current message is included (history fetch may lag by one)
+      { role: "user" as const, content: userMessage },
     ];
 
     // --- Call OpenAI ---
