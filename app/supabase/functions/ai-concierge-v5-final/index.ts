@@ -7,6 +7,9 @@ Deno.serve(async (req) => {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? "";
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? "";
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    const PINECONE_API_KEY = Deno.env.get('PINECONE_API_KEY');
+    const PINECONE_HOST = "backstagefy-knowledge-s882eud.svc.aped-4627-b74a.pinecone.io";
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     const logToDb = async (level: string, message: string, meta: any = {}) => {
@@ -95,11 +98,24 @@ Deno.serve(async (req) => {
             return new Response("ignored", { status: 200 });
         }
 
-        let { data: instData } = await supabase.from('whatsapp_instances').select('settings, apikey, user_id, phone_number').eq('instance_name', instanceId).maybeSingle();
+        let { data: instData } = await supabase.from('whatsapp_instances').select('settings, apikey, tenant_id, agent_id, phone_number').eq('instance_name', instanceId).maybeSingle();
         if (!instData) {
             await logToDb('warn', 'Instance not found', { instanceId });
             return new Response("no_instance", { status: 200 });
         }
+
+        // Resolve tenant_id directly from whatsapp_instances (primary source)
+        // Fallback: resolve via tenant_members using agent_id if tenant_id is missing
+        let tenantId: string | null = instData.tenant_id || null;
+        if (!tenantId && instData.agent_id) {
+            const { data: tenantMember } = await supabase
+                .from('tenant_members')
+                .select('tenant_id')
+                .eq('user_id', instData.agent_id)
+                .maybeSingle();
+            tenantId = tenantMember?.tenant_id || null;
+        }
+        await logToDb('debug', 'TENANT-RESOLVED', { tenantId, fromInstance: !!instData.tenant_id, instanceId });
 
         const isGroup = remoteJid.includes("@g.us");
         const chatOwner = chatInfo.owner || payload?.owner || "";
@@ -490,34 +506,69 @@ Deno.serve(async (req) => {
 
 
 
-        // KNOWLEDGE EXTRACTION (FROM DOCIE):
-        const KNOWLEDGE_BASE = `
-        [DADOS TÉCNICOS E OPERACIONAIS DA spHAUS - FONTE: MANUAL DE USO & APRESENTAÇÃO 2026]
-        
-        1. ARQUITETURA & DESIGN:
-           - Arquiteto: Paulo Mendes da Rocha (Prêmio Pritzker 2006).
-           - Localização: Av. Cidade Jardim, 924 - Jd. Europa, SP (CEP 01454-000).
-           - Conceito: Galeria viva, design, cultura, arte, moda e tecnologia.
-           - Fachada: Mapping e Painel de LED (exclusivo).
-        
-        2. ESPAÇOS E CAPACIDADES:
-           - Térreo: 400m². Inclui Lounge Bar, Ilha Gourmet (Kitchens), Gazebo e Área Externa.
-           - 1º Pavimento: Pé Direito Duplo. Plenária e Salas de Reunião.
-           - Sala Imersiva 3D 360: Projeção mapeada total.
-           
-        3. INFRAESTRUTURA TÉCNICA:
-           - Internet: Link Dedicado VIVO 100MB + WiFi disponível.
-           - Elétrica: Predominante 110v, alguns pontos 220v.
-           - Gerador: NÃO possui. Caminhão deve ficar na vaga lateral esquerda (acesso à caixa de força).
-           - Acessibilidade: Elevador e acessos laterais.
-        
-        4. REGRAS DE USO (MUITO IMPORTANTE):
-           - Cenografia: PROIBIDO furar teto, paredes, piso ou portas.
-           - Efeitos: PROIBIDO fumaça, fogos de artifício, papel picado (confetes/gliter).
-           - Estacionamento: Valet OBRIGATÓRIO (não incluso na locação). Vagas frente apenas para carga/descarga (15min).
-           - Catering: Cozinha de apoio no Back Stage (corredor lateral esquerdo). Proibido descartar óleo em pias.
-           - Horários: Respeitar rigorosamente montagem e desmontagem sob pena de multa.
-        `;
+        // RAG: Retrieve relevant knowledge from Pinecone using Gemini embeddings
+        let KNOWLEDGE_BASE = "";
+        if (GEMINI_API_KEY && PINECONE_API_KEY && tenantId && msgText) {
+            try {
+                // 1. Embed user query with Gemini (RETRIEVAL_QUERY task type)
+                const embedRes = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${GEMINI_API_KEY}`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            model: "models/text-embedding-004",
+                            content: { parts: [{ text: msgText }] },
+                            taskType: "RETRIEVAL_QUERY",
+                        }),
+                    }
+                );
+
+                if (embedRes.ok) {
+                    const embedData = await embedRes.json();
+                    const queryVector = embedData.embedding.values;
+
+                    // 2. Query Pinecone (namespace = tenant_id for isolation)
+                    const pineconeRes = await fetch(`https://${PINECONE_HOST}/query`, {
+                        method: "POST",
+                        headers: {
+                            "Api-Key": PINECONE_API_KEY,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            vector: queryVector,
+                            topK: 5,
+                            includeMetadata: true,
+                            namespace: tenantId,
+                        }),
+                    });
+
+                    if (pineconeRes.ok) {
+                        const pineconeData = await pineconeRes.json();
+                        const matches = pineconeData.matches || [];
+
+                        // 3. Build context from retrieved chunks (score > 0.5 = relevant)
+                        const relevantChunks = matches
+                            .filter((m: any) => m.score > 0.5)
+                            .map((m: any) => m.metadata?.content || "")
+                            .filter((c: string) => c.length > 0);
+
+                        if (relevantChunks.length > 0) {
+                            KNOWLEDGE_BASE = `\n[BASE DE CONHECIMENTO DA EMPRESA - RECUPERADO AUTOMATICAMENTE]\n${relevantChunks.join("\n---\n")}\n`;
+                            await logToDb('debug', 'RAG: chunks retrieved', { count: relevantChunks.length, tenantId });
+                        } else {
+                            await logToDb('debug', 'RAG: no relevant chunks found', { tenantId, scores: matches.map((m: any) => m.score) });
+                        }
+                    } else {
+                        await logToDb('warn', 'RAG: Pinecone query failed', { status: pineconeRes.status });
+                    }
+                } else {
+                    await logToDb('warn', 'RAG: Gemini embed failed', { status: embedRes.status });
+                }
+            } catch (ragErr: any) {
+                await logToDb('warn', 'RAG: retrieval error (non-fatal)', { error: ragErr.message });
+            }
+        }
 
         // DOMAIN PROTECTION CHECK:
         // We append these rules AT THE END of the system prompt to ensure they override any previous instructions

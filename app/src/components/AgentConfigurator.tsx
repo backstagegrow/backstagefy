@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useTenant } from '../context/TenantContext';
 
@@ -21,6 +21,8 @@ const AgentConfigurator: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [showNew, setShowNew] = useState(false);
+    const [activeTab, setActiveTab] = useState<'config' | 'webchat'>('config');
+    const [copied, setCopied] = useState(false);
 
     // Form state
     const [name, setName] = useState('');
@@ -102,6 +104,21 @@ const AgentConfigurator: React.FC = () => {
         setIsActive(true);
         setShowNew(true);
     };
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+    const widgetBase = window.location.origin;
+
+    const embedCode = tenantId
+        ? `<script\n  src="${widgetBase}/webchat-widget.js"\n  data-tenant-id="${tenantId}"\n  data-supabase-url="${supabaseUrl}"\n  data-bot-name="Assistente IA"\n  data-primary-color="#7c3aed"\n  data-welcome-message="Olá! Como posso ajudar você hoje?"\n></script>`
+        : '';
+
+    const copyEmbedCode = useCallback(async () => {
+        try {
+            await navigator.clipboard.writeText(embedCode);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (_) {}
+    }, [embedCode]);
 
     if (loading) {
         return (
@@ -202,9 +219,80 @@ const AgentConfigurator: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Scrollable Form Content */}
-                        <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-32 md:pt-28 pb-8 md:pb-12 space-y-6">
+                        {/* Tab Bar */}
+                        <div className="absolute top-[64px] md:top-[80px] left-0 right-0 flex border-b border-white/5 bg-black/30 backdrop-blur-xl z-10 px-4 md:px-8">
+                            <button
+                                onClick={() => setActiveTab('config')}
+                                className={`px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'config' ? 'border-primary text-primary' : 'border-transparent text-white/30 hover:text-white/60'}`}
+                            >
+                                Configuração
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('webchat')}
+                                className={`px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 flex items-center gap-1.5 ${activeTab === 'webchat' ? 'border-primary text-primary' : 'border-transparent text-white/30 hover:text-white/60'}`}
+                            >
+                                <span className="material-symbols-outlined text-sm">chat_bubble</span>
+                                Webchat
+                            </button>
+                        </div>
 
+                        {/* Scrollable Form Content */}
+                        <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-40 md:pt-36 pb-8 md:pb-12 space-y-6">
+
+                        {activeTab === 'webchat' && (
+                            <div className="space-y-6">
+                                <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                                    <h3 className="text-white/80 text-sm font-medium flex items-center gap-2 mb-2">
+                                        <span className="material-symbols-outlined text-primary text-lg">integration_instructions</span>
+                                        Código de Embed para o Site do Cliente
+                                    </h3>
+                                    <p className="text-white/30 text-xs mb-5">
+                                        Cole este código antes do fechamento da tag <code className="text-primary/80 bg-white/5 px-1 py-0.5 rounded">&lt;/body&gt;</code> no site do cliente. O chat aparecerá automaticamente.
+                                    </p>
+                                    <div className="relative">
+                                        <pre className="bg-black/40 border border-white/10 rounded-xl p-4 text-xs text-green-400/90 font-mono whitespace-pre overflow-x-auto leading-relaxed">
+                                            {embedCode}
+                                        </pre>
+                                        <button
+                                            onClick={copyEmbedCode}
+                                            className="absolute top-3 right-3 flex items-center gap-1.5 bg-primary/20 hover:bg-primary/30 border border-primary/30 text-primary text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                                        >
+                                            <span className="material-symbols-outlined text-sm">{copied ? 'check' : 'content_copy'}</span>
+                                            {copied ? 'Copiado!' : 'Copiar'}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4">
+                                    <h3 className="text-white/80 text-sm font-medium flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-primary text-lg">tune</span>
+                                        Parâmetros Customizáveis
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                                        {[
+                                            { attr: 'data-bot-name', desc: 'Nome exibido no cabeçalho do chat' },
+                                            { attr: 'data-primary-color', desc: 'Cor principal (hex, ex: #7c3aed)' },
+                                            { attr: 'data-welcome-message', desc: 'Mensagem de boas-vindas' },
+                                            { attr: 'data-position', desc: '"right" ou "left" — lado da tela' },
+                                        ].map(({ attr, desc }) => (
+                                            <div key={attr} className="bg-black/20 border border-white/5 rounded-xl p-3">
+                                                <code className="text-primary/80 font-mono text-[10px]">{attr}</code>
+                                                <p className="text-white/40 mt-1">{desc}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="p-5 bg-primary/5 border border-primary/10 rounded-2xl flex items-start gap-3">
+                                    <span className="material-symbols-outlined text-primary text-xl shrink-0 mt-0.5">info</span>
+                                    <p className="text-white/50 text-xs leading-relaxed">
+                                        O widget usa as <strong className="text-white/70">instruções base do agente selecionado</strong> e a base de conhecimento do seu tenant. O histórico de cada visitante é salvo por sessão usando <code className="text-primary/70 bg-white/5 px-1 rounded">localStorage</code>.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'config' && <>
                             {/* BLOCK: General */}
                             <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                                 <h3 className="text-white/80 text-sm font-medium flex items-center gap-2 mb-6">
@@ -282,6 +370,7 @@ const AgentConfigurator: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
+                        </>}
 
                         </div>
                     </>

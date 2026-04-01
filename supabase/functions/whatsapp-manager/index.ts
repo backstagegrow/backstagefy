@@ -381,6 +381,7 @@ Deno.serve(async (req) => {
             return new Response(JSON.stringify({
                 whitelistEnabled: settings.whitelistEnabled === true,
                 whitelistNumbers: settings.whitelistNumbers || [],
+                blacklistNumbers: settings.blacklistNumbers || [],
                 handoverNumber: settings.handoverNumber || '',
                 rejectCalls: settings.rejectCalls === true,
                 ignoreGroups: settings.ignoreGroups === true,
@@ -403,6 +404,7 @@ Deno.serve(async (req) => {
                 ...currentSettings,
                 whitelistEnabled: Boolean(body.whitelistEnabled),
                 whitelistNumbers: Array.isArray(body.whitelistNumbers) ? body.whitelistNumbers : [],
+                blacklistNumbers: Array.isArray(body.blacklistNumbers) ? body.blacklistNumbers : [],
                 handoverNumber: String(body.handoverNumber || ''),
                 rejectCalls: Boolean(body.rejectCalls),
                 ignoreGroups: Boolean(body.ignoreGroups),

@@ -6,6 +6,70 @@ const corsHeaders = {
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const PINECONE_HOST = "backstagefy-knowledge-s882eud.svc.aped-4627-b74a.pinecone.io";
+
+// Generate a single embedding using Gemini text-embedding-004 (768d)
+// taskType: RETRIEVAL_DOCUMENT for indexing, RETRIEVAL_QUERY for search
+async function geminiEmbed(text: string, apiKey: string, taskType = "RETRIEVAL_DOCUMENT"): Promise<number[]> {
+    const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "models/text-embedding-004",
+                content: { parts: [{ text }] },
+                taskType,
+            }),
+        }
+    );
+    if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Gemini embed error: ${err}`);
+    }
+    const data = await res.json();
+    return data.embedding.values as number[];
+}
+
+// Upsert vectors to Pinecone (namespace = tenant_id for multi-tenant isolation)
+async function pineconeUpsert(vectors: any[], namespace: string, apiKey: string): Promise<void> {
+    const res = await fetch(`https://${PINECONE_HOST}/vectors/upsert`, {
+        method: "POST",
+        headers: {
+            "Api-Key": apiKey,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ vectors, namespace }),
+    });
+    if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Pinecone upsert error: ${err}`);
+    }
+}
+
+// Delete all vectors for a document from Pinecone
+async function pineconeDeleteByDocument(documentId: string, namespace: string, apiKey: string): Promise<void> {
+    try {
+        const res = await fetch(`https://${PINECONE_HOST}/vectors/delete`, {
+            method: "POST",
+            headers: {
+                "Api-Key": apiKey,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                filter: { document_id: { "$eq": documentId } },
+                namespace,
+            }),
+        });
+        if (!res.ok) {
+            const err = await res.text();
+            console.error("Pinecone delete warning:", err);
+        }
+    } catch (e) {
+        console.error("Pinecone delete failed (non-fatal):", e);
+    }
+}
+
 Deno.serve(async (req: Request) => {
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
@@ -20,13 +84,20 @@ Deno.serve(async (req: Request) => {
             );
         }
 
-        const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY");
+        const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY");
+        const PINECONE_KEY = Deno.env.get("PINECONE_API_KEY");
         const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
         const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-        if (!OPENAI_KEY) {
+        if (!GEMINI_KEY) {
             return new Response(
-                JSON.stringify({ error: "OPENAI_API_KEY not configured" }),
+                JSON.stringify({ error: "GEMINI_API_KEY not configured" }),
+                { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            );
+        }
+        if (!PINECONE_KEY) {
+            return new Response(
+                JSON.stringify({ error: "PINECONE_API_KEY not configured" }),
                 { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
             );
         }
@@ -54,10 +125,7 @@ Deno.serve(async (req: Request) => {
         let textContent = "";
 
         if (doc.content) {
-            // Text-based content (FAQ, company info, products, text entries)
             textContent = doc.content;
-
-            // Append extra fields as structured text
             if (doc.extra && typeof doc.extra === "object") {
                 const extraLines = Object.entries(doc.extra)
                     .filter(([_, v]) => v)
@@ -68,7 +136,6 @@ Deno.serve(async (req: Request) => {
                 }
             }
         } else if (doc.storage_path) {
-            // File-based content: download and extract text
             const { data: fileData, error: fileErr } = await supabase.storage
                 .from("knowledge-files")
                 .download(doc.storage_path);
@@ -81,19 +148,15 @@ Deno.serve(async (req: Request) => {
                 );
             }
 
-            // Extract text based on mime type
             if (doc.mime_type?.includes("text") || doc.original_filename?.endsWith(".txt") || doc.original_filename?.endsWith(".csv")) {
                 textContent = await fileData.text();
             } else if (doc.mime_type?.includes("pdf") || doc.original_filename?.endsWith(".pdf")) {
-                // For PDFs, extract raw text (basic approach)
                 const rawText = await fileData.text();
-                // Simple PDF text extraction — grabs readable strings
                 textContent = rawText.replace(/[^\x20-\x7E\xC0-\xFF\n]/g, " ").replace(/\s+/g, " ").trim();
                 if (textContent.length < 50) {
                     textContent = `[Documento PDF: ${doc.title}] ${doc.description || "Conteudo do arquivo PDF"}.`;
                 }
             } else if (doc.mime_type?.startsWith("image/")) {
-                // For images, create a descriptive text entry
                 textContent = `[Imagem: ${doc.title}] ${doc.description || "Imagem institucional"}. Arquivo: ${doc.original_filename}.`;
             } else {
                 textContent = `[Documento: ${doc.title}] ${doc.description || "Documento da empresa"}. Arquivo: ${doc.original_filename}.`;
@@ -108,62 +171,78 @@ Deno.serve(async (req: Request) => {
             );
         }
 
-        // Add title and description as context
         const fullText = `# ${doc.title}\n${doc.description ? doc.description + "\n\n" : "\n"}${textContent}`;
 
-        // 3. Chunking — split by paragraphs, max ~500 tokens per chunk
+        // 3. Chunking
         const chunks = smartChunk(fullText, 500);
 
-        // 4. Delete existing chunks for this document
+        // 4. Delete existing chunks (DB + Pinecone)
         await supabase.from("knowledge_chunks").delete().eq("document_id", documentId);
+        await pineconeDeleteByDocument(documentId, doc.tenant_id, PINECONE_KEY);
 
-        // 5. Generate embeddings and insert chunks
+        // 5. Generate Gemini embeddings and upsert to Pinecone
         let successCount = 0;
-        const BATCH_SIZE = 20;
+        const BATCH_SIZE = 10; // Gemini free tier is sequential; keep batches small
 
         for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
             const batch = chunks.slice(i, i + BATCH_SIZE);
+            const pineconeVectors: any[] = [];
+            const dbRows: any[] = [];
 
-            // Call OpenAI embeddings API
-            const embResponse = await fetch("https://api.openai.com/v1/embeddings", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${OPENAI_KEY}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    model: "text-embedding-3-small",
-                    input: batch,
-                }),
-            });
+            for (let j = 0; j < batch.length; j++) {
+                const chunkText = batch[j];
+                const chunkIndex = i + j;
+                const chunkId = `${documentId}_${chunkIndex}`;
 
-            if (!embResponse.ok) {
-                const errText = await embResponse.text();
-                console.error("OpenAI Embeddings Error:", errText);
-                continue;
+                try {
+                    const embedding = await geminiEmbed(chunkText, GEMINI_KEY, "RETRIEVAL_DOCUMENT");
+
+                    // Pinecone vector — content stored in metadata for retrieval
+                    pineconeVectors.push({
+                        id: chunkId,
+                        values: embedding,
+                        metadata: {
+                            document_id: documentId,
+                            tenant_id: doc.tenant_id,
+                            content: chunkText.substring(0, 1000), // Pinecone metadata limit
+                            category: doc.category,
+                            title: doc.title,
+                            chunk_index: chunkIndex,
+                        },
+                    });
+
+                    // DB row — stores content for audit/display (no embedding needed)
+                    dbRows.push({
+                        document_id: documentId,
+                        tenant_id: doc.tenant_id,
+                        content: chunkText,
+                        metadata: {
+                            category: doc.category,
+                            source_type: doc.source_type,
+                            title: doc.title,
+                            chunk_index: chunkIndex,
+                            pinecone_id: chunkId,
+                        },
+                    });
+                } catch (e) {
+                    console.error(`Embedding failed for chunk ${chunkIndex}:`, e);
+                }
             }
 
-            const embData = await embResponse.json();
+            // Upsert batch to Pinecone (namespace = tenant_id)
+            if (pineconeVectors.length > 0) {
+                try {
+                    await pineconeUpsert(pineconeVectors, doc.tenant_id, PINECONE_KEY);
+                    successCount += pineconeVectors.length;
+                } catch (e) {
+                    console.error("Pinecone batch upsert failed:", e);
+                }
+            }
 
-            // Insert chunks with embeddings
-            const rows = embData.data.map((emb: any, idx: number) => ({
-                document_id: documentId,
-                tenant_id: doc.tenant_id,
-                content: batch[idx],
-                embedding: JSON.stringify(emb.embedding),
-                metadata: {
-                    category: doc.category,
-                    source_type: doc.source_type,
-                    title: doc.title,
-                    chunk_index: i + idx,
-                },
-            }));
-
-            const { error: insertErr } = await supabase.from("knowledge_chunks").insert(rows);
-            if (insertErr) {
-                console.error("Chunk insert error:", insertErr);
-            } else {
-                successCount += rows.length;
+            // Insert to DB (content only, no embedding column)
+            if (dbRows.length > 0) {
+                const { error: insertErr } = await supabase.from("knowledge_chunks").insert(dbRows);
+                if (insertErr) console.error("DB chunk insert error:", insertErr);
             }
         }
 
@@ -174,11 +253,7 @@ Deno.serve(async (req: Request) => {
             .eq("id", documentId);
 
         return new Response(
-            JSON.stringify({
-                success: true,
-                chunks: successCount,
-                documentId,
-            }),
+            JSON.stringify({ success: true, chunks: successCount, documentId }),
             { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
 
@@ -191,10 +266,6 @@ Deno.serve(async (req: Request) => {
     }
 });
 
-/**
- * Smart chunking: splits text into meaningful chunks
- * respecting paragraph boundaries, with a max token estimate.
- */
 function smartChunk(text: string, maxTokens: number): string[] {
     const paragraphs = text.split(/\n{2,}/);
     const chunks: string[] = [];
@@ -214,11 +285,8 @@ function smartChunk(text: string, maxTokens: number): string[] {
         }
     }
 
-    if (current.trim()) {
-        chunks.push(current.trim());
-    }
+    if (current.trim()) chunks.push(current.trim());
 
-    // If we got no chunks from paragraph splitting, force-split by character count
     if (chunks.length === 0 && text.trim().length > 0) {
         const charsPerChunk = maxTokens * 4;
         for (let i = 0; i < text.length; i += charsPerChunk) {

@@ -129,6 +129,12 @@ Deno.serve(async (req) => {
             }
         }
 
+        // --- Blacklist Guard ---
+        const blacklist = Array.isArray(config.blacklistNumbers) ? config.blacklistNumbers : [];
+        if (blacklist.length > 0 && blacklist.includes(cleanPhone)) {
+            console.log(`[V6-MT] Blacklist blocked: ${cleanPhone} is in [${blacklist.join(',')}]`);
+            return new Response("blacklisted", { status: 200 });
+        }
 
         // --- 4. LOAD AGENT ---
         let agent: any = null;
@@ -751,19 +757,29 @@ ${appts?.length ? `Agendamentos:\n${appts.map((a: any) => {
 
             // Fallback to text if audio failed or not enabled
             if (!sentAsAudio) {
+                // --- Format reply for WhatsApp ---
+                let formattedReply = finalReply
+                    .replace(/\*\*(.*?)\*\*/g, '*$1*')      // Markdown bold → WhatsApp bold
+                    .replace(/__(.*?)__/g, '_$1_')           // Markdown underline → WhatsApp italic
+                    .replace(/```[\s\S]*?```/g, (m: string) => m.replace(/```(\w*)\n?/g, '').trim()) // Remove code fences
+                    .replace(/^#{1,6}\s+/gm, '*')            // Headers → bold marker
+                    .replace(/\r\n/g, '\n')                  // Normalize line endings
+                    .replace(/\n{3,}/g, '\n\n')              // Max 2 consecutive newlines
+                    .trim();
+
                 // Simulate typing presence
                 await fetch(`${UAZ_BASE}/send/presence`, {
                     method: 'POST',
                     headers: { 'token': UAZ_KEY, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ number: remoteJid, presence: 'composing' })
                 }).catch(() => { });
-                await new Promise(r => setTimeout(r, Math.min(finalReply.length * 30, 3000)));
+                await new Promise(r => setTimeout(r, Math.min(formattedReply.length * 30, 3000)));
 
                 await fetch(`${UAZ_BASE}/send/text`, {
                     method: "POST",
                     headers: { "token": UAZ_KEY, "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        number: remoteJid, text: finalReply,
+                        number: remoteJid, text: formattedReply,
                         readmessages: config.autoRead === true
                     })
                 });

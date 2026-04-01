@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"match_knowledge\\\\|vector\\\\|RAG\\\\|retrieve\\\\|semantic\" /d/backstagefy/backstagefy/app/src --include=*.ts --include=*.tsx)",
+      "Bash(grep -r \"Pinecone\\\\|Gemini\\\\|vector\\\\|semantic\\\\|RAG\\\\|retrieve\" /d/backstagefy/backstagefy/app/src --include=*.ts --include=*.tsx --include=*.js)",
+      "WebFetch(domain:www.youtube.com)",
+      "WebSearch",
+      "Bash(curl -s -X GET \"https://api.pinecone.io/indexes\" -H \"Api-Key: pcsk_6MhnRk_2de1eK27i2irUoia5DkKdcW4nQqQ1qDEV7pN7ZnHoFJS7UJTBg8a7m7gk6qRDfD\" -H \"X-Pinecone-API-Version: 2025-01\")",
+      "Bash(npx supabase:*)"
+    ],
+    "additionalDirectories": [
+      "d:\\backstagefy\\backstagefy\\app\\supabase\\functions"
+    ]
+  }
+}

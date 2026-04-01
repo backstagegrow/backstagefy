@@ -1,0 +1,251 @@
+# Meeting Transcription
+
+  Meeting started: 25/03/2026, 14:21:34
+  Duration: 53 minutes
+  Participants: Backstage Grow, Erick Sena, Robson Nobre
+
+  [View original transcript](https://app.tactiq.io/api/2/u/m/r/B7rmMpOY7iQaakYaw0ae?o=txt)
+
+    
+
+  
+
+  
+    ## Highlights
+
+    > 21:38 Robson Nobre: ticket de Bilheteria dele, ele não tem nada disso então ele paga uma
+
+  ## Transcript
+
+  00:00 Robson Nobre: Fala boas aí.
+00:01 Backstage Grow: Tudo bem.
+00:03 Robson Nobre: Acabei de almoçar com aquele soninho de leve.
+00:08 Backstage Grow: Melhor agora, então te peguei no melhor horário.
+00:11 Robson Nobre: Melhorar não cara, que isso não tem não tá tendo tempo para descansar não mano, depois da reunião entrei com Henrique a gente falando criativo público. Para os criativos ver esses criativos tá no público certo a cop certa sabe tem que cara foi bem legal. Depois vocês troca ideia com Henrique lá que acho que vai ter bastante insights, a gente pegou GP House lá que o criativo top demais cara, mas você acredita que a gente foi ver realmente o criativo ali tá todo mundo funil, né? E se for fazer campanha ali por meio e fundo de funil aí o
+00:55 Robson Nobre: Olá, estou transcrevendo esta chamada com minha extensão Tactiq AI. https://tactiq.io/r/transcribing
+00:57 Robson Nobre: bicho vai pegar não vai converter porque criativo não tá?
+01:01 Backstage Grow: É muito simples.
+01:07 Robson Nobre: E aí a gente já fez o agente ali que já Analisa ou a gente tá fazendo lá,
+01:08 Backstage Grow: o tema
+01:12 Robson Nobre: depois ele vai a gente comecei com ele e o Henrique Desenrola cara, ele Desenrola para c******. Desenrola aí que eu vou para outra parte lá que a gente tinha conversado na reunião ali fazer o blog e tudo mais para deixar tudo bonitinho. Tá terminando a fai também que eu vou pegando dois projetos ao mesmo tempo para terminar rápido.
+01:32 Backstage Grow: Beleza e desenvolvendo aqui no grupo é aquela parada da notícia que eu falei, né?
+01:37 Robson Nobre: É cara, eu tô desenvolvendo para o eco e colocar lá no nos agentes deles, eu tô deixando pronto aqui todo e tô testando né? Porque eu fiz um layout qualquer aqui só para eu testar sabe depois eu já passo o documento para ele com toda a especificação as Skill Jales, só coloca na ideia dele lá já dá o comando só nesse documento aqui que os agentes deles já vão se conectar com esse com esse aqui. E aí eu só tô vendo a dificuldade que a gente eu já vi uma dificuldade aqui para para colocar para fazer isso direto ter um ter um time, por exemplo. Toda hora vai vai mandar para alguém para alguém aprovar e depois que alguém aprovar vai para o site sabe? E aí a gente tem a gente tem essa dificuldade no final para ir para o site, porque como os agentes dele vão ter a entrada lá dentro do site específico, né? Dá para fazer.
+02:37 Robson Nobre: Dá para fazer tranquilo é um Parto que daí eu acho que eu vou ter que pegar o código lá do Eric e vou ter que fazer para ele, mas ele vai consegue também fazendo lá pedindo para os agentes. Demora um pouco mais mas mas é só esse só esse final aí vai do resto. Já
+02:48 Backstage Grow: Não beleza tranquilo era bem aqui, mas o cara que eu esperava eu acredito que
+02:53 Robson Nobre: coloquei Open aí aqui que eu tenho. 200 milhões de tops gratuito para usar no mês já para a gente usar para criar as imagens para não cobrar e assim já cria pega notícia do Brasil e do mundo, né? A gente consegue separar pega as notícias que a gente gosta lá, ele faz um uma troca para de eventos, né? Dá todo o corpo da notícia para blog feed e Stories. E aí se a gente aprovar aprovado o site com criativo com tudo.
+03:37 Backstage Grow: esse lance da da notícia pode trazer para a gente a visibilidade muito boa, principalmente em Google e é uma parada e eu tô mapeando na maioria dos nossos
+03:47 Robson Nobre: Não faz.
+03:48 Backstage Grow: concorrentes direto e indiretos para ver que esses caras não estão fazendo e a gente criar esse diferencial. Por exemplo essa parada do Framework que eu falei para vocês hoje cedo cara baita diferencial nosso concorrentes não conseguem fazer isso porque eles não entendem Tão Profundo quanto nós entendeu,
+04:04 Robson Nobre: p*** p*** não entende não.
+04:07 Backstage Grow: entendeu? O cara não consegue fazer um Orkut e ainda meteu uma promessa. Depois
+04:11 Robson Nobre: consegue
+04:13 Backstage Grow: vem Cara essa eu tinha ajudado o seu dinheiro, mas ela não consegue fazer isso. Entendeu? Agora não tem essa capacidade. Ela vai ter medo de fazer cara. Eu
+04:17 Robson Nobre: exato
+04:21 Backstage Grow: não vou me arriscar tanto porque Cara o que você é extremamente limitadas, eu não sei mais nada do que isso,
+04:28 Robson Nobre: Não entendi
+04:28 Backstage Grow: eu não sei me aprofundar se os caras meterem perguntam em cima de mim. Eu não vou saber responder eu não consigo fazer uma live falando sobre esse tema vai ser tipo pago É como subir campanha tipo como fazer um criativo, entendeu? Na verdade a gente não a gente vai na raiz do negócio cara. Como você fica como que você faz o capô da sua margem? Como você faz tudo isso a gente consegue fazer, entendeu? Porque é o meu dia a dia.
+04:57 Robson Nobre: Entendi perfeitamente Lucas e eu acabei não finalizando a hora que eu falei para você, cara. E realmente eu vejo uma comunidade para você cara uma comunidade com vídeos com vídeos free com vídeos para pagante e esses frameworks por exemplo. Eu quero eu tenho uma casa de eventos ou eu tenho uma agência. Que que faz eventos ou eu tenho um restaurante que faz eventos, cara. Eu quero ter o Lucas clonado dentro da minha comunidade que eu estou aprendendo.
+05:30 Robson Nobre: Com Lucas, ele não pode falar comigo toda hora para eu falar para o Lucas. Eu preciso pagar uma mentoria, mas eu vou ter o chat do Lucas clonar do jeito que você fala o seu Framework que você vai entregar gratuitamente para esse cara, mas ele precisa estar dentro da sua da sua do seu ecossistema, qual que é seu ecossistema é grow é pai? Então é o Lucas então Ali você vai se vender.
+05:57 Robson Nobre: Você vai vender a Globo? Você vai vender a fai? Você vai pegar cara, você vai pegar empresários para entrar dentro da Globo cara, entendeu dentro ali e vai ser sua cara bonitinha nada. Deixa os cara chegar ali. Aí você vai falar que você é da Globo. Eu penso assim, porque cara bonita vende né?
+06:20 Backstage Grow: É muito louco, eu tô lendo um livro chamado Capitão.
+06:24 Robson Nobre: Não como que chama?
+06:25 Backstage Grow: Sabe é um estudo científico aprofundado por uma cientista chamada Katherine
+06:28 Robson Nobre: capital erótico cara não nunca vi
+06:35 Backstage Grow: Ratinho e Ela estudou porque porque exatamente isso que você falou cara que é bonito vende pessoas bonitas também vende cara. O subtítulo do desse livro é porque pessoas porque tem pessoas com boa aparência são mais bem sucedidas. Esse é o subtítulo do vídeo e ela faz todo um estudo cara sobre tipo é basicamente assim, se você cuidar da sua aparência, se você for bonito, se você for uma pessoa não vai na autoestima, cara. Se você é bonita demais.
+07:08 Robson Nobre: autoestima verdade
+07:14 Backstage Grow: Você é bonito, você vai se você for bonito você você tem mais chance de ser bem sucedido, as pessoas te levam mais a sério e ela faz isso tudo porque que nós levamos olhando para isso, cara.
+07:25 Robson Nobre: Eu vou eu vou ler cara, como que é o livro? Como que é o livro? Fala para mim?
+07:29 Backstage Grow: capital erótico
+07:31 Robson Nobre: Eu tô em São Paulo amanhã, hein? Estou em São Paulo amanhã.
+07:36 Backstage Grow: Cara, tô com ele no carro, procure no carro. Tô lendo eu tô debulhando esse dinheiro cara, porque é muito bom. Ué! Vamos tomar um café?
+07:47 Robson Nobre: Cara, eu vou aí numa imobiliária. Cara eu já te conto. Calma aí, deixa eu anotar porque senão vou esquecer essa parada aqui, eu até falei para o Eric que na parte da manhã não voltar eu vou estar na reunião. Vou estar no carro tudo, mas na parte da tarde eu volto para tô Home Office trabalhando para grupo é Capital Inicial, mano, ó, o que que surgiu para tava falando com quem que surgiu para mim ontem ontem veio ligar o cara lá o Luiz não Paulo Paulo Vieira pro sócio dele para ser para que pegar minha plataforma corretora 2.0 e ser sócio, né? E eles vão fazer um exemplo aqui em Campinas, cara, esse eventos de vocês entrar na Axis. Aí ele já estão divulgando. Falei cara. Sou Lucas vim para esse evento, cara. Eu vou estar lá obviamente, né? Amanhã eu vou só ir lá com ele vai fechar o contrato de sociedade e tudo mais que eles querem colocar o corretor 2.0 nesse evento cara nesse evento e eles querem ser sócio da plataforma e
+08:58 Backstage Grow: na hora que nós
+08:59 Robson Nobre: De massa demais, cara, eu vou mandar um naipe do evento para vocês que vai ser e com certeza. Eu quero você lá Lucas, entendeu? Quero lá na fila da frente fazendo Network você e sua esposa o Erick eu não sei se ele pode vir para cá, mas o Real mano vai ser surreal e um p*** background para nós cara para c****** para c******. Os caras são muito grande.
+09:22 Backstage Grow: Pode que eu tenho um processo aberto cara com Paulo Vieira, acredita?
+09:30 Robson Nobre: Ah você tá de brincadeira velho.
+09:33 Backstage Grow: O terceiro evento que eu fiz no espaço Rise, ele foi fazer o método Cis e tava vindo de Brasília. Foi bem logo após pandemia 2000 começo de 2022. Acho que
+09:39 Robson Nobre: certo
+09:44 Backstage Grow: foi fevereiro e aí ele ia fazer um cisne em Brasília. O governo de Brasília, não deixou ele fazer ele teve que trazer para São Paulo, como foi em cima da hora. Eles já era meu cliente em outros eventos menores que eles faziam eles quiseram enfiar os filhos aqui no meu espaço em Alphaville. E aí cara o evento era para 600 pessoas se tornou um caos não causa assim, você não tá entendendo o caos que foi.
+10:14 Backstage Grow: Acabou que dentro do meu espaço que era o espaço para 700 pessoas que tinha 1.200 pessoas quase o dobro de pessoas. E aí cara foi um caldo atrás de caos aí ele ele o ar condicionado não tava chegando na temperatura porque eu tava com dobro de pessoas. Eles estavam reclamando cara a equipe dele, né? O Paulo Vieira Palmeiras, enfim, mas é com a empresa que né? Aí que tirar ou tirou uma empresa de ar condicionado do sovaco os caras subiram no na minha casa de máquinas sem autorização mexeram nas máquinas e Estourou uma máquina pegou fogo no c******, cara. Deu um B.O do c******. Você não tá entendendo. E aí
+10:54 Robson Nobre: Nossa velho
+10:58 Backstage Grow: eu falei p****, não faz sentido, né? Vou processar conversei com a equipe do Paulo. Falei que a gente ia resolver. O pessoal falou não vai resolver não tem como fazer não, tem que fazer agora agora isso aí mesmo. Aí a pessoa falou.
+11:10 Robson Nobre: Caramba, velho.
+11:12 Backstage Grow: Assim ah, pode processar. Beleza então 2022, a gente tem uma um processo com eles. E desde lá, cara. Eu tô amarrado nisso, não faço negócio assim, eu não posso cara, porque senão eles podem usar eles podem usar isso a favor de
+11:27 Robson Nobre: velho Caramba agora agora
+11:30 Backstage Grow: nós fizemos um acordo e morre por ali, entendeu? Só que na época só para você ter ideia, tá? Eu tava tão preocupada alavancada nos negócios e eu tive que cancelar. Foi de dinheiro quase 3 milhões de reais, cara, que eu já tinha de eventos Fechado. Só que eu tive que parar a casa durante 4 meses para poder arrumar essa máquina que os caras queimaram tiveram uma p*** de uma máquina.
+11:54 Backstage Grow: E ela e ela fodeu todo o nosso duto, né de ar condicionado é tudo tudo aquele duto de teto serão econômicos tudo tubular. E aí cara tive que fazer tudo uma limpeza caramba. Tem quase 90 mil reais só de cabo de de cabo de cobre para poder fazer tudo de novo, cara. Foi foi um caos aí nós processamos ganhamos uma parte aí, eles tiveram que pagar assim uma parte eles ficaram extremamente estressados e bravos com a gente porque a gente ganhou, né? E mas a gente ainda tem coisa aberta, por isso que eu não consigo fazer nada para fazer qualquer coisa.
+12:37 Backstage Grow: Você acredita não sabe disso é três semanas antes, eu era a gente praticamente três semanas antes de acontecer essa m**** o rio assinou o contrato de eu comprei a parte dele três semanas antes, ele falou assim, cara, eu não quero mais estar aqui eu não gosto de trabalhar. Por exemplo. Não. Quero trabalhar tanta coisa, cara, eu vou continuar. E aí cara Três. Do contrato de saída de sócio aconteceu essa m****.
+13:17 Robson Nobre: E ele tá lá na Mano, eu não sei cara.
+13:19 Backstage Grow: E ele tá lá na febracim. Se for cadastro deve ser um dos maiores.
+13:22 Robson Nobre: Eu vou vou abrir até o jogo para você aqui, cara. O rio me aprontou uma aqui, cara. Você tá louco, você tá louco, cara para mim, ele foi mal caráter, falei para eu falei para ele ficar sem mau caráter, velho, você é mau
+13:33 Backstage Grow: sério, cara
+13:37 Robson Nobre: caráter, eu não quero eu não quero mais o seu contato. Eu não quero mais
+13:38 Backstage Grow: aí
+13:42 Robson Nobre: conversar com você e eu só tô lá na febracis, cara. Eu sou muito grato por ele, sou muito grato mesmo, mas ele aprontou uma comigo cara que eu fiquei de
+13:49 Backstage Grow: Essa história dos 15 mil reais.
+13:51 Robson Nobre: cara mano. Fiquei de cara velho. É exatamente. Foi eu fechei. O negócio sabe eu eu cara, ele só fechou um negócio por causa do meu produto. Eu mostrei cara. Fiz o cara ele foi lá e recebeu a grana, cara. Eu te chama estranho não me manda não daquele jeitinho dele não faz sentido eu ficar com uma pessoa que quer metade de tudo que não sei o que foi meu cara, desde sempre você combinou eu revisei todo o contrato tá lá no contrato, velho. Falei que quer saber de uma coisa meu é ele queria uma cama eu vou.
+14:32 Robson Nobre: Na cama, eu vou te dar metade do que vai ficar com você e que viria para minhas filhas e tudo mais cara compra sua cama, mas você é um cara mal caráter. Nossa eu fiquei tão nervoso no dia cara. Fiquei tão nervoso que eu nunca mais falei com ele e também não faz questão mesmo, não faço questão.
+14:49 Backstage Grow: comprar cama
+14:51 Robson Nobre: É mano, ele que falou de comprar uma cama para ele nova que antes antes da gente fechar o negócio, hein? Quer comprar uma cama eu falei cara, eu vou vou me estruturar aqui, eu vou comprar equipamento ia comprar um Mac para mim é comprar uma parada muito louca que eu tô precisando, né para equipamento meu e aí a gente tinha conversado daí ele falou no dia que ele falou cara. Você não tá no projeto não faz sentido pagar metade para você, eu falei eu calma aí cara, eu não faz sentido para mim pagar metade de você eu que vou fazer a parada velho, você só fica olhando.
+15:21 Backstage Grow: Que bizarro.
+15:23 Robson Nobre: Ele tinha me perguntado que você vai você vai querer 70% 50% metade metade aí porque se você for me dar 30% tá tudo certo. Eu 50% cara, você já trouxe o cliente eu vou vou te gratificar pelo que você já já me indicou e tudo mais. Fica tranquilo, cara. Nossa, chegou no dia velho. Você tá louco, eu de manhã
+15:48 Backstage Grow: obrigado
+15:50 Robson Nobre: chegou de manhã, eu falei agora vai cair vai cair lá 6:30 na minha conta eu vou comprar um equipamento para mim, eu vou dar um tapa. Onde você tá?
+15:58 Backstage Grow: obrigado
+16:00 Robson Nobre: Que é isso, cara? Vazou cara vazou, mas enfim.
+16:02 Backstage Grow: Faz parte do negócio é isso? Aí, às vezes a gente mas cara não é cara.
+16:07 Robson Nobre: É o mundo do negócio, cara.
+16:20 Backstage Grow: Isso é f***, porque não é do Business cara. A gente entendeu? A gente que é
+16:22 Robson Nobre: Não consigo eu não consigo.
+16:25 Backstage Grow: pessoal, ele não faz eu não consigo fazer também porque é o que você falou, cara, qual que é minha concepção, cara, se eu tô tomando 50% do negócio do cara que a gente tinha combinado que era do cara, não é? Não é do Robson é o que você falou cara da esposa o cara paga não sei o que o cara tem que comer o cara tem que andar de carro monstro, ela tem que pagar o aluguel, cara. Tô tirando tudo isso do cara, imagina se fosse eu eu faço um negócio o cara fala assim, cara, eu não vou te mandar 50% por conta falei cara, você não tá tirando de mim tá tirando a família dos meus filhos.
+17:00 Backstage Grow: E cara eu parei eu parei por isso de falar assim, não isso aqui é do Business.
+17:00 Robson Nobre: Foi o que eu falei, cara.
+17:03 Backstage Grow: Falei cara, não é do bisse aquele pessoal merece tá? Tá do meu lado que não merece nem estar no negócio.
+17:11 Robson Nobre: Exato, como que ele tá na febracis lá que era um negócio de vocês é o maior
+17:12 Backstage Grow: Entendeu?
+17:16 Robson Nobre: rolo, velho. Aí eu falei nossa vai encaixando as coisas para mim, mas enfim. Não quero falar de pessoas não, fala do nosso projeto tá lindo demais. Stando e vamos colocar isso aqui para vender Mano, pelo amor de Deus. Senão daqui três meses você mandado embora com produto top desse vocês possibilitando possibilidade de ganhar muita grana e o negócio não acontece, pô.
+17:42 Backstage Grow: Não é isso aí, bora bora botar isso para rodar cara, porque eu preciso cara, a gente precisa definir a precificação cara, quanto que nós vamos cobrar porque eu gravei os vídeos aqui. Tô com eles aqui gravado, só que cara beleza vou soltar. então
+18:09 Erick Sena: É depois que não é?
+18:10 Backstage Grow: Você tava solicitando só que tipo eu fiz o link pelo celular e aí eu tava ouvindo o barulho de você sendo entrada, só que não tá aparecendo aqui, mano. Eu falei caramba, mano, não tá aparecendo para mim, mas eu tô ouvindo um sonzinho de alguém solicitando a entrada.
+18:30 Erick Sena: De viagem mano para pegar isso aí. Faz igual o Robson. Fez lá no outro negócio dele aí pede para ir lá mesmo dar uma verificada aí na questão que ela vai saber os cursos tudo do negócio aí para dar um Pita mais fácil.
+18:41 Backstage Grow: Cara o que que eu fiz?
+18:42 Robson Nobre: exatamente cara
+18:44 Backstage Grow: O que que eu fiz eu falei mano, falei para o do outro falei cara, quando vocês estão pagando de mim evento por mês, gente tem que ficar colocando crédito também aí coloca tipo uns 20 30 reais de crédito por mês, achei isso uma bosta. Aí, eu falei assim, caramba, tá entendi então 600 conto para ter essa ferramenta aí que basicamente um CRM por mês 600 pau, falei cara essa ferramenta aqui me oferece quase nada. Poxa, não faz sentido a gente cobrar menos de mim cara cobrar tipo a mesma coisa, entendeu? Eu acredito que a gente pode cair nessa de planos então tipo o cara só quer tomar seu WhatsApp e o CRM para ele poder controlar beleza? Não o cara que é construir que é editar funil. O cara quer fazer quer construir 50 gente, eu acho que a gente pode cair nessa tipo assim, ó.
+19:41 Backstage Grow: O plano básico te dá um agente para você poder colocar no seu WhatsApp e ele fazer a triagem do seu cliente, mas se você quiser mais de uma vez aí tá ligado? A gente vai caindo um pouco do que é aquela ferramenta que eu te mostrei os caras da Lembra do Pixote? Que eu conheci o dono lembra Eric.
+20:01 Robson Nobre: Você lembra nem lembro que é o doidão lá o cara doidão, lembro lembro.
+20:04 Backstage Grow: É o cara doidão, cara. A gente pode seguir na linha dele de cobrança, porque é o que eles estão fazendo hoje, eles cobram eles têm os pacotes, eles têm aquela versão lá Taylor made que tipo que o cara faz o dele, faz, tipo a gente pode seguir a mesma coisa cara, por enquanto, entendeu?
+20:26 Robson Nobre: O Lucas eu vejo a plataforma deles um pouco diferente da nossa porque a nossa plataforma ela não tem a peia oficial ainda, mas pela pelo que eu acho se ela tem vai ter a necessidade dessa. Penha oficial, né? Para envio de mensagem massa quando for eventos grandes não tem como fazer isso com com api não oficial é mas eu acho que o grande público nosso cara, Eles Não Usam api oficial que vai estar dentro aí da Dai que estende vai precisa fazer um estudo de mercado, né? Você já tem isso. Provavelmente na ponta da língua. Mas vê se realmente é para a gente ver a gente pode ter duas opções ali a peia oficial e não tem oficial isso eu acho que a gente tem que ter porque eu acho que Dentro desse contexto cara, o cliente ele quer ir lá ele tem aí a ele tem os polícias de atendimento ali que tem que fazer, mas ele não tem um financeiro, ele não tem as abas de conectividade de pagamento de cursos dele ou do do
+21:31 Backstage Grow: Não.
+21:38 Robson Nobre: ticket de Bilheteria dele, ele não tem nada disso então ele paga uma
+21:43 Robson Nobre: mensalidade de 600, então, não sei cara, o que que seria legal é você me trazer alguns insights aqui porque eu vou pegar tudo que você falar aqui jogar para o nosso agente da backstage, tá e ele vai ver a contabilidade já dos Testes que a gente fez de token o que que ele vai falar, cara. Você quer ganhar. Quanto você quer ganhar 200? Por cento, você quer ganhar 300% em cima disso, então vamos vamos fazer ele já vai me dar algumas especificações, eu vou mandar para você provar cara. E aí eu acho que esse seria o ponto ideal.
+22:19 Robson Nobre: Mas traz alguns pontos relativos você fala assim. Ó, esse esse cara aqui essa empresa. Cobra isso essa empresa. Cobra isso se a gente fazer um meter ou não sei dar sua opinião para c******.
+22:35 Backstage Grow: Cara, fala aí, o que que você acha?
+22:42 Erick Sena: Cara, eu também estou um pouco assim, é porque é complicado, mano. Eu acho que sem vender sem plano, porque por um lado também certo porque tipo assim muitas empresas não vão ter essa essa parte que a gente construiu aqui dentro aplicado o modelo de negócios dele. Isso é um fato muitas não vão acabar querendo porém que acontece já tem concorrência disso hoje, só que a nossa solução Ela é bem ela é uma horizontal, só que bem verticalizado ainda não é tão horizontal assim muito forte da G4 que a G4 hoje eles montaram uma Iara também solução de diversos problemas, né? É parecida com a nossa mas não é nem próximo disso, mas é um negócio bem horizontal mesmo, ela resolve tipo tudo você cria do zero, ele ajuda a implementar enfim tem a parte dele, vai que ele faz as coisas e tal.
+23:42 Erick Sena: é Mas assim, o que que eu acho muito que teria que ter plano velho, porque é muita ferramenta, tipo é um fusque basicamente tem gestão de gestão, então assim tem pessoas que vão querer algumas coisas tem pessoas que vão querer menos de coisas tanto é um ICP muito.
+24:01 Backstage Grow: Até o momento de empresa que ela tá né? A gente pode pegar uma empresa que
+24:03 Erick Sena: é
+24:04 Backstage Grow: tá é extremamente madura que p**** Cara já quero tudo isso. Mas provavelmente vai ter uma empresa que cara, sou espaço de evento pequenininho debutante aqui em Osasco. Sei lá tô dando exemplo. Então eu preciso disso tudo nem sei mexer nisso tudo. Pode ser essas realidades, aí a gente tem que aprender todo mundo.
+24:24 Erick Sena: É porque o nível de sofisticação para cada caso muda o nível de consciência para cada caso está no mundo então a gente tem que pensar um pouco mais generalizado e pensar. Como que essa generalização vai se transformar ou seja. Tem que montar um ICP bem informado disso mais melhor formado isso e é mais uma pessoa né? Uma só Provavelmente você tem umas três ou quatro pessoas diferentes como momentos diferentes de mercado aí entra aquela posição de que a gente joga esse essa posição de mercado lá em cima exemplo essas empresas mais maduras no mercado hoje, elas provavelmente não vão querer essa solução, quem está oferecendo assim sem otimizar mais pensei em personalizar mais e verticalizar para o lado.
+25:14 Erick Sena: Aí que entra pode fazer a consultoria também, entendeu? Então tipo, por exemplo o plano interprise.
+25:20 Backstage Grow: Que é justamente a gente não dá ela para o nosso cliente fazer e mexer o que
+25:23 Erick Sena: é
+25:39 Backstage Grow: que você quer. Ah, eu quero criar a b e c quero criar uma gente assim, tem que ser desse jeito que a gente faz isso para você, ou seja a gente controla o que o cara tá mexendo, mas tudo bem. Deixa na mão dele, mas a gente que vai controlar o que tá acontecendo, porque acho que se a gente deixar na mão dele. Pode ser que ele faça besteira.
+26:00 Robson Nobre: Eu acho que não viu Lucas, eu acho que não mas é mas eu acho que seria
+26:01 Backstage Grow: Acho que não dá para ele.
+26:05 Robson Nobre: interessante a gente ter esse esse vínculo com o nosso cliente, porque por exemplo o cara lá do vinho Deco tá ou Decor eu preciso de todas as suas documentações, a gente faz um documento para ele do que ele precisa entregar. Como como o Eric? Já fez lá ali no nosso no nosso home board bonitinho que ele precisa entregar a gente pega todos esses documentos com ele vai subindo nessa plataforma faz o funil do atendimento dele tá ou aí já tem login e senha ou Deco agora contigo você viu? Como é tão fácil usar o teu usabilidade dessas funcionalidades que a gente passou para você e todos os outros funcionalidades.
+26:44 Robson Nobre: Você vai clicar aqui no na escola do best do backstage vai estar lá todos os vídeos passa por Passo cada aba como fazer isso. A Vitória pode fazer tranquilo pra gente porque ela já pegou o fio da meada. Ali é muito simples você. Pode fazer só que você tem Tá então, vamos lá, o cara entrou a gente fez aquele Network com cliente a gente lamber o cliente já falou para ele que tudo é muito fácil e dá a plataforma para ele a plataforma para ele se virar Cara.
+27:14 Robson Nobre: Eu acho que essa a partir do momento que o primeiro contato passou ali no WhatsApp. Deu tudo certo. Vai pilaine, já fez fez a gravação fez a gravação lá no papelaria do agendamento. O cara vai crescer. Aí a fez um favor não parou de encher o saco do cara até o cara pegar aquela parte lá e nem passar ali finalizado, cara. O cara vai falar c****** que ferramenta é essa? Detalhe, tá? Eu tava conversando com o Eric um pouco mais cedo sobre clonagem de pessoas clonagem do Lucas ali dentro clonagem de alguém, por exemplo. O Lucas tem uma empresa de notebook, mas ele precisa ele precisa do Bill Gates para ensinar ele de negócio sobre como vender ali a arquitetura como vender.
+28:09 Robson Nobre: O MEC como vender alguma coisa ali cara, então que que esse cara vai fazer. Vai clonar ali o Bill Gates, eu não sei quem ele quiser para falar sobre a empresa dele. Vai ter tudo o doce ele da empresa dele e esse cara especializado em alguma coisa é o plano mesmo vai falar com o cara só tem empresa do cara. Vai lá no cheque, não é um cheque GBT. Não cara é o clone é inteligência do cara é bizarro o negócio que eu tava mostrando para o Eric, eu posso mostrar para você é bizarro a parada velho, mas imitando um modo ou lá só Clone o seu o seu funcionário, qual funcionário você quer ter aí sei lá, faz um marketing para isso até legal para criar curiosidade dentro da FAI. Você quer ter obliques trabalhando na sua empresa, você quer ter o Lucas trabalhando.
+29:00 Robson Nobre: Da empresa 24 horas sete dias por semana para você, cara, é bizarro eu passei o final de semana fazendo isso depois pro Eric me mandou aquele vídeo lá dos cara lá do G4 o vídeo lá de Cara. Eu fiquei pirado. O vento tá comendo carne tomando cerveja, cara. Eu fiquei aqui no computador, passei a madrugada e fiz e ficou irado mano. Ficou muito louco parado e eu vou colocar esse módulo dentro da falha, mas primeiro a gente precisa finalizar esse modo que a gente tá falando financeiro que já veio antes para depois vem lá, mas eu já fiz a plataforma e tô testando aqui e depois só colocar o módulo lá. Cara eu não sei se eu vou mostrar porque é mostrando que é.
+29:44 Backstage Grow: Mas foi você que fez isso, não isso?
+29:49 Robson Nobre: Eu vou te mostrar aqui aqui tá até o app aqui. Ó, deixa eu abrir o app aqui. Ó, tem até app tá? Então você pode ver aqui que ó. Seu colega de trabalho. Qual que é a pegada aqui? Deixa eu passar aqui para frente, ele vai te usar a gente tá? Ele tem os agentes que ele pode usar e a pegada maior é isso aqui ó, clonagem cara Clone, qualquer especialista conversa com ele então qual que é a pegada aqui? Vamos acessar dentro do dashboard, vamos entrar aqui. Foi eu que fiz cara no final de sexta, sábado e domingo.
+30:26 Robson Nobre: Vou pegar o cara que deve você aqui vai pegar antes antes na base de dados, por exemplo, o cara da empresa lá o cara faz de conta, que essa base de dados base de conhecimento é o nosso doce. É lado vai tá então colocou todos os planilha tudo colocou tudo aqui, você tem esses agentes são agentes para ajudar a gente de marketing.
+30:52 Backstage Grow: Tá mas a gente tudo bem.
+30:55 Robson Nobre: a gente A gente mesmo a gente de conteúdo de mídia social a gente de análise cara, você coloca uma planilha financeira aqui, ele vai fazer análise. Se você tiver um clone, sei lá no fundo de um cara de um cara como que eu vou clonar esse cara tá eu tenho direito de clonar ele via YouTube pelo vídeo ou pelo Canal todo dele, tá eu posso procurar ele no Google. Vamos lá eu posso colocar aqui ele o nome dele as palavras-chave dele e procurar no Google. Então vai trazer toda a base de dados dele e eu posso empurrar documento aqui aqui em cima desse que eu tenho sobre esse cara então por exemplo posso clonar o Lucas eu posso falar o Lucas faz o Frame.
+31:48 Robson Nobre: Dele é o Chrono Lucas cara, entendeu? E ali tá Beleza. Eu vou falar eu vou conversar com o Paulo aí dentro dessas conversas cara. É muito louco, porque ele traz exatamente o conteúdo. Aonde que ele tá indo buscar essas informações. Fala igual fala igual não é assim um chatg lá, o que eu posso te ajudar hoje tem nada disso, cara e fala fala igual cara, fala porque ele pega essas nuances todo a rede neural mesmo do cara, então isso aqui iria impactar muito a pessoa dentro do pai, cara, eu vou montar as ferramentas, por exemplo.
+32:28 Robson Nobre: Vai ter essa base de conhecimento. Então esse especialista que a gente clonou vai ter todo esse conteúdo mais o conteúdo do Clone para ele falar igual para ele. Agir igual para ele fazer especialista que ele é detalhe tá? Quando a gente fala de clonagem a gente também da Super. Poder para esses Clones a gente pode ele já vem com corpo right e design. Então ele pode montar a imagem do post, ele pode fazer o que que neuropórter cara surreal aqui surreal, então a gente Tudo aqui dentro, cara, eu fico doido cara. Fico doido com essas paradas, porque eu gosto muito de reggae de funcionalidade da yaki. Não viaja. Eu gosto da iaca. Pede uma informação e ela fala realmente o que que é ela não tem aquelas conversinha tonta de robô sabe que ela tem base de conhecimento. Ela tem que ela tem ela volta 20 30 40 anos lá atrás no que a gente conversou e faz um resumo e continua a conversa. Então é assim, então acho que para a raiva vai ser surreal sem contar cara. Eu empolgo muito, mas sem contar as pessoas vão ficar super curiosas, porque Cara eu já sei. Eu já sei que as pessoas ficam curiosa para esse tipo de chat para esse tipo as pessoas querem colocar o Wendel Carvalho dentro da empresa delas pessoas querem colocar uma intensidade, beleza uma Natália Build para dentro da empresa dela. Elas querem Cara elas querem elas querem colocar o Lucas que tem de evento dentro do evento dele.
+34:06 Robson Nobre: S eles querem Tá bom então, é isso.
+34:09 Backstage Grow: Você viu o vídeo do Alfredo, né falando sobre essa colagem.
+34:17 Robson Nobre: Olha isso Olha isso. Ver cara eu vi Cara eu fiquei doido e aí eu peguei um.
+34:24 Backstage Grow: Tá é que ele falou de um jeito que tipo Futuramente você vai poder clonar o Paulo Vieira, pelo menos vai ter que cobrar vai ter que pagar por isso né?
+34:36 Robson Nobre: Não cara, isso aqui já ficou já ficou público porque eu clono tudo com coisas públicas o Paulo Vieira não né? Porque eu tenho o contato lá com o pessoal lá dentro e Eles me passaram Todo o material dele livro. Até livro inglês do cara. Eles me passaram. Então cara aqui tem uma porrada sem brincadeira, mano. Tem uma porrada de coisa aqui velho, só no Só no upload aqui ó, tem muita coisa quer ver documentos.
+35:09 Backstage Grow: Que ela vai mapear todo o conteúdo que o Paulo Vieira já fez na vida e que
+35:14 Robson Nobre: na vida
+35:14 Backstage Grow: está disponível na internet e vai compilar tudo para aí o jeito do cara falar e tal.
+35:19 Robson Nobre: Exatamente exatamente e aqui cara a gente qual que é um intuito é isso aqui a
+35:21 Backstage Grow: Bonitão, deixa eu te falar. Daqui a pouco eu te ligo.
+35:24 Robson Nobre: base de conhecimento do nosso cliente o capaz de conhecimento do nosso cliente. Ele quer clonar, sei lá qualquer pessoa financeira qualquer pessoa da área do RH para Não. Então fechou fechou falou. Olha aqui eu vou fazer isso cara. Vou fazer isso eu vou fazer já agora aqui fechar essa reunião e pegar os nuances aí do que dá para a gente fazer de valores, porque eu vi que ele falou alguns valores e as ferramentas que ele falou vou pedir para a gente lá e detalhar o que que eles têm o que que ele não tem o que que tá faltando e fazer um teste aqui para a gente seguir no caminho por caminho para a gente implementar e cara e é isso e dá um preço aqui passar para vocês aprovar velho eu falo demais.
+36:24 Erick Sena: Exatamente igual eu falei mano difícil de sair a gente conseguir fazer sem um preço só cara, porque a pessoa não vai querer pegar quanto mais maior no nível de consciência em maturidade no mercado os caras eles vão querer fazer outras coisas, eles vão querer verticalizar para o nível dele saca é para especificidade deles lá, então não compensa fazer um plano só é enganar. O
+36:49 Robson Nobre: Eu também acho que não.
+36:50 Erick Sena: cara tá muito grande já o pai tá muito grande soluciona coisa para caramba,
+36:54 Robson Nobre: Eu sugiro cara Primeira coisa eu não adianta jogar na minha na minha mão aqui
+36:58 Erick Sena: eu acho que agora é mais é por isso aí só se precisar e vender agora não tem muito que mexer ou acrescentar mais quanto mais acrescentar cara. Tipo assim mais, tipo assim, a gente poderia meio que fazer isso de outra coisa tá ligado? Outros produtos diferentes.
+37:22 Robson Nobre: porque eu já sei todas as os caminhos para não dar erro e tudo mais eu queria que uma pessoa pegaste com a Vitória cara, vai ter que fazer o atendimento do Brow aqui. Jogar documentos do grupo fazer tudo bonitinho aqui do grupo separado dá um bode na mão de alguém do Lucas. O Lucas não tem condições cara. O Lucas ele pega ele entra ele sai e tipo assim, ele não tem tempo ele tem que ficar focado em vender mesmo. Você também não dá é criativo é coisa da empresa. Então tem que ser alguém aí cara. Alguém tipo assim, não sei quem alguém vai ter que fazer da Globo, eu já sei que para a gente subir um trem ou um cliente me dá um cliente na mão, ó, vamos fazer aqui cliente é vamos entrar aqui vamos vamos fazer uma borda desse cliente tudo que ele tem que estar na mão para a gente fazer essa reunião aí.
+38:16 Robson Nobre: Eu vou fazer essa reunião com o cliente o cliente vai eu vou colocar toda a parte de documentação. Vou passar vou conectar a inteligência dele. E aqui falar agora em diante. Você segue, só que para isso a gente tem que ter a parte da escola ali a parte do dos tutoriais de cada aba, o que que ela é o que que faz? Que que você acha que a gente faz faz com a inteligência ou faz uma pessoa fazendo isso, eu acho que melhor uma pessoa né videozinho de 3 minutos
+38:43 Erick Sena: Não então não então.
+38:46 Robson Nobre: de 5 segundos cada um.
+38:48 Erick Sena: Assim eu falo no sentido dele, você tá certo, tá? Só não tá no momento ainda de fazer isso.
+38:57 Robson Nobre: tá
+38:58 Erick Sena: Mas de fato cara, tem que fazer isso porque acontece eu hoje eu tô tem dia cara que eu tô no operação igual hoje tu faz lá aí eu dou operacional eu vou para o táxi que que tá gerenciar vocês tudo aí por estratégia, o que que é isso? Aí? Eu já tô formando formas aqui de prospectar a galera obviamente o tomatezinho 90% das coisas tem sei lá 600 contato aqui na minha mão, a maioria já tá por e-mail.
+39:26 Erick Sena: E o resto eu vou ter que chamar a dm vou ter que mandar mensagem LinkedIn, eu vou ter que mandar mensagem no WhatsApp. Vou fazer o módulo aqui também no meu para mandar mensagem via pif oficial porque sou eu mandando mensagem, tu é muito mais fácil para mim pegar uma peia oficial que não vai bloquear. Ou pelo menos assim, não, vou tomar as precauções. Que que eu fiz? Fiz um mecanismo de busca, eu já busca no Google. Ah, mas Eric tem um e-mail lá da empresa tals. Eu sei por isso que eu falei. Se tiver medo da empresa se buscar outro e-mail, aí já pega que eu quero conversar, entendeu?
+39:57 Robson Nobre: Está fazendo bem o browser ou não tá usando bem a sua as suas janelas ou não?
+40:04 Erick Sena: Cara, usa eu tô usando mais o Cláudio.
+40:09 Robson Nobre: Ah então você tá no Cláudio, né, safado?
+40:12 Erick Sena: É tô pagando.
+40:15 Robson Nobre: Cara então por que você não automatiza as mensagens via WhatsApp para esses números? Fala para ele cadastrar porque hoje não é para cadastrar dá para cadastrar via web aqui o cadastramento né ou procurar se já faz o cadastro já via planilha já sobe tudo uma vez ela para o Google, ele acha dentro do seu WhatsApp, já envia a mensagem ler a mensagem, né a mensagem que não foi mandada se não foi mandado como se fosse você cara automatiza disso.
+40:45 Erick Sena: Ora isso eu ainda é não isso ainda vou fazer que eu não tô com tempo para fazer isso agora mas vou fazer isso ainda. A ideia é fazer isso porque assim o Lucas sozinho vendendo é meio difícil, cara, porque ele tem muita coisa já e se não gerar demanda para ele ele buscar demandativa mais difícil não para mim você já faz né? Automatismo.
+41:05 Robson Nobre: Não, mas vai ficar fácil na verdade, nunca fica fácil porque a gente sempre Quer fazer alguma coisa, você tá enrolado, mano.
+41:11 Erick Sena: E assim, mas esse conceito seu ele é verídico porque uma hora ou outra realmente vai ter que ter alguém ali para comandar a parada sabe? Tipo se não fosse você que eu acho que não deve não de você deve ser mais um Júnior ou pleno para trabalhar por trás da ferramenta e você criar novas ferramentas e fazer a parte de suporte essas coisas porque você já é sênio velho, então tipo assim sua cabeça não tá me Avon eu vou. Não suportezinho ali vou.
+41:41 Robson Nobre: Ah cara, mas se precisa eu gosto de falar com cliente eu gosto porque eu saio um pouco disso Cara eu
+41:47 Erick Sena: Não também mas você tá no nível de ensinar, entendeu?
+41:51 Robson Nobre: Não ligo não, velho. Eu não ligo não.
+41:55 Erick Sena: Essa ideia é muito boa, cara, mas o que acho que você está preocupado muito porque assim a minha ideia é dele. Então tem que transcrever a ideia dele, ele tava preocupado que assim do cara olhar Igual, eu falei que você mais cedo ele não precisar do grupo. Só que o ICP é muito diferente velho, está falando com final direto mesmo. Eu com o público de p**** microempreendedor para me velho não tá com limitada limitada em the price ver aí já é outro 500 aí os cara quer consultoria.
+42:24 Erick Sena: Eles não querem é igual ch4 faz eles querem consultor implementação os caras não querem que a outra pessoa faça terceirizado 90% das vezes não vai querer fazer isso. Mas eu acho muito da hora velho. Isso daí a gente vai seguindo dessa forma aí
+42:34 Robson Nobre: Também chegou em dezembro. Eu tô colocando modo nessa parada.
+42:39 Erick Sena: é eu acho que eu falei cara. Acho que por enquanto tá muito grande já para a gente pensar em outras módulos a mais Tirando esse do Clone e tal a gente pode dar uma pausa ali. para focar Na frente focar na precificação, aí você pede para ir aí auditar essa p****
+43:01 Robson Nobre: Eu vou fazer já.
+43:02 Erick Sena: toda ver o que que faz sentido no quesito de Aí você coloca vários cenários aí quando que vai gastar de EPI para 100 pessoas 200 pessoas 500 pessoas mil pessoas e escalar acima disso. Quanto que vai ter de custo operacional? E aí você vai colocar um custo a mais. Que a sua porcentagem na venda. Que é 20% né 20% Aí você vai colocar eu tenho a porcentagem de 20% na venda
+43:28 Robson Nobre: beleza
+43:34 Erick Sena: aí tu vai colocar esse curso aí porque que você não tá pensando em você, você está pensando no grupo no caso e aí assim a gente vai estar pensando em
+43:38 Robson Nobre: no grupo
+43:41 Erick Sena: ter os seus 20% e tem a porcentagem de gastos de apis e banco de dados para suportar xpto de pessoas. E aí chega no valor com siso, né? O quanto que vai sobrar para o grupo nessa brincadeira que aí não precisa colocar exatamente, mas esse depois a gente vê porque o tem que colocar o seu salário aí também junto. Acho que acho que vai ficar legal porque Não precisa colocar dobrou porque necessariamente a gente paga para você fazer esses 20% das vendas, mas os 5 mil do trabalho como um todo de deve para as paradas, né? Então assim.
+44:24 Erick Sena: Eu vou colocar aí o seu salário mais 20% pensando nessa precificação, mas a porcentagem de negócio só para você ter essa visão que eu tenho dobrou tá de custo operacional nosso para fazer valer a pena, por exemplo cinco pessoas a mil reais não dá 50 mil. 50 pessoas a mil reais vai dar 50 mil agora eu fiz a conta certa 50 pessoas vai
+44:46 Robson Nobre: Vai dar. tá
+44:52 Erick Sena: 50 mil 50 mil é seu. É isso vai dar quanto 10 pau sobra 40, quanto de api que não vai dar para as
+44:58 Robson Nobre: 10
+45:02 Erick Sena: pessoas vai dar quase nada, né? Aí você tira.
+45:05 Robson Nobre: Nada, cara, porque aqui é muito chat. Mas vamos deixar ia que nos resolve isso me traz me traz todas esses dados.
+45:11 Erick Sena: Mas vamos jogar um cenário hipotético, aí vai dar aí sei lá mil reais por mês de Api para 50 pessoas, eu tô exagerando para c******. Bota 500 conto vai para 39.500.
+45:21 Robson Nobre: Você tá exagerando mesmo no máximo cara 120 130, vamos gritando cara,
+45:23 Erick Sena: Mas é gerando.
+45:28 Robson Nobre: gritando muito.
+45:29 Erick Sena: Não, mas põe aí 500 junto com a mensalidade do super beijo que eu não sei nem quanto que é essa p****. Coloca isso aí mais ou menos pronto aí já tem uma base legal vai dar por volta e que vai sobrar de faturamento isso aí depois a gente tira imposto vai sobrar por volta de uns 36 mil.
+45:49 Robson Nobre: Imposto que vocês pagam é 27 ou 7. Quanto que é sete?
+45:54 Erick Sena: acho que é sete porque tá no tá no
+45:56 Robson Nobre: Acho que é sete.
+45:58 Erick Sena: Aí depois é isso, tira o meu e do Lucas ali vai para uns.
+46:03 Robson Nobre: O custo o custo já me fala que é abertamente cara, se o custo da da coroa enfim em porcentagem, tá? Vamos lá. Me fala quanto vocês de 50 mil mais ou menos quanto por cento teria que tirar aí de porcentagem desses 50 mil só para o custos de folha, né da Globo de funcionário de enfim você colabore e tudo
+46:31 Erick Sena: é
+46:34 Robson Nobre: mais.
+46:35 Erick Sena: Desesperado para cliente porque a gente está investindo tudo.
+46:38 Robson Nobre: Não já tem que colocar porque essa é uma nova fase então a gente já tem que fazer essa precificação comprou Elabore seu do Lucas.
+46:50 Erick Sena: Ele é 70, mas eu vou revisar isso aí que eu tô fazendo coisa para c******. tá errado, mas
+46:58 Robson Nobre: É uma porcentagem de 50 tipo assim.
+47:01 Erick Sena: cinco sete e meio 10 e meia É é mais ou menos.
+47:12 Robson Nobre: Então, tá, então seria aí é 10% também de folha de pagamento. Tá vamos tirar 15% porque eu acho que o 15% de folha de pagamento, né? E já
+47:22 Erick Sena: Por aqui.
+47:27 Robson Nobre: contando com 5.000 correto.
+47:30 Erick Sena: tá
+47:30 Robson Nobre: Então fechou fechou. Então vamos fazer essa precificação é só os agentes para fazer essa precificação porque a gente não tem essa capacidade velho. Não é três dias ia ter conversar com ai Cortella para fazer a psicologia de uma planilha, cara. Daí não dá né, velho, aí não dá meu vamos que vamos então. Obrigado Eric, vou fazer e Carol de tanta coisa para fazer mano. Agora eu vou parar de fazer a parada aqui do dos agentes de News e amanhã à noite como eu falei eu te entrego cara muita coisa para fazer muita coisa muita coisa.
+48:13 Robson Nobre: Nossa pai também ali para já até viu negócios financeiro ali já vou até deixar arrumado já para não. Da bug parece que é fácil, né? Foi difícil fazer não é que foi difícil
+48:22 Erick Sena: Doido, mas é isso vai pensar né, velho?
+48:26 Robson Nobre: cara. É complexo, se você parar a fai é complexo para c****** aquela parte do agente ali mano, é complexo e eu não faço com o cloud. Não. Eu não tenho grau de carro precisa do Claudio mano. Não pegou o vou falar para você o
+48:41 Erick Sena: Os cara não pegou lá não.
+48:46 Robson Nobre: Cláudio Duarte que é diferente do Claudio é diferente é o mesmo modelo é
+48:50 Erick Sena: Do Cláudio não.
+48:53 Robson Nobre: diferente, cara. Não não ainda não o Claudio tem alguma outras paradas totalmente muito louco, né? Cara muito louco. Eu tô vendo tô doido, mas amanhã eu vou para uma reunião. Amanhã eu vou falar também porque eu preciso do outro deve cara para ficar revisando e o Cláudio faz isso ele fica revisando é outro naipe.
+49:15 Erick Sena: É outra coisa velho.
+49:16 Robson Nobre: Vai ter que pagar o top também, porque esse de cento e pouco não vai dar para mim não.
+49:20 Erick Sena: Não vai durar você mexe com um monte de coisa, cara.
+49:22 Robson Nobre: Eu quero deixar meu setup aqui, ó, é Glow revisão tudo dobrou revisando tudo do corretor 2.0. Ah mano, vou pegar minha nega e vou passear velho. Onde você
+49:31 Erick Sena: Ah mano outra parada.
+49:34 Robson Nobre: tá uma pessoa trabalhando aonde? Trabalhando Abre a Câmera tá tomando cerveja. Tô brincando, mas as coisas.
+49:40 Erick Sena: Outra Pensa aí no jurídico de clone porque tem muita gente porque gosta do
+49:47 Robson Nobre: Não não não não não não isso não isso eu fiz para testar.
+49:49 Erick Sena: público é uma coisa aí não vai p****. O pessoal vai que pegar do público faz nem sentido agora. Pensa nisso aí no quesito de privado é igual você tem material privado aí do cara, a gente não pode vender isso O Clone com esse material privado e a gente não pode. É não, com certeza a gente não pode deixar outras pessoas fazer o upload de material privado e também não cara, porque por mais que vai estar no banco de dados vai estar no banco de dado nosso não vai estar no banco de dado dele privado que só ele tem acesso e Os carai tá ligado apenas porque é uma forma não sei mandar aí a identificar que ah é com tudo Privado não tem a internet. Tá ligado? É uma validação antes da pessoa subir o conteúdo porque às vezes tem livro tem muito livro que é bom que tá na internet, tudo bem, mas agora tem muito e-book que é privado, mas você consegue na internet por meio de outras formas cursos e tal. Então assim sei lá uma validação de
+50:49 Robson Nobre: Detalhe tá Eric, detalhe o banco de dados não é nosso o banco de dados é do
+50:53 Erick Sena: que há não pode aí ela não pode absorver aquele conteúdo que você é privado. Né tipo?
+51:05 Robson Nobre: cliente que faz o login senha. Ele tem dentro do subase não é que é um banco de dados todos os dados dele, a gente não tem acesso, cara.
+51:17 Erick Sena: É privado dele.
+51:19 Robson Nobre: Privado dele ninguém veio o dele o que ele fizer a cagada dele velho a cagada já para você.
+51:26 Erick Sena: Jurídico ainda tem que ver porque a gente tem intermediador.
+51:30 Robson Nobre: Exato exato, mas é toda mas é a gente tem que deixar tipo assim boa você ter
+51:31 Erick Sena: Querendo ou não?
+51:35 Robson Nobre: me lembrado isso tem. Que deixar como fala antes do cara? Do cara acessar de praxe a plataforma toda ali não importa. Você concorda que todos os materiais que você colocar na plataforma, piriri pororó exclusivo um problema seu. E aí isso ficar como se fosse uma assinatura digital se puxar os lotes tá lá assinatura que ele ele tá ciente que todos os materiais que ele subir é dele, não é da Globo, não é da FAI, entendeu?
+52:12 Erick Sena: É É mesmo, né? Verdade? Verdade, tem que ter assinatura dele, né?
+52:14 Robson Nobre: Mas tem que ver com o jurídico é ou não é né? É e não é é não é tem que ver com o jurídica tem que ter assinatura dele, isso é muito simples hoje hoje é muito simples. O cara deu o cheque lá, já já dá um carimbo na no
+52:23 Erick Sena: verdade
+52:29 Robson Nobre: login, senha dele, cara que aquela assinatura ele já fez ele já era Eric. Então é isso, cara. Deixa eu fazer a parada aqui que minha cabeça tá f***,
+52:37 Erick Sena: verdade
+52:41 Robson Nobre: mano. Tô pensando em terminar o jurídico aqui é o jurídico, já tô montando no outro modo, já tô pensando aqui em terminar o financeiro Cara eu Preciso pegar o corretor 2.0 que eu tô na fai. Passei aí um pouquinho da noite um pouquinho da madrugada. Peguei de manhã desde às 8 horas, eu vou parar um pouco.
+  
