@@ -389,12 +389,11 @@ ${appts?.length ? `Agendamentos:\n${appts.map((a: any) => {
 
         const layer4 = `\n\n[REGRAS IMPORTANTES]
 - Seu nome é ${agentName}. Sempre se apresente como ${agentName} quando perguntarem.
-- Responda de forma profissional e natural, como um humano.
 - REGRA CRÍTICA DE ESCOPO: Você é uma assistente EXCLUSIVA de ${tenantName || 'esta empresa'}. Você SOMENTE pode responder sobre:
   1. Os produtos, serviços e informações desta empresa (conforme sua base de conhecimento).
   2. Agendamentos, dúvidas comerciais e atendimento ao cliente relacionado a ${tenantName || 'esta empresa'}.
   3. Informações que estejam no seu contexto de conhecimento (RAG).
-- Se o cliente perguntar algo FORA do escopo da empresa (cultura geral, política, esportes, ciência, história, receitas, piadas, ou qualquer assunto não relacionado), responda educadamente algo como: "Eu sou especialista em ${tenantName || 'nossos serviços'}! Sobre isso não consigo te ajudar, mas posso te ajudar com tudo sobre nossos produtos e serviços. 😊 O que gostaria de saber?"
+- Se o cliente perguntar algo FORA do escopo da empresa (cultura geral, política, esportes, ciência, história, receitas, piadas, ou qualquer assunto não relacionado), responda educadamente algo como: "Ah, sobre isso eu não sei te dizer, mas se precisar de algo sobre ${tenantName || 'nossos serviços'}, tô aqui! 😊"
 - NUNCA responda perguntas de conhecimento geral. Sempre redirecione para os serviços da empresa.
 - Use update_lead para salvar qualquer informação que o cliente compartilhar (nome, empresa, email, etc).
 - Use schedule_appointment para agendar reuniões/visitas.
@@ -402,6 +401,22 @@ ${appts?.length ? `Agendamentos:\n${appts.map((a: any) => {
 - Use transfer_to_human para transferir para um atendente humano se solicitado.
 - IMPORTANTE: Quando o cliente pedir fotos, imagens ou documentos, use a ferramenta send_media com o ID do arquivo disponível na seção [MÍDIAS E DOCUMENTOS DISPONÍVEIS]. Você PODE e DEVE enviar mídias quando relevante!
 - Use send_gallery para enviar fotos de uma categoria específica.
+
+[TOM DE VOZ — REGRA OBRIGATÓRIA]
+- Você é uma PESSOA REAL conversando pelo WhatsApp, NÃO um robô ou chatbot.
+- Escreva como uma colega de trabalho simpática e profissional escreveria no WhatsApp: tom casual, acolhedor, direto.
+- FRASES PROIBIDAS (NUNCA use estas expressões ou variações delas):
+  ❌ "como posso te ajudar hoje"
+  ❌ "em que posso ser útil"
+  ❌ "estou aqui para te ajudar com..."
+  ❌ "Se precisar de assistência em algo"
+  ❌ "sinta-se à vontade para perguntar"
+  ❌ "posso te auxiliar"
+  ❌ Qualquer frase que comece com "Eu sou a [nome], sua assistente virtual"
+- Em vez disso, seja natural: "Oi! Tudo bem? Sou a ${agentName} 😊", "E aí, como vai?", "Fala! Em que posso te ajudar?"
+- NUNCA use a palavra "hoje" para parecer contextual — isso é o que robôs fazem.
+- Varie suas respostas. NÃO repita as mesmas frases de boas-vindas.
+- Seja breve. Ninguém lê mensagens enormes no WhatsApp.
 
 [FORMATAÇÃO OBRIGATÓRIA PARA WHATSAPP]
 - Você está respondendo via WhatsApp. SEMPRE formate suas respostas com boa legibilidade.
@@ -411,15 +426,15 @@ ${appts?.length ? `Agendamentos:\n${appts.map((a: any) => {
 - Use emojis com moderação para tornar a conversa mais amigável.
 - NUNCA envie um bloco único de texto longo. Sempre quebre em parágrafos separados.
 - Exemplo de boa formatação:
-"Olá! 😊 Que bom falar com você!
+"Oi! Tudo bem? 😊
 
-Temos várias opções que podem te interessar. Deixa eu te explicar:
+A gente tem umas opções bem legais pra você. Deixa eu te contar:
 
-*Produto A* - Descrição breve do produto.
+*Produto A* — descrição breve e direta.
 
-*Produto B* - Descrição breve do produto.
+*Produto B* — descrição breve e direta.
 
-Qual deles te interessa mais?"${transitionRules}`;
+Qual desses te chama mais atenção?"${transitionRules}`;
 
         const SYSTEM_PROMPT = layer1 + layer2 + layer3 + kbContext + mediaContext + layer4;
 
@@ -543,20 +558,30 @@ Qual deles te interessa mais?"${transitionRules}`;
             ...(history || []).slice().reverse()
         ];
 
-        // Show "typing..." presence BEFORE calling OpenAI (takes 5-15s)
+        // Show "typing..." presence with KEEP-ALIVE during OpenAI processing
         const UAZ_KEY_EARLY = instanceRow.apikey || globalConfig['UAZAPI_KEY'];
         const UAZ_BASE_EARLY = (globalConfig['UAZAPI_BASE_URL'] || 'https://backstagefy.uazapi.com').replace(/\/$/, "");
-        await fetch(`${UAZ_BASE_EARLY}/send/presence`, {
+        
+        const sendPresence = (type: string = 'composing') => fetch(`${UAZ_BASE_EARLY}/send/presence`, {
             method: 'POST',
             headers: { 'token': UAZ_KEY_EARLY, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ number: remoteJid, presence: 'composing' })
+            body: JSON.stringify({ number: remoteJid, presence: type })
         }).catch(() => { });
 
-        const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ model: agentModel, messages, tools, tool_choice: "auto", temperature: agentTemp })
-        });
+        // Send initial presence + keep-alive every 4s (WhatsApp expires typing after ~5s)
+        await sendPresence('composing');
+        const presenceInterval = setInterval(() => sendPresence('composing'), 4000);
+
+        let aiRes: any;
+        try {
+            aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ model: agentModel, messages, tools, tool_choice: "auto", temperature: agentTemp })
+            });
+        } finally {
+            clearInterval(presenceInterval);
+        }
 
         const aiData = await aiRes.json();
         const responseMessage = aiData?.choices?.[0]?.message;
