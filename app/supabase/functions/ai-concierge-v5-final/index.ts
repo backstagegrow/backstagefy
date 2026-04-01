@@ -991,6 +991,7 @@ Deno.serve(async (req) => {
             aiMsg = aiData?.choices?.[0]?.message;
         }
 
+        stopComposing();
         const rawContent = aiMsg?.content || "";
 
         // Extract Tags and Images BEFORE cleaning
@@ -1043,17 +1044,26 @@ Deno.serve(async (req) => {
             }
 
             // 4. Handle Audio (TTS)
-            if (isAudio && cleanReply.length < 500) {
+            // Send audio when: user sent audio (always mirror), OR reply is short enough (<=150 chars)
+            const ttsVoice = config?.ttsVoice || configMap['TTS_VOICE'] || "onyx";
+            const shouldSendAudio = isAudio || cleanReply.length <= 150;
+            if (shouldSendAudio) {
                 try {
                     await setPresence('recording');
                     const ttsRes = await fetch("https://api.openai.com/v1/audio/speech", {
                         method: "POST",
                         headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-                        body: JSON.stringify({ model: "tts-1", input: cleanReply, voice: "onyx", response_format: "opus" })
+                        body: JSON.stringify({ model: "tts-1", input: cleanReply, voice: ttsVoice, response_format: "opus" })
                     });
-                    const arrayBuffer = await ttsRes.arrayBuffer();
-                    const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-                    await sendResilient('/send/media', { number: cleanPhone, file: `data:audio/ogg;base64,${audioBase64}`, type: "audio", PTT: true });
+                    if (ttsRes.ok) {
+                        const arrayBuffer = await ttsRes.arrayBuffer();
+                        const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+                        await sendResilient('/send/media', { number: cleanPhone, file: `data:audio/ogg;base64,${audioBase64}`, type: "audio", PTT: true });
+                        // If reply is short and was sent as audio-only, skip the text
+                        if (!isAudio && !textSent) textSent = true;
+                    } else {
+                        if (!textSent) await sendResilient('/send/text', { number: cleanPhone, text: cleanReply });
+                    }
                 } catch (e) {
                     if (!textSent) await sendResilient('/send/text', { number: cleanPhone, text: cleanReply });
                 }

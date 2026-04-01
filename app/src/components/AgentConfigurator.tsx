@@ -33,6 +33,7 @@ const AgentConfigurator: React.FC = () => {
     const [waInstance, setWaInstance] = useState('');
     const [waApikey, setWaApikey] = useState('');
     const [isActive, setIsActive] = useState(true);
+    const [ttsVoice, setTtsVoice] = useState('onyx');
 
     useEffect(() => {
         if (tenantId) fetchAgents();
@@ -63,6 +64,7 @@ const AgentConfigurator: React.FC = () => {
         setWaInstance((agent as any).whatsapp_instance || '');
         setWaApikey((agent as any).whatsapp_apikey || '');
         setIsActive(agent.is_active);
+        setTtsVoice((agent as any).tts_voice || 'onyx');
         setShowNew(false);
     };
 
@@ -76,6 +78,7 @@ const AgentConfigurator: React.FC = () => {
                 whatsapp_instance: waInstance || null,
                 whatsapp_apikey: waApikey || null,
                 is_active: isActive,
+                tts_voice: ttsVoice,
                 updated_at: new Date().toISOString(),
             }).eq('id', selected.id);
         } else {
@@ -84,6 +87,7 @@ const AgentConfigurator: React.FC = () => {
                 whatsapp_instance: waInstance || null,
                 whatsapp_apikey: waApikey || null,
                 is_active: isActive,
+                tts_voice: ttsVoice,
             });
         }
 
@@ -102,6 +106,7 @@ const AgentConfigurator: React.FC = () => {
         setWaInstance('');
         setWaApikey('');
         setIsActive(true);
+        setTtsVoice('onyx');
         setShowNew(true);
     };
 
@@ -501,6 +506,39 @@ const AgentConfigurator: React.FC = () => {
                                                 <span>Factual (0.0)</span>
                                                 <span>Criativo (2.0)</span>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    {/* TTS Voice */}
+                                    <div className="pt-4 border-t border-white/5">
+                                        <label className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-3 block flex items-center gap-2">
+                                            <span className="material-symbols-outlined text-primary text-base">record_voice_over</span>
+                                            Voz do Agente (WhatsApp — áudio automático)
+                                        </label>
+                                        <p className="text-white/25 text-xs mb-4">Respostas com até 150 caracteres são enviadas como áudio no WhatsApp.</p>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                            {[
+                                                { id: 'alloy',   label: 'Alloy',   desc: 'Neutro, claro',     icon: '🎙️' },
+                                                { id: 'echo',    label: 'Echo',    desc: 'Masculino, firme',  icon: '🔊' },
+                                                { id: 'fable',   label: 'Fable',   desc: 'Expressivo',       icon: '✨' },
+                                                { id: 'onyx',    label: 'Onyx',    desc: 'Grave, autoridade', icon: '🎯' },
+                                                { id: 'nova',    label: 'Nova',    desc: 'Feminino, caloroso',icon: '🌟' },
+                                                { id: 'shimmer', label: 'Shimmer', desc: 'Feminino, suave',   icon: '💫' },
+                                            ].map(v => (
+                                                <button
+                                                    key={v.id}
+                                                    type="button"
+                                                    onClick={() => setTtsVoice(v.id)}
+                                                    className={`p-3 rounded-xl border text-left transition-all ${ttsVoice === v.id
+                                                        ? 'bg-primary/15 border-primary/40'
+                                                        : 'bg-black/20 border-white/5 hover:border-white/15'
+                                                    }`}
+                                                >
+                                                    <div className="text-base mb-1">{v.icon}</div>
+                                                    <div className={`text-xs font-bold ${ttsVoice === v.id ? 'text-primary' : 'text-white/70'}`}>{v.label}</div>
+                                                    <div className="text-[10px] text-white/30 mt-0.5">{v.desc}</div>
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
