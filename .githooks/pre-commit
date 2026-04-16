@@ -1,0 +1,39 @@
+#!/bin/sh
+# Pre-commit hook — bloqueia arquivos sensíveis
+# Backstagefy | BKS-Grow | 2026-04-16
+
+FORBIDDEN_FILES=".env .env.local .env.production .env.staging .env.development"
+FORBIDDEN_PATTERNS="*.key *.pem *.p12 *.pfx id_rsa id_dsa"
+
+# Checar arquivos proibidos por nome exato
+for file in $FORBIDDEN_FILES; do
+  if git diff --cached --name-only | grep -qE "(^|/)$file$"; then
+    echo ""
+    echo "❌ COMMIT BLOQUEADO: Arquivo sensível detectado: $file"
+    echo "   Remova com: git reset HEAD $file"
+    echo ""
+    exit 1
+  fi
+done
+
+# Checar padrões de extensão sensíveis
+for pattern in $FORBIDDEN_PATTERNS; do
+  if git diff --cached --name-only | grep -q "$pattern"; then
+    echo ""
+    echo "❌ COMMIT BLOQUEADO: Arquivo com padrão sensível: $pattern"
+    echo "   Liste os arquivos: git diff --cached --name-only"
+    echo ""
+    exit 1
+  fi
+done
+
+# Checar conteúdo suspeito nos arquivos staged (chaves, tokens)
+if git diff --cached | grep -qE "(SUPABASE_SERVICE_ROLE_KEY|service_role_key|eyJhbGci|sk-[a-zA-Z0-9]{40,}|PRIVATE KEY)"; then
+  echo ""
+  echo "❌ COMMIT BLOQUEADO: Conteúdo com padrão de chave privada detectado."
+  echo "   Revise os arquivos staged: git diff --cached"
+  echo ""
+  exit 1
+fi
+
+exit 0

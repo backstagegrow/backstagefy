@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.94.1",
     "date-fns": "^4.1.0",
