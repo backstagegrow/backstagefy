@@ -10,7 +10,7 @@ export default function WhatsAppConfig() {
     const [qrExpired, setQrExpired] = useState(false)
     const [qrCountdown, setQrCountdown] = useState(0)
     const qrTimestampRef = useRef<number | null>(null)
-    const QR_EXPIRY_SECONDS = 30
+    const QR_EXPIRY_SECONDS = 60
 
     // Settings State
     const [handoverNumber, setHandoverNumber] = useState('')

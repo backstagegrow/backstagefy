@@ -6,7 +6,6 @@ import NewLeadModal from './components/NewLeadModal'
 import NewAppointmentModal from './components/NewAppointmentModal'
 import ScheduleView from './components/ScheduleView'
 import DashboardStats from './components/DashboardStats'
-import MediaGallery from './components/MediaGallery'
 import Login from './components/Login'
 import LandingPage from './components/LandingPage'
 import Onboarding from './components/Onboarding'
@@ -42,7 +41,7 @@ const Header = ({ activeTab, onAddClick, onMenuClick }: { activeTab: string, onA
         'sales': { title: 'Vendas & Plataformas', subtitle: 'Central de vendas e integrações' },
         'viewings': { title: 'Agenda', subtitle: 'Visitas e agendamentos programados' },
         'finance': { title: 'Financeiro', subtitle: 'Gestão financeira e fluxo de caixa' },
-        'billing': { title: 'Plano & Uso', subtitle: 'Gerencie assinatura e limites' },
+        'billing': { title: 'Plano & Uso', subtitle: 'Gerencie assinatura e limites de uso' },
     }
 
     const { title, subtitle } = titles[activeTab] || titles['dashboard']
@@ -228,9 +227,7 @@ function DashboardContent({ session, onLogout }: { session: Session, onLogout: (
 
                         {activeTab === 'finance' && <FinanceDashboard />}
 
-                        {activeTab === 'portfolio' && <MediaGallery />}
-
-                        {!['dashboard', 'leads', 'agents', 'whatsapp', 'viewings', 'funnel', 'knowledge', 'sales', 'portfolio', 'finance'].includes(activeTab) && (
+                        {!['dashboard', 'leads', 'agents', 'whatsapp', 'viewings', 'funnel', 'knowledge', 'sales', 'finance', 'billing'].includes(activeTab) && (
                             <ComingSoon title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} />
                         )}
                     </div>

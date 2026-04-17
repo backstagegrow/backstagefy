@@ -1,0 +1,20 @@
+[functions.whatsapp-manager]
+verify_jwt = false
+
+[functions.ai-concierge]
+verify_jwt = false
+
+[functions.ai-concierge-v2]
+verify_jwt = false
+
+[functions.ai-concierge-v5-final]
+verify_jwt = false
+
+[functions.ai-concierge-v6]
+verify_jwt = false
+
+[functions.webchat]
+verify_jwt = false
+
+[functions.webhook-router]
+verify_jwt = false

@@ -22,11 +22,10 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
         { id: 'knowledge', icon: 'menu_book', label: 'Base de Conhecimento' },
         { id: 'funnel', icon: 'filter_alt', label: 'Editor de Funil' },
         { id: 'sales', icon: 'store', label: 'Vendas & Plataformas' },
-        { id: 'broadcast', icon: 'campaign', label: 'Campanhas', badge: 'Em Breve' },
         { id: 'viewings', icon: 'calendar_month', label: 'Agenda' },
         { id: 'finance', icon: 'account_balance', label: 'Financeiro' },
         { id: 'billing', icon: 'credit_card', label: 'Plano & Uso' },
-    ] as const
+    ]
 
     const [gcalConnected, setGcalConnected] = useState(() => localStorage.getItem('gcal_connected') === '1')
 
@@ -82,13 +81,12 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
                 <nav className="flex-1 px-4 md:px-6 space-y-1 md:space-y-2 overflow-y-auto scrollbar-hide">
                     {menuItems.map((item) => {
                         const isActive = activeTab === item.id
-                        const hasBadge = 'badge' in item && item.badge
                         const isFunnelLocked = item.id === 'funnel' && !funnelUnlocked
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => !hasBadge && handleTabChange(item.id)}
-                                className={`w-full group flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 rounded-2xl transition-all duration-300 relative ${hasBadge || isFunnelLocked
+                                onClick={() => handleTabChange(item.id)}
+                                className={`w-full group flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 rounded-2xl transition-all duration-300 relative ${isFunnelLocked
                                     ? 'text-gray-600 cursor-pointer border border-transparent'
                                     : isActive
                                         ? 'bg-primary/5 text-primary border border-primary/20'
@@ -96,14 +94,14 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
                                     }`}
                                 title={isFunnelLocked ? 'Preencha ao menos 1 item em cada categoria da Base de Conhecimento para desbloquear' : undefined}
                             >
-                                {isActive && !hasBadge && !isFunnelLocked && <div className="absolute left-0 w-1 h-6 bg-primary rounded-r-full shadow-primary"></div>}
+                                {isActive && !isFunnelLocked && <div className="absolute left-0 w-1 h-6 bg-primary rounded-r-full shadow-primary"></div>}
                                 <span
-                                    className={`material-symbols-outlined text-xl md:text-2xl transition-transform ${hasBadge || isFunnelLocked ? 'text-gray-600' : isActive ? 'text-primary' : 'group-hover:text-white group-hover:scale-110'}`}
-                                    style={isActive && !hasBadge && !isFunnelLocked ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                    className={`material-symbols-outlined text-xl md:text-2xl transition-transform ${isFunnelLocked ? 'text-gray-600' : isActive ? 'text-primary' : 'group-hover:text-white group-hover:scale-110'}`}
+                                    style={isActive && !isFunnelLocked ? { fontVariationSettings: "'FILL' 1" } : {}}
                                 >
                                     {isFunnelLocked ? 'lock' : item.icon}
                                 </span>
-                                <span className={`text-xs md:text-[13px] font-medium tracking-wide text-left ${isActive && !hasBadge && !isFunnelLocked ? 'font-bold' : ''}`}>
+                                <span className={`text-xs md:text-[13px] font-medium tracking-wide text-left ${isActive && !isFunnelLocked ? 'font-bold' : ''}`}>
                                     {item.label}
                                 </span>
                                 {item.id === 'viewings' && gcalConnected && (
@@ -117,11 +115,6 @@ export default function Sidebar({ activeTab, onTabChange, session, onLogout, isO
                                 {isFunnelLocked && (
                                     <span className="ml-auto text-[8px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-bold font-mono border border-amber-500/30">
                                         {filledCount}/{totalCount}
-                                    </span>
-                                )}
-                                {hasBadge && !isFunnelLocked && (
-                                    <span className="ml-auto text-[8px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-primary/50 shadow-[0_0_10px_rgba(34,197,94,0.4)] animate-pulse">
-                                        {item.badge}
                                     </span>
                                 )}
                             </button>

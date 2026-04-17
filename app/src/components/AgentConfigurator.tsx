@@ -11,6 +11,8 @@ interface Agent {
     is_active: boolean;
     channel: string;
     whatsapp_instance: string | null;
+    whatsapp_apikey: string | null;
+    tts_voice: string | null;
     created_at: string;
 }
 
@@ -41,7 +43,7 @@ const AgentConfigurator: React.FC = () => {
         if (tenantId) fetchAgents();
     }, [tenantId]);
 
-    const fetchAgents = async () => {
+    const fetchAgents = async (selectId?: string) => {
         if (!supabase || !tenantId) return;
         setLoading(true);
         const { data } = await supabase
@@ -50,8 +52,13 @@ const AgentConfigurator: React.FC = () => {
             .eq('tenant_id', tenantId)
             .order('created_at', { ascending: true });
         setAgents(data || []);
-        if (data && data.length > 0 && !selected) {
-            selectAgent(data[0]);
+        if (data && data.length > 0) {
+            if (selectId) {
+                const target = data.find((a) => a.id === selectId);
+                if (target) selectAgent(target);
+            } else if (!selected) {
+                selectAgent(data[0]);
+            }
         }
         setLoading(false);
     };
@@ -62,11 +69,11 @@ const AgentConfigurator: React.FC = () => {
         setPrompt(agent.system_prompt);
         setModel(agent.model);
         setTemperature(agent.temperature);
-        setChannel((agent as any).channel || 'whatsapp');
-        setWaInstance((agent as any).whatsapp_instance || '');
-        setWaApikey((agent as any).whatsapp_apikey || '');
+        setChannel(agent.channel || 'whatsapp');
+        setWaInstance(agent.whatsapp_instance || '');
+        setWaApikey(agent.whatsapp_apikey || '');
         setIsActive(agent.is_active);
-        setTtsVoice((agent as any).tts_voice || 'onyx');
+        setTtsVoice(agent.tts_voice || 'onyx');
         setShowNew(false);
     };
 
@@ -84,13 +91,17 @@ const AgentConfigurator: React.FC = () => {
                 updated_at: new Date().toISOString(),
             }).eq('id', selected.id);
         } else {
-            await supabase.from('agents').insert({
+            const { data: inserted } = await supabase.from('agents').insert({
                 tenant_id: tenantId, name, system_prompt: prompt, model, temperature, channel,
                 whatsapp_instance: waInstance || null,
                 whatsapp_apikey: waApikey || null,
                 is_active: isActive,
                 tts_voice: ttsVoice,
-            });
+            }).select().single();
+            await fetchAgents(inserted?.id);
+            setSaving(false);
+            setShowNew(false);
+            return;
         }
 
         await fetchAgents();
@@ -488,6 +499,42 @@ const AgentConfigurator: React.FC = () => {
                                         className="w-full bg-black/20 border border-white/10 text-white py-3.5 px-4 rounded-xl focus:ring-0 focus:border-primary transition-all placeholder-white/20 text-sm outline-none"
                                         placeholder="Defina um nome para uso interno (Ex: Guga, Luna...)"
                                     />
+                                </div>
+                            </div>
+
+                            {/* BLOCK: WhatsApp Connection */}
+                            <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                                <h3 className="text-white/80 text-sm font-medium flex items-center gap-2 mb-6">
+                                    <span className="material-symbols-outlined text-primary text-lg">phone_iphone</span>
+                                    Conexão WhatsApp
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2 block">
+                                            Instância (Instance Name)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={waInstance}
+                                            onChange={(e) => setWaInstance(e.target.value)}
+                                            className="w-full bg-black/20 border border-white/10 text-white py-3.5 px-4 rounded-xl focus:ring-0 focus:border-primary transition-all placeholder-white/20 text-sm outline-none"
+                                            placeholder="Ex: minha-instancia"
+                                        />
+                                        <p className="text-white/25 text-[10px] mt-1.5">Nome da instância na Evolution API / UazAPI</p>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2 block">
+                                            API Key
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={waApikey}
+                                            onChange={(e) => setWaApikey(e.target.value)}
+                                            className="w-full bg-black/20 border border-white/10 text-white py-3.5 px-4 rounded-xl focus:ring-0 focus:border-primary transition-all placeholder-white/20 text-sm outline-none"
+                                            placeholder="Chave de autenticação"
+                                        />
+                                        <p className="text-white/25 text-[10px] mt-1.5">Chave da instância WhatsApp</p>
+                                    </div>
                                 </div>
                             </div>
 
