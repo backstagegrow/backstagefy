@@ -5,6 +5,7 @@ import { buildKnowledgeContext } from "../_shared/rag-builder.ts";
 import { callLLMWithFallback } from "../_shared/llm-orchestrator.ts";
 import { executeTools, ToolExecutorContext } from "../_shared/tool-executor.ts";
 import { getAvailableTools } from "../_shared/tools-list.ts";
+import { isAudioMessage, processAudioMessage } from "../_shared/media-processor.ts";
 
 Deno.serve(async (req) => {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? "";
@@ -112,7 +113,25 @@ Deno.serve(async (req) => {
             }
         }
 
-        const msgText = msg.text || msg.message?.conversation || msg.message?.extendedTextMessage?.text || msg.content?.text || msg.caption || msg.Message || "";
+        let msgText = msg.text || msg.message?.conversation || msg.message?.extendedTextMessage?.text || msg.content?.text || msg.caption || msg.Message || "";
+        let userSentAudio = false;
+
+        // --- FASE 7: Audio/PTT processing via Whisper ---
+        if (!msgText && isAudioMessage(msg)) {
+            userSentAudio = true;
+            const audioResult = await processAudioMessage(
+                msg,
+                messageId,
+                UAZ_BASE,
+                UAZ_KEY,
+                OPENAI_API_KEY
+            );
+            if (audioResult.transcribed) {
+                msgText = audioResult.text;
+            } else {
+                console.log(`[V7] Audio processing failed: ${audioResult.error}`);
+            }
+        }
 
         if (!msgText) {
             return new Response("no text", { status: 200 });
@@ -120,7 +139,7 @@ Deno.serve(async (req) => {
 
         await supabase.from('chat_history').insert({
             tenant_id: tenantId, agent_id: agentId, lead_id: lead.id,
-            role: 'user', content: msgText,
+            role: 'user', content: userSentAudio ? `[🎤 Áudio] ${msgText}` : msgText,
             message_id: messageId || null
         });
 
