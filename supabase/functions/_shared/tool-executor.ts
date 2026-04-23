@@ -42,8 +42,13 @@ export async function executeTools(toolCalls: any[], context: ToolExecutorContex
 
         switch (functionName) {
             case 'update_lead': {
-                await supabase.from('leads').update(args).eq('id', lead.id);
-                executed.push(`UPDATED:${Object.keys(args).join(',')}`);
+                const { error: updateErr } = await supabase.from('leads').update(args).eq('id', lead.id);
+                if (updateErr) {
+                    console.error(`[V7 Tool] update_lead failed:`, updateErr.message);
+                    executed.push(`UPDATE_FAILED:${updateErr.message}`);
+                } else {
+                    executed.push(`UPDATED:${Object.keys(args).join(',')}`);
+                }
                 break;
             }
             case 'schedule_appointment': {
@@ -117,8 +122,24 @@ export async function executeTools(toolCalls: any[], context: ToolExecutorContex
                 if (currentStep && funnelSteps?.length) {
                     const nextStep = funnelSteps.find((s: any) => s.step_order === currentStep.step_order + 1);
                     if (nextStep) {
-                        await supabase.from('leads').update({ current_funnel_step: nextStep.id }).eq('id', lead.id);
-                        executed.push(`ADVANCED:${currentStep.name}->${nextStep.name}`);
+                        // Map funnel position to pipeline_stage for Kanban visibility
+                        const totalSteps = funnelSteps.length;
+                        const nextOrder = nextStep.step_order;
+                        let newPipelineStage = lead.pipeline_stage || 'new';
+
+                        if (nextOrder <= 1) newPipelineStage = 'attending';
+                        else if (nextOrder >= totalSteps - 1) newPipelineStage = 'scheduled';
+                        else newPipelineStage = 'attending';
+
+                        await supabase.from('leads').update({
+                            current_funnel_step: nextStep.id,
+                            pipeline_stage: newPipelineStage
+                        }).eq('id', lead.id);
+
+                        executed.push(`ADVANCED:${currentStep.name}->${nextStep.name} [stage:${newPipelineStage}]`);
+                    } else {
+                        console.log(`[V7 Tool] advance_step: already at last step`);
+                        executed.push('ALREADY_LAST_STEP');
                     }
                 }
                 break;

@@ -4,16 +4,20 @@ export function getAvailableTools(): any[] {
             type: "function",
             function: {
                 name: "update_lead",
-                description: "Atualiza informações do lead. Use sempre que o cliente compartilhar dados novos.",
+                description: "Atualiza informações do lead. Use sempre que o cliente compartilhar dados novos. Também use para mover o lead no pipeline quando o estágio do atendimento avançar.",
                 parameters: {
                     type: "object",
                     properties: {
                         name: { type: "string", description: "Nome do cliente" },
                         company_name: { type: "string", description: "Nome da empresa" },
                         corporate_email: { type: "string", description: "Email corporativo" },
-                        // FIX: constrained to valid db types
                         status: { type: "string", enum: ["frio", "morno", "quente"], description: "Temperatura do lead (apenas estas 3 válidas)" },
-                        event_format: { type: "string", description: "Formato do evento ou necessidade" }
+                        event_format: { type: "string", description: "Formato do evento ou necessidade" },
+                        pipeline_stage: {
+                            type: "string",
+                            enum: ["new", "attending", "scheduled", "booked"],
+                            description: "Estágio no pipeline de vendas: 'new'=novo, 'attending'=em atendimento ativo, 'scheduled'=visita/reunião agendada, 'booked'=fechado/finalizado. Atualize quando o lead progredir."
+                        }
                     }
                 }
             }

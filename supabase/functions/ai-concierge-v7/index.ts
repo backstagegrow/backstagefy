@@ -6,6 +6,7 @@ import { callLLMWithFallback } from "../_shared/llm-orchestrator.ts";
 import { executeTools, ToolExecutorContext } from "../_shared/tool-executor.ts";
 import { getAvailableTools } from "../_shared/tools-list.ts";
 import { isAudioMessage, processAudioMessage } from "../_shared/media-processor.ts";
+import { sendMetaMessage } from "../_shared/meta-api.ts";
 
 Deno.serve(async (req) => {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? "";
@@ -58,6 +59,8 @@ Deno.serve(async (req) => {
         const UAZ_BASE = (Deno.env.get('UAZAPI_BASE_URL') || 'https://backstagefy.uazapi.com').replace(/\/$/, "");
         const UAZ_KEY = apikey || Deno.env.get('UAZAPI_KEY') || "";
 
+        const platform = payload.platform || 'whatsapp';
+
         // --- 4. LOAD ACTIVE AGENT ---
         let agent: any = null;
         if (resolvedAgentId) {
@@ -69,12 +72,20 @@ Deno.serve(async (req) => {
         if (!agent) {
             const { data } = await supabase.from('agents')
                 .select('id, name, system_prompt, model, temperature, settings')
+                .eq('tenant_id', tenantId).eq('is_active', true).eq('channel', platform)
+                .limit(1).single();
+            agent = data;
+        }
+        if (!agent && platform !== 'whatsapp') {
+            // Fallback to whatsapp agent if no platform-specific agent found
+            const { data } = await supabase.from('agents')
+                .select('id, name, system_prompt, model, temperature, settings')
                 .eq('tenant_id', tenantId).eq('is_active', true).eq('channel', 'whatsapp')
                 .limit(1).single();
             agent = data;
         }
         if (!agent) {
-            console.error(`[V7] No active agent configured for tenant ${tenantId}`);
+            console.error(`[V7] No active agent configured for tenant ${tenantId} [Platform: ${platform}]`);
             return new Response("no agent", { status: 200 });
         }
 
@@ -168,6 +179,25 @@ Instrução da Etapa: ${currentStep?.ai_instruction || ''}
 ${kbContext}
 ${mediaContext}
 
+[REGRAS DE USO DAS FERRAMENTAS — OBRIGATÓRIO]
+Você possui ferramentas disponíveis. Siga estas regras sem exceção:
+
+1. QUALIFICAÇÃO DO LEAD — Use update_lead sempre que:
+   - O cliente informar nome, empresa ou e-mail → atualize os campos correspondentes
+   - O lead demonstrar interesse claro → mude status para 'morno'
+   - O lead confirmar orçamento, datas ou decisão de compra → mude status para 'quente'
+   - O atendimento estiver em curso → mude pipeline_stage para 'attending'
+   - Um agendamento for confirmado → mude pipeline_stage para 'scheduled'
+   - O negócio for fechado → mude pipeline_stage para 'booked'
+
+2. AVANÇO DO FUNIL — Use advance_step quando:
+   - O objetivo da etapa atual foi concluído (ex: apresentação feita, dúvidas sanadas)
+
+3. AGENDAMENTO — Use schedule_appointment para marcar visitas/reuniões (formato: YYYY-MM-DD HH:mm).
+   Ao agendar, o sistema já atualiza o pipeline automaticamente.
+
+4. NÃO ESPERE O CLIENTE PEDIR — Identifique o momento e atualize proativamente.
+
 IMPORTANTE: 
 NÃO formate os textos com markdown excessivo, use emojis com moderação. Responda num tom natural humano.`;
 
@@ -235,24 +265,40 @@ NÃO formate os textos com markdown excessivo, use emojis com moderação. Respo
         // --- 9. SEND RESPONSES ---
         if (aiFinalReply) {
             try {
-                // Text Formatting for WhatsApp
-                const formattedReply = aiFinalReply
-                    .replace(/\*\*(.*?)\*\*/g, '*$1*')
-                    .replace(/__(.*?)__/g, '_$1_')
-                    .trim();
+                if (platform === 'instagram' || platform === 'facebook') {
+                    // Get token from meta_instances
+                    const { data: instance } = await supabase
+                        .from('meta_instances')
+                        .select('meta_access_token')
+                        .eq('tenant_id', tenantId)
+                        .eq('meta_page_id', payload.meta_id)
+                        .single();
+                    
+                    if (instance?.meta_access_token) {
+                        await sendMetaMessage(cleanPhone, aiFinalReply, instance.meta_access_token, platform as any);
+                    } else {
+                        console.error(`[V7] No Meta token found for page ${payload.meta_id} / tenant ${tenantId}`);
+                    }
+                } else {
+                    // Text Formatting for WhatsApp
+                    const formattedReply = aiFinalReply
+                        .replace(/\*\*(.*?)\*\*/g, '*$1*')
+                        .replace(/__(.*?)__/g, '_$1_')
+                        .trim();
 
-                const response = await fetch(`${UAZ_BASE}/send/text`, {
-                    method: "POST",
-                    headers: { "token": UAZ_KEY, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        number: remoteJid, text: formattedReply,
-                        readmessages: config.autoRead === true
-                    })
-                });
+                    const response = await fetch(`${UAZ_BASE}/send/text`, {
+                        method: "POST",
+                        headers: { "token": UAZ_KEY, "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            number: remoteJid, text: formattedReply,
+                            readmessages: config.autoRead === true
+                        })
+                    });
 
-                if (!response.ok) {
-                    const errTxt = await response.text();
-                    console.error(`[V7] UAZAPI Error (${response.status}): ${errTxt}`);
+                    if (!response.ok) {
+                        const errTxt = await response.text();
+                        console.error(`[V7] UAZAPI Error (${response.status}): ${errTxt}`);
+                    }
                 }
 
                 await supabase.from('chat_history').insert({
@@ -260,7 +306,7 @@ NÃO formate os textos com markdown excessivo, use emojis com moderação. Respo
                     role: 'assistant', content: aiFinalReply
                 });
             } catch (sendErr: any) {
-                console.error(`[V7] Failed to send text via UAZAPI:`, sendErr.message);
+                console.error(`[V7] Failed to send response:`, sendErr.message);
             }
         }
 

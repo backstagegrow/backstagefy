@@ -51,7 +51,12 @@ export default function DashboardStats() {
 
                 const leadsThisMonth = leads.filter(l => new Date(l.created_at) >= monthStart).length
                 const hotLeads = leads.filter(l => l.status === 'quente').length
-                const qualifiedLeads = leads.filter(l => l.pipeline_stage === 'scheduled' || l.status === 'quente').length
+                const qualifiedLeads = leads.filter(l =>
+                    l.pipeline_stage === 'attending' ||
+                    l.pipeline_stage === 'scheduled' ||
+                    l.pipeline_stage === 'booked' ||
+                    l.status === 'quente'
+                ).length
 
                 // Calculate pipeline total from budget ranges (A: 35k-60k, B: 60k-100k, C: >100k)
                 let pipelineValue = 0
@@ -106,13 +111,27 @@ export default function DashboardStats() {
     useEffect(() => {
         if (tenantId) fetchStats()
 
-        // Real-time subscription
-        const channel = supabase?.channel('stats-updates')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, fetchStats)
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, fetchStats)
+        if (!supabase || !tenantId) return
+
+        const uniqueId = Math.random().toString(36).substring(2, 10)
+        const channelName = `stats-updates-${tenantId}-${uniqueId}`
+
+        const channel = supabase.channel(channelName)
+            .on(
+                'postgres_changes' as any,
+                { event: '*', schema: 'public', table: 'leads', filter: `tenant_id=eq.${tenantId}` },
+                fetchStats
+            )
+            .on(
+                'postgres_changes' as any,
+                { event: '*', schema: 'public', table: 'appointments', filter: `tenant_id=eq.${tenantId}` },
+                fetchStats
+            )
             .subscribe()
 
-        return () => { if (channel) supabase?.removeChannel(channel) }
+        return () => {
+            if (supabase) supabase.removeChannel(channel)
+        }
     }, [tenantId])
 
     const statCards = [

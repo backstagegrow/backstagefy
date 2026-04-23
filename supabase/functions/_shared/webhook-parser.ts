@@ -10,6 +10,30 @@ export interface ParsedResult {
 }
 
 export function extractMessageAndPhone(payload: any): ParsedResult {
+    // 1. Handle Meta (Instagram/Facebook) from meta-webhook
+    if (payload.platform === 'instagram' || payload.platform === 'facebook') {
+        const msg = payload.data?.message;
+        if (!msg || !msg.text) {
+            return { ignore: true, reason: 'no_text_in_meta_message' };
+        }
+
+        const senderId = payload.data?.sender?.id;
+        if (!senderId) {
+            return { ignore: true, reason: 'no_sender_id' };
+        }
+
+        return {
+            ignore: false,
+            msg: msg,
+            payload: payload,
+            remoteJid: `${senderId}@meta`, // Synthetic JID for Meta
+            cleanPhone: senderId,
+            isGroup: false,
+            messageId: msg.mid || ""
+        };
+    }
+
+    // 2. Handle WhatsApp (Existing logic)
     const msg = payload.message || payload.data || payload.body || payload;
     const eventData = typeof payload.event === 'object' ? payload.event : null;
     const eventType = eventData?.Type || payload.EventType || '';
